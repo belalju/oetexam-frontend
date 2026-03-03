@@ -62,6 +62,9 @@
               "buildTarget": "Ielts:build:development"
             }
           },
+          "options": {
+             "allowedHosts": ["dragon-sure-usually.ngrok-free.app"]
+          },
           "defaultConfiguration": "development"
         },
         "test": {

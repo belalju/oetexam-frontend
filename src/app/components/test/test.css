@@ -1,0 +1,30 @@
+/* Ensures the background stays gray/white even in native fullscreen */
+:fullscreen {
+  background-color: #f3f4f6; /* bg-gray-100 */
+  width: 100vw;
+  height: 100vh;
+}
+
+/* For Safari/Chrome */
+:-webkit-full-screen {
+  background-color: #f3f4f6;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 14px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-left: 1px solid #d1d1d1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border: 3px solid #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}

@@ -1,0 +1,233 @@
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div #testUI class="flex flex-col font-sans text-gray-800 bg-gray-100 overflow-hidden">
+  <header class="bg-[#0073AA] text-white p-3 flex justify-between items-center shadow-md shrink-0">
+    <div class="flex flex-col">
+      <span class="text-sm font-semibold opacity-90">Section ({{currentStep}} of 12): Reading Introduction</span>
+      
+    </div>
+    <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="flex flex-col leading-tight">
+          <span class="text-[10px] uppercase font-bold">Section Time Remaining:</span>
+          <span class="text-xl font-mono tracking-tighter">{{ timeLeft }}</span>
+        </div>
+      </div>
+    <div class="flex items-center gap-6">
+      <button (click)="finishSection()" class="bg-[#A3C644] hover:bg-[#8eb039] text-[#1a3a06] font-bold py-2 px-4 rounded transition-colors text-sm shadow-sm">
+        Finish Section
+      </button>
+    </div>
+  </header>
+
+  <div class="bg-[#004A70] text-white px-4 py-1 text-xs flex justify-between shrink-0 border-t border-blue-400/20">
+    <span class="text-base">Test: OET Practice Test</span>
+    <span>Candidate: <span class="font-bold uppercase">USER Demo</span></span>
+  </div>
+
+  <main class="flex-grow overflow-hidden p-4 md:p-4 lg:p-6">
+    @if(currentStep === '1'){
+    <div #section01 class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden">
+      
+      <div class="w-14 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-6 shrink-0">
+        <div class="bg-[#004A70] text-white rounded-md p-1.5 shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0118 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="flex-grow overflow-y-auto p-10 leading-relaxed space-y-8 text-[17px] text-gray-700">
+        <p>You are about to start <strong class="text-black">Part A</strong> of the Reading test. You must answer the questions within the 15-minute time limit.</p>
+        
+        <p>Once you begin, you must answer the questions presented on the right, using the texts presented on the left.</p>
+        
+        <p>One mark will be granted for each correct answer. Answer <strong class="text-black uppercase">all</strong> questions. Marks are <strong class="text-black uppercase">not</strong> deducted for incorrect answers.</p>
+        
+        <p>As soon as you click '<strong>Next</strong>' below, the 15-minute timer will begin counting down.</p>
+        
+        <p>Please note that there is a 10-minute scheduled break after the end of Part A of the Reading sub-test. As soon as you click '<strong>Next</strong>' at the end of Part A, the scheduled break starts.</p>
+        
+        <p class="pb-10">At the end of the 10-minute scheduled break, or when you click '<strong>Next</strong>' during the scheduled break, the 45-minute timer will begin counting down for Parts B and C of the Reading sub-test.</p>
+      </div>
+
+    </div>
+    }
+    @if(currentStep === '2'){
+    <div #section02 class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden">
+      
+      <div class="w-14 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-6 shrink-0">
+        <aside class="flex flex-col gap-1 w-10 shrink-0">
+        @for (num of [1,2,3,4,5,6,7,8]; track num) {
+            <button 
+            (click)="activeQuestion = num"
+            [class.bg-[#004A70]]="activeQuestion === num" 
+            [class.bg-[#0073AA]]="activeQuestion !== num"
+            class="text-white text-[11px] font-bold py-2 rounded-r-md border-l-4 border-blue-900 shadow-sm transition-all text-center">
+            {{ num }}
+            </button>
+        }
+        </aside>
+      </div>
+
+      <div class="flex-grow overflow-y-auto p-3 leading-relaxed space-y-1 text-[17px] text-gray-700">
+        <div class="pb-6 mx-auto space-y-2">
+            
+            <div class="text-center py-2"><h2 class="text-xl font-bold">Part B</h2></div>
+
+            <div class="bg-gray-50 p-6 rounded border border-gray-100 text-[15px] leading-relaxed">
+                In this part of the test, there are six short extracts relating to the work of health professionals. For <strong>questions 21-26</strong>, choose the answer (<strong>A, B</strong> or <strong>C</strong>) which you think fits best according to the text.
+            </div>
+
+            <div class="space-y-4">
+                <div class="border border-gray-800 rounded-sm overflow-hidden">
+                    <div class="bg-gray-100 border-b border-gray-800 p-2 font-bold text-sm">
+                        Instruction Manual: Digital Automatic Blood Pressure Monitor
+                    </div>
+                    <div class="p-4 text-sm leading-relaxed">
+                        <p class="font-bold mb-2">Electromagnetic Compatibility (EMC)</p>
+                        With the increased use of portable electronic devices, medical equipment may be susceptible to electromagnetic interference. This may result in incorrect operation of the medical device and create a potentially unsafe situation...
+                    </div>
+                </div>
+
+                <p class="font-bold text-[15px]">21. The manual informs us that the Blood Pressure Monitor</p>
+
+                <div class="space-y-2">
+                    <label class="flex items-stretch border border-gray-800 rounded-sm hover:bg-blue-50 cursor-pointer group transition-colors">
+                        <div class="bg-gray-100 border-r border-gray-800 px-4 py-3 flex items-center justify-center font-bold text-sm">A</div>
+                        <div class="p-3 px-4 text-sm flex-grow">
+                            is likely to interfere with the operation of other medical equipment.
+                        </div>
+                    </label>
+                    <label class="flex items-stretch border border-gray-800 rounded-sm hover:bg-blue-50 cursor-pointer group transition-colors">
+                        <div class="bg-gray-100 border-r border-gray-800 px-4 py-3 flex items-center justify-center font-bold text-sm">B</div>
+                        <div class="p-3 px-4 text-sm flex-grow">
+                            may not operate correctly if it is near to other electronic devices.
+                        </div>
+                    </label>
+                    <label class="flex items-stretch border border-gray-800 rounded-sm hover:bg-blue-50 cursor-pointer group transition-colors">
+                        <div class="bg-gray-100 border-r border-gray-800 px-4 py-3 flex items-center justify-center font-bold text-sm">C</div>
+                        <div class="p-3 px-4 text-sm flex-grow">
+                            should be used in a hospital environment rather than at home.
+                        </div>
+                    </label>
+                    <label class="flex items-stretch border border-gray-800 rounded-sm hover:bg-blue-50 cursor-pointer group transition-colors">
+                        <div class="bg-gray-100 border-r border-gray-800 px-4 py-3 flex items-center justify-center font-bold text-sm">D</div>
+                        <div class="p-3 px-4 text-sm flex-grow">
+                            is designed to be used by healthcare professionals.
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+      </div>
+
+    </div>
+    }
+    @if(currentStep === '3'){
+    <div #section03 class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden">
+      
+      <div class="w-14 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-6 shrink-0">
+        <aside class="flex flex-col gap-1 w-10 shrink-0">
+        @for (num of [1]; track num) {
+            <button 
+            (click)="activeQuestion = num"
+            [class.bg-[#004A70]]="activeQuestion === num" 
+            [class.bg-[#0073AA]]="activeQuestion !== num"
+            class="text-white text-[11px] font-bold py-2 rounded-r-md border-l-4 border-blue-900 shadow-sm transition-all text-center">
+            {{ num }}
+            </button>
+        }
+        </aside>
+      </div>
+
+      <div class="flex-grow overflow-y-auto max-h-[calc(80vh-120px)] p-3 leading-relaxed space-y-1 text-[17px] text-gray-700">
+        <div class="pb-6 mx-auto space-y-2">
+            
+            <div class="p-2">
+                <div class="bg-[#F2F6F9] p-6 rounded-sm mb-8">
+                    <h2 class="font-bold text-lg mb-4">Questions 8-14</h2>
+                    <p class="text-sm leading-relaxed">
+                    Answer each of the questions, <strong>8-14</strong>, with a word or short phrase from one of the texts. Each answer may include words, numbers or both.
+                    </p>
+                    <div class="mt-4 flex items-center text-[#0072A0] text-sm font-medium cursor-pointer hover:underline">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"></path></svg>
+                        Reading Part A Texts
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="space-y-1">
+                    <label class="block text-sm font-medium">8. What should be used to elevate a patient's fractured leg?</label>
+                    <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+
+                    <div class="space-y-1">
+                    <label class="block text-sm font-medium">9. What is the maximum dose of morphine per kilo of a patient's weight that can be given using the intra-muscular (IM) route?</label>
+                    <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">10. Which parts of a limb may need extra padding?</label>
+                        <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">11. What is the name of the technique used to immobilise a fractured limb?</label>
+                        <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">12. What is the name of the device used to immobilise a fractured limb?</label>
+                        <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">13. What is the name of the technique used to immobilise a fractured limb?</label>
+                        <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium">14. What is the name of the device used to immobilise a fractured limb?</label>
+                        <input type="text" class="w-72 h-8 border border-gray-400 p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none rounded-sm" />
+                    </div>
+                
+                </div>
+            </div>
+
+        </div>
+      </div>
+
+    </div>
+    }
+
+  </main>
+
+  <footer class="bg-[#0073AA] p-3 flex justify-between gap-4 shrink-0 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+    <div class="flex items-center gap-4">
+        @if(!isFullScreen){
+        <button (click)="enterFullScreen()" class="text-xs text-white border border-white/50 px-2 py-2 rounded hover:bg-white/10 flex items-center gap-1 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+            Enter Exam Mode
+        </button>
+        } @else {
+        <button (click)="exitFullScreen()" class="text-xs text-white border border-white/50 px-2 py-2 rounded hover:bg-white/10 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Exit Exam Mode
+        </button>
+        }
+    </div>
+    <div class="flex items-center gap-4">
+        <button (click)="goBack()" class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md">
+        <span class="text-xs">❮</span> Back
+        </button>
+        <button (click)="goNext()" class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md border-l border-blue-800">
+        Next <span class="text-xs">❯</span>
+        </button>
+    </div>
+  </footer>
+
+</div>
+</div>

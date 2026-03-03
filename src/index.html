@@ -9,5 +9,24 @@
 </head>
 <body>
   <app-root></app-root>
+
+
+    <script>
+    const btn = document.getElementById('fullscreen-btn');
+    const container = document.getElementById('test-container');
+
+    btn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(err => {
+          alert(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+        btn.innerText = "Exit Fullscreen";
+      } else {
+        document.exitFullscreen();
+        btn.innerText = "Go Fullscreen";
+      }
+    });
+  </script>
+
 </body>
 </html>
