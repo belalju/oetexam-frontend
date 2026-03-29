@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +9,10 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('Ielts');
+
+  constructor(private router: Router) {}
+
+  isAuthPage(): boolean {
+    return this.router.url.includes('login') || this.router.url.includes('registration');
+  }
 }

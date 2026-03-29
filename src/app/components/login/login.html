@@ -1,0 +1,86 @@
+
+
+    <div class="flex flex-col min-h-screen lg:flex-row">
+        
+        <div class="relative flex items-center justify-center w-full p-8 text-white bg-[#002B5B] lg:w-5/12 lg:p-12 overflow-hidden">
+            <div class="absolute bottom-[-50px] left-[-50px] w-64 h-64 border-[40px] border-blue-500 rounded-full opacity-30"></div>
+            
+            <div class="relative z-10 w-full max-w-md text-center lg:text-left">
+                <div class="mb-8">
+                    <h1 class="text-6xl font-black tracking-tighter italic">IELTS<span class="text-blue-400">*</span></h1>
+                    <p class="text-sm tracking-[0.3em] font-bold uppercase opacity-80">Test Prep</p>
+                </div>
+                
+                <h2 class="text-3xl font-bold mb-4">Welcome Back!</h2>
+                <p class="text-blue-100 text-lg">Log in to continue your journey toward your OET or IELTS goals.</p>
+                
+                <div class="mt-12 hidden lg:block">
+                    <div class="inline-block p-4 border border-blue-400/30 rounded-lg bg-blue-900/20 backdrop-blur-sm">
+                        <p class="text-sm italic">"The best way to predict your future is to create it."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center w-full p-8 bg-white lg:w-7/12 lg:p-16">
+            <div class="w-full max-w-md">
+                
+                <div class="mb-10 text-center lg:text-left">
+                    <h2 class="text-4xl font-extrabold text-blue-950 mb-2">Login</h2>
+                    <p class="text-gray-600">
+                        Don't have an account? 
+                        <a href="#" class="font-bold text-blue-600 hover:underline">Sign up for free</a>
+                    </p>
+                </div>
+
+                <form class="space-y-6">
+                    <div>
+                        <label class="block mb-2 text-xs font-bold text-gray-700 uppercase tracking-wider">Email Address</label>
+                        <input type="email" placeholder="Enter your email" 
+                               class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">Password</label>
+                            <a href="#" class="text-xs font-bold text-blue-600 hover:underline">Forgot Password?</a>
+                        </div>
+                        <div class="relative">
+                            <input type="password" placeholder="••••••••" 
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all">
+                            <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="remember" class="ml-2 text-sm text-gray-600">Remember me on this device</label>
+                    </div>
+
+                    <button routerLink="/student/home" type="submit" class="w-full p-4 font-bold text-white uppercase bg-blue-600 rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-[0.98]">
+                        Log In
+                    </button>
+
+                    <div class="flex items-center my-8">
+                        <div class="flex-grow border-t border-gray-200"></div>
+                        <span class="px-4 text-xs font-bold text-gray-400 uppercase">Or login with</span>
+                        <div class="flex-grow border-t border-gray-200"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" class="flex items-center justify-center p-3 font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-2" alt="Google">
+                            Google
+                        </button>
+                        <button type="button" class="flex items-center justify-center p-3 font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition text-[#1877F2]">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Facebook
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+

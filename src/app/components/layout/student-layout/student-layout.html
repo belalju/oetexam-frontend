@@ -1,0 +1,76 @@
+
+
+    <nav class="fixed top-0 z-50 w-full bg-[#002B5B] text-white px-6 py-3 flex items-center justify-between shadow-md">
+        <div class="flex items-center space-x-2">
+            <h1 class="text-3xl font-black italic tracking-tighter">IELTS<span class="text-blue-400">*</span></h1>
+            <p class="text-[10px] uppercase font-bold tracking-widest leading-none">Test Prep</p>
+        </div>
+        <div class="flex items-center space-x-6">
+            <button class="bg-[#FF3B30] hover:bg-red-600 text-white text-xs font-bold px-4 py-2 rounded-md flex items-center uppercase">
+                <i class="fa-solid fa-rocket mr-2"></i> Upgrade
+            </button>
+            <i class="fa-regular fa-bell text-xl cursor-pointer"></i>
+            <div class="flex items-center space-x-3 border-l border-white/20 pl-6">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs font-bold">Nazmul Hossain</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-gray-300 border-2 border-white/50 overflow-hidden">
+                    <img src="https://ui-avatars.com/api/?name=Nazmul+Hossain" alt="Profile">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-16">
+        <aside class="w-64 fixed left-0 h-[calc(100vh-64px)] bg-white border-r border-gray-200 overflow-y-auto hidden md:block">
+            <div class="p-6 text-center border-b">
+                <div class="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                    <img src="https://app.e2language.com/Images/DefaultAvatar.png" class="rounded-full" alt="">
+                </div>
+                <h3 class="font-bold text-sm">Nazmul Hossain</h3>
+                <p class="text-[10px] text-gray-400 mt-1">E2L-26032007735 | IELTS</p>
+                <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-500 font-bold">General Free</span>
+            </div>
+
+            <nav class="p-4 space-y-1">
+                <a routerLink="/student/home" routerLinkActive="text-blue-700 bg-blue-50" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg">
+                    <i class="fa-solid fa-house-chimney w-6"></i> HOME
+                </a>
+                <a routerLink="/student/exam-preparation" routerLinkActive="text-blue-700 bg-blue-50" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition">
+                    <i class="fa-solid fa-calculator w-6"></i> Exam Preparation
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition">
+                    <i class="fa-solid fa-calculator w-6"></i> SCORE CALCULATOR
+                </a>
+                <div class="flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">
+                    <div class="flex items-center"><i class="fa-solid fa-book-open w-6"></i> COURSE MATERIALS</div>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </div>
+                <div class="flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg cursor-pointer">
+                    <div class="flex items-center"><i class="fa-solid fa-pen-to-square w-6"></i> ASSESSMENTS</div>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </div>
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg">
+                    <i class="fa-solid fa-video w-6"></i> ONLINE CLASSES
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg">
+                    <i class="fa-solid fa-graduation-cap w-6"></i> TUTORIALS
+                </a>
+            </nav>
+
+            <div class="p-4 mt-10 space-y-2">
+                <button class="w-full py-2.5 text-[11px] font-black text-red-500 border border-red-100 bg-red-50 rounded uppercase text-left pl-2">
+                    <i class="fa-solid fa-calculator w-4"></i> Upgrade Account</button>
+                <button class="w-full py-2.5 text-[11px] font-black text-blue-500 bg-blue-50 rounded uppercase text-left pl-2">
+                    <i class="fa-solid fa-shopping-cart w-4"></i> Shop</button>
+                <button class="w-full py-2.5 text-[11px] font-black text-green-500 bg-green-50 rounded uppercase text-left pl-2">
+                    <i class="fa-solid fa-gift w-4"></i> E2 Rewards</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 md:ml-64 p-8 bg-slate-100 min-h-screen">
+            
+            <router-outlet></router-outlet>
+            
+        </main>
+    </div>
