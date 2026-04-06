@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { Router, RouterLinkActive, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLinkActive, RouterLink],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

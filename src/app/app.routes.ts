@@ -11,6 +11,9 @@ import { AuthLayout } from './components/layout/auth-layout/auth-layout';
 import { StudentLayout } from './components/layout/student-layout/student-layout';
 import { StudentHome } from './components/student/student-home/student-home';
 import { ExamPreparation } from './components/student/exam-preparation/exam-preparation';
+import { AdminLayout } from './components/layout/admin-layout/admin-layout';
+import { AdminDashboard } from './components/admin/admin-dashboard/admin-dashboard';
+import { CreateTest } from './components/admin/create-test/create-test';
 
 export const routes: Routes = [
     {
@@ -47,6 +50,14 @@ export const routes: Routes = [
         children: [
             { path: 'home', component: StudentHome },
             { path: 'exam-preparation', component: ExamPreparation },
+        ]
+    },
+    {
+        path: 'admin',
+        component: AdminLayout,
+        children: [
+            { path: 'dashboard', component: AdminDashboard },
+            { path: 'create-test', component: CreateTest },
         ]
     },
 
