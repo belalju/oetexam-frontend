@@ -1,0 +1,3 @@
+  /* Info box */
+  .info-box { background: var(--primary-light); border: 1px solid #B5D4F4; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--primary-text); display: flex; gap: 8px; align-items: flex-start; }
+  .info-box svg { flex-shrink: 0; margin-top: 1px; }

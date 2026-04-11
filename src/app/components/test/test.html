@@ -11,7 +11,7 @@
         </svg>
         <div class="flex flex-col leading-tight">
           <span class="text-[10px] uppercase font-bold">Section Time Remaining:</span>
-          <span class="text-xl font-mono tracking-tighter">{{ timeLeft }}</span>
+          <span class="text-xl font-mono tracking-tighter">{{ countdownDisplay }}</span> 
         </div>
       </div>
     <div class="flex items-center gap-6">
@@ -22,7 +22,7 @@
   </header>
 
   <div class="bg-[#004A70] text-white px-4 py-1 text-xs flex justify-between shrink-0 border-t border-blue-400/20">
-    <span class="text-base">Test: OET Practice Test</span>
+    <span class="text-base">Test: {{ testData[0]?.title }}</span>
     <span>Candidate: <span class="font-bold uppercase">USER Demo</span></span>
   </div>
 
@@ -39,25 +39,98 @@
       </div>
 
       <div class="flex-grow overflow-y-auto p-10 leading-relaxed space-y-8 text-[17px] text-gray-700">
-        <p>You are about to start <strong class="text-black">Part A</strong> of the Reading test. You must answer the questions within the 15-minute time limit.</p>
-        
-        <p>Once you begin, you must answer the questions presented on the right, using the texts presented on the left.</p>
-        
-        <p>One mark will be granted for each correct answer. Answer <strong class="text-black uppercase">all</strong> questions. Marks are <strong class="text-black uppercase">not</strong> deducted for incorrect answers.</p>
-        
-        <p>As soon as you click '<strong>Next</strong>' below, the 15-minute timer will begin counting down.</p>
-        
-        <p>Please note that there is a 10-minute scheduled break after the end of Part A of the Reading sub-test. As soon as you click '<strong>Next</strong>' at the end of Part A, the scheduled break starts.</p>
-        
-        <p class="pb-10">At the end of the 10-minute scheduled break, or when you click '<strong>Next</strong>' during the scheduled break, the 45-minute timer will begin counting down for Parts B and C of the Reading sub-test.</p>
+        {{ testData[0]?.description }}
       </div>
 
     </div>
     }
     @if(currentStep === '2'){
-    <div #section02 class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden">
+    <section #section02 class="grid grid-cols-2 gap-4">
+
+    <div class="max-w-7xl h-full bg-white border border-gray-300 rounded shadow-sm p-5 max-h-screen overflow-y-auto">
+      @for(p of passages; track p.id){
+      <div class="mb-5">
+        <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-0.5 mb-2 rounded-md">{{ p.label }}</span>
+        <div class="bg-[#F2F6F9] p-6 rounded border border-gray-100 text-[15px] leading-relaxed">
+          {{ p.content }}
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden max-h-screen overflow-y-auto">
       
-      <div class="w-14 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-6 shrink-0">
+      <div class="flex-1 overflow-y-auto p-6">
+          <div class="bg-navy-50 border border-navy-100 rounded-xl p-4 mb-5">
+            <p class="text-xs text-navy-800"><strong>{{ parts[0].label }} Instructions:</strong> {{ parts[0].instructions }}</p>
+          </div>
+
+          @for(g of groups; track g.id) {
+            @if(g.question_type === 'TEXT_MATCHING'){
+            <div class="mb-6">
+              <p class="text-sm font-bold text-navy-900 mb-3">{{ g.title }}: {{ g.instructions }}</p>
+              <div class="space-y-3">
+                @for(q of getQuestionsForGroup(g.id); track q.id) {
+                <div class="bg-white border border-slate-200 rounded-xl p-4">
+                  <p class="text-sm text-slate-700 mb-3"><span class="font-bold text-navy-600">1.</span> Information about when surgery should be considered for back pain</p>
+                  <div class="flex gap-2">
+                    <button class="mcq-option flex-1 border border-slate-200 rounded-lg py-2 text-center text-sm font-semibold" onclick="selectOption(this)">A</button>
+                    <button class="mcq-option flex-1 border border-slate-200 rounded-lg py-2 text-center text-sm font-semibold selected" onclick="selectOption(this)">B</button>
+                    <button class="mcq-option flex-1 border border-slate-200 rounded-lg py-2 text-center text-sm font-semibold" onclick="selectOption(this)">C</button>
+                    <button class="mcq-option flex-1 border border-slate-200 rounded-lg py-2 text-center text-sm font-semibold" onclick="selectOption(this)">D</button>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }
+            @if(g.question_type === 'SHORT_ANSWER'){
+              <div class="mb-6">
+              <p class="text-sm font-bold text-navy-900 mb-3">{{ g.title }}: {{ g.instructions }}</p>
+              <div class="space-y-3">
+                @for(q of getQuestionsForGroup(g.id); track q.id) {
+                <div class="bg-white border border-slate-200 rounded-xl p-4">
+                  <p class="text-sm text-slate-700 mb-3"><span class="font-bold text-navy-600">1.</span> Information about when surgery should be considered for back pain</p>
+                  <input type="text" placeholder="Your answer..." class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
+                </div>
+                }
+              </div>
+            </div>
+            }
+          }
+
+          <!-- Q Group 2: Short Answer -->
+          <!-- <div class="mb-6">
+            <p class="text-sm font-bold text-navy-900 mb-3">Questions 8–14: Answer the questions using one word or a short phrase from the texts.</p>
+            <div class="space-y-3">
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <p class="text-sm text-slate-700 mb-3"><span class="font-bold text-navy-600">8.</span> What is the medical term for pain that travels down the leg due to nerve compression?</p>
+                <input type="text" placeholder="Your answer..." class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-500" value="sciatica">
+              </div>
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <p class="text-sm text-slate-700 mb-3"><span class="font-bold text-navy-600">9.</span> How long must conservative treatment have failed before surgery is considered?</p>
+                <input type="text" placeholder="Your answer..." class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-navy-500">
+              </div>
+            </div>
+          </div> -->
+
+          <!-- Q Group 3: Gap Fill -->
+          <!-- <div class="mb-6">
+            <p class="text-sm font-bold text-navy-900 mb-3">Questions 15–20: Complete the sentences using words from the texts.</p>
+            <div class="space-y-3">
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-navy-600">15.</span> A herniated disc can cause a condition called <input type="text" placeholder="..." class="inline-block border-b-2 border-navy-400 px-2 py-0.5 text-sm font-semibold text-navy-700 focus:outline-none bg-transparent w-24"> which is pain that radiates down the leg.</p>
+              </div>
+              <div class="bg-white border border-slate-200 rounded-xl p-4">
+                <p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-navy-600">16.</span> Unlike acute back pain, prolonged <input type="text" placeholder="..." class="inline-block border-b-2 border-navy-400 px-2 py-0.5 text-sm font-semibold text-navy-700 focus:outline-none bg-transparent w-24"> is not recommended for chronic sufferers.</p>
+              </div>
+            </div>
+          </div> -->
+
+        </div>
+
+
+      <!-- <div class="w-14 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-6 shrink-0">
         <aside class="flex flex-col gap-1 w-10 shrink-0">
         @for (num of [1,2,3,4,5,6,7,8]; track num) {
             <button 
@@ -69,9 +142,9 @@
             </button>
         }
         </aside>
-      </div>
+      </div> -->
 
-      <div class="flex-grow overflow-y-auto p-3 leading-relaxed space-y-1 text-[17px] text-gray-700">
+      <!-- <div class="flex-grow overflow-y-auto p-3 leading-relaxed space-y-1 text-[17px] text-gray-700">
         <div class="pb-6 mx-auto space-y-2">
             
             <div class="text-center py-2"><h2 class="text-xl font-bold">Part B</h2></div>
@@ -122,9 +195,10 @@
             </div>
 
         </div>
-      </div>
+      </div> -->
 
     </div>
+    </section>
     }
     @if(currentStep === '3'){
     <div #section03 class="max-w-7xl mx-auto h-full bg-white border border-gray-300 rounded shadow-sm flex overflow-hidden">
