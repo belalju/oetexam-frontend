@@ -82,7 +82,7 @@
           </div>
           <br>
           <button (click)="clearSavedTest()" class="px-5 -mb-10 py-2 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">Clear</button>
-          <!-- <button (click)="saveTest()" class="px-5 -mb-10 py-2 mx-4 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">Save & Continue</button> -->
+          <button (click)="saveTest()" class="px-5 -mb-10 py-2 mx-4 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">Save</button>
           <ng-container *ngTemplateOutlet="footerBtns; context: { nextLabel: 'Continue' }"></ng-container>
         </div>
       }
@@ -221,7 +221,7 @@
           <p class="text-sm text-gray-400 mb-5">Add reading passages for each part of the test.</p>
 
           <div class="space-y-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Passage Label</label>
                 <input type="text" 
@@ -231,12 +231,25 @@
               </div>
 
               <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Select Part
+                </label>
+                <select name="part" [(ngModel)]="passage.test_part" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" required>
+                  <option value="">Select Part</option>
+                  @for (p of partList; track p.id) {
+                    <option [value]="p.label">{{ p.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label>
                 <input type="number" 
                       [(ngModel)]="passage.sort_order"
                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
                       placeholder="1" min="1" required>
               </div>
+
             </div>
 
             <div>
@@ -398,9 +411,10 @@
           </div>
         }
 
-        @if(getSelectedGroup()) {
+        @if(getSelectedGroup(); as g) {
          <div class="space-y-5 border border-gray-200 rounded-xl p-3">
-            
+          <!-- Text Matching -->
+            @if(g.question_type == 'TEXT_MATCHING'){
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -423,7 +437,7 @@
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Answer (e.g., A, B, C, D)
+                  Currect Answer (e.g., A, B, C, D)
                 </label>
                 <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
                       class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
@@ -439,6 +453,284 @@
                           placeholder="Write the question text here..."></textarea>
               </div>
             </div>
+            }
+            
+            <!-- Short Answer -->
+            @if(g.question_type == 'SHORT_ANSWER'){
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question No
+                </label>
+                <div class="relative">
+                  <input type="number" id="question_no" [(ngModel)]="newQuestion.question_number"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Enter question number" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sort Order
+                </label>
+                <input type="number" id="sort_order" [(ngModel)]="newQuestion.sort_order"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="1" min="1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currect Answer
+                </label>
+                <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="keep moving" required>
+              </div>
+
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question text
+                </label>
+                <textarea id="question_text" [(ngModel)]="newQuestion.question_text" rows="2"
+                          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[60px]"
+                          placeholder="Write the question text here..."></textarea>
+              </div>
+            </div>
+            }
+            
+            <!-- Gap Fill -->
+            @if(g.question_type == 'GAP_FILL'){
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question No
+                </label>
+                <div class="relative">
+                  <input type="number" id="question_no" [(ngModel)]="newQuestion.question_number"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Enter question number" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sort Order
+                </label>
+                <input type="number" id="sort_order" [(ngModel)]="newQuestion.sort_order"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="1" min="1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currect Answer
+                </label>
+                <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="keep moving" required>
+              </div>
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Prefix
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.prefix"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="" required>
+              </div>
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Suffix
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.suffix"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="" required>
+              </div>
+            </div>
+            }
+            
+            <!-- MCQ 3 -->
+            @if(g.question_type == 'MCQ_3'){
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question No
+                </label>
+                <div class="relative">
+                  <input type="number" id="question_no" [(ngModel)]="newQuestion.question_number"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Enter question number" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sort Order
+                </label>
+                <input type="number" id="sort_order" [(ngModel)]="newQuestion.sort_order"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="1" min="1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currect Answer
+                </label>
+                <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="B" required>
+              </div>
+
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question text
+                </label>
+                <textarea id="question_text" [(ngModel)]="newQuestion.question_text" rows="2"
+                          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[60px]"
+                          placeholder="Write the question text here..."></textarea>
+              </div>
+
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  A
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_a"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option A text" required>
+              </div>
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  B
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_b"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option B text" required>
+              </div>
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  C
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_c"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option C text" required>
+              </div>
+            </div>
+            }
+            
+            <!-- MCQ 4 -->
+            @if(g.question_type == 'MCQ_4'){
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question No
+                </label>
+                <div class="relative">
+                  <input type="number" id="question_no" [(ngModel)]="newQuestion.question_number"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Enter question number" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sort Order
+                </label>
+                <input type="number" id="sort_order" [(ngModel)]="newQuestion.sort_order"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="1" min="1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currect Answer
+                </label>
+                <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="B" required>
+              </div>
+
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question text
+                </label>
+                <textarea id="question_text" [(ngModel)]="newQuestion.question_text" rows="2"
+                          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[60px]"
+                          placeholder="Write the question text here..."></textarea>
+              </div>
+
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  A
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_a"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option A text" required>
+              </div>
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  B
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_b"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option B text" required>
+              </div>
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  C
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_c"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option C text" required>
+              </div>
+
+              <div class="col-span-3 flex gap-2 items-center">
+                <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                  D
+                </label>
+                <input type="text" [(ngModel)]="newQuestion.option_d"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="Option D text" required>
+              </div>
+            </div>
+            }
+
+            <!-- Note Completion -->
+            @if(g.question_type == 'NOTE_COMPLETION'){
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question No
+                </label>
+                <div class="relative">
+                  <input type="number" id="question_no" [(ngModel)]="newQuestion.question_number"
+                        class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                        placeholder="Enter question number" required>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Sort Order
+                </label>
+                <input type="number" id="sort_order" [(ngModel)]="newQuestion.sort_order"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="1" min="1" required>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Currect Answer
+                </label>
+                <input type="text" id="answer" [(ngModel)]="newQuestion.answer"
+                      class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
+                      placeholder="keep moving" required>
+              </div>
+
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Question text
+                </label>
+                <textarea id="question_text" [(ngModel)]="newQuestion.question_text" rows="2"
+                          class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[60px]"
+                          placeholder="Write the question text here..."></textarea>
+              </div>
+            </div>
+            }
+
             <div class="flex justify-end mt-3">
               <button (click)="addQuestion()" class="px-4 py-2 text-end bg-blue-800 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                 Add Question
@@ -476,6 +768,45 @@
                 </span>
                 <div>
                   <p class="text-sm font-medium">{{ q.question_text }}</p>
+                  @if(q.prefix){
+                  <p class="text-sm font-medium"><span class="text-gray-500">Prefix : </span> {{ q.prefix }}</p>
+                  }
+                  @if(q.suffix){
+                  <p class="text-sm font-medium"><span class="text-gray-500">Sufix : </span> {{ q.suffix }}</p>
+                  }
+                  @if(q.option_a){
+                  <div class="flex gap-2 mb-1">
+                    <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                      A
+                    </label>
+                    <p>{{q.option_a}}</p>
+                  </div>
+                  }
+                  @if(q.option_b){
+                  <div class="flex gap-2 mb-1">
+                    <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                      B
+                    </label>
+                    <p>{{q.option_b}}</p>
+                  </div>
+                  }
+                  @if(q.option_c){
+                  <div class="flex gap-2 mb-1">
+                    <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                      C
+                    </label>
+                    <p>{{q.option_c}}</p>
+                  </div>
+                  }
+                  @if(q.option_d){
+                  <div class="flex gap-2 mb-1">
+                    <label class="block text-sm font-medium text-gray-800 dark:text-gray-300 bg-slate-200 rounded-full px-2.5 py-1">
+                      D
+                    </label>
+                    <p>{{q.option_d}}</p>
+                  </div>
+                  }
+                  
                   <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700">
                     Answer: {{ q.answer }}
                   </span>

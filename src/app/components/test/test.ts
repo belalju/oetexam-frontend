@@ -4,7 +4,7 @@ interface QTest { id: number; title: string; subTestType: string; description: s
 interface Part { id: number; test_id: number; label: string; time_limit: number; sort_order: number; instructions: string; }
 interface Passage { id: number; test_part_id: number; label: string; sort_order: number; audio: string; content: string; }
 interface Group { id: number; question_type: string; title: string; passage: string; sort_order: number; instructions: string; }
-interface Question { id: number; group_id: number; question_number: number; question_text: string; sort_order: number; answer: string }
+interface Question { id: number; group_id: number; question_number: number; question_text: string; prefix: string; suffix:string; option_a:string, option_b:string, option_c:string, option_d:string, sort_order: number; answer: string }
 
 
 @Component({

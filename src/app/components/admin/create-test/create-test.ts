@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 interface Test { id: number; title: string; subTestType: string; description: string; is_published: boolean | string; time_limit_minutes: number; }
 interface Part { id: number; test_id: number; label: string; time_limit: number; sort_order: number; instructions: string; }
-interface Passage { id: number; test_part_id: number; label: string; sort_order: number; audio: string; content: string; }
+interface Passage { id: number; test_part: string; label: string; sort_order: number; audio: string; content: string; }
 interface Group { id: number; question_type: string; title: string; passage: string; sort_order: number; instructions: string; }
-interface Question { id: number; group_id: number; question_number: number; question_text: string; sort_order: number; answer: string }
+interface Question { id: number; group_id: number; question_number: number; question_text: string; prefix: string; suffix:string; option_a:string, option_b:string, option_c:string, option_d:string, sort_order: number; answer: string }
 
 
 @Component({
@@ -28,7 +28,7 @@ export class CreateTest {
   newQuestion: Partial<Question> = this.getEmptyQuestion();
   selectedGroupId = signal<number | null>(null);
 
-  test : Test = { id: 0, title: '', subTestType: '', description: '', is_published: false, time_limit_minutes: 60 };
+  test : Test = { id: 0, title: '', subTestType: 'Reading', description: '', is_published: 'Draft', time_limit_minutes: 60 };
 
   question_types = ['TEXT_MATCHING', 'SHORT_ANSWER', 'GAP_FILL', 'MCQ_3', 'MCQ_4', 'NOTE_COMPLETION'];
   partLebels = ['Part A', 'Part B', 'Part C'];
@@ -66,6 +66,12 @@ export class CreateTest {
     return {
       question_number: 1,
       question_text: '',
+      prefix: '',
+      suffix: '',
+      option_a: '',
+      option_b: '',
+      option_c: '',
+      option_d: '',
       sort_order: 1,
       answer: ''
     };
@@ -85,7 +91,7 @@ export class CreateTest {
   getEmptyPassage(): Passage {
     return {
       id: 0,
-      test_part_id: 1,
+      test_part: '',
       label: '',
       sort_order: 1,
       audio: '',
@@ -162,7 +168,7 @@ export class CreateTest {
       alert('Test saved successfully!');
       console.log('Saved Test:', testToSave);
       this.readyTestSave = false;
-      this.goNext(); // Move to next step after saving
+      // this.goNext(); // Move to next step after saving
     } catch (error) {
       console.error('Error saving test to localStorage:', error);
       alert('Failed to save test. Please try again.');
@@ -245,7 +251,6 @@ export class CreateTest {
       const newPassage: Passage = {
         ...this.passage,
         id: Date.now(),
-        test_part_id: 1
       };
       this.passages.push(newPassage);
     }
@@ -329,16 +334,17 @@ export class CreateTest {
       return;
     }
 
-    if (!this.newQuestion.question_text) {
-      alert('Question text is required!');
-      return;
-    }
-
     const newQ: Question = {
       id: Date.now(),
       group_id: selectedId,
       question_number: this.newQuestion.question_number || 1,
-      question_text: this.newQuestion.question_text,
+      question_text: this.newQuestion.question_text || '',
+      prefix: this.newQuestion.prefix || '',
+      suffix: this.newQuestion.suffix || '',
+      option_a: this.newQuestion.option_a || '',
+      option_b: this.newQuestion.option_b || '',
+      option_c: this.newQuestion.option_c || '',
+      option_d: this.newQuestion.option_d || '',
       sort_order: this.newQuestion.sort_order || 1,
       answer: this.newQuestion.answer || ''
     };
