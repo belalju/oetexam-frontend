@@ -1,19 +1,20 @@
 import { Routes } from '@angular/router';
-import { Store } from './components/store/store';
-import { Home } from './components/home/home';
-import { ProductDetails } from './components/product-details/product-details';
-import { Test } from './components/test/test';
+import { Store } from './main/pages/store/store';
+import { Home } from './main/pages/home/home';
+import { ProductDetails } from './main/pages/product-details/product-details';
+import { Test } from './main/pages/test/test';
 import { Registration } from './components/registration/registration';
 import { Login } from './components/login/login';
 import { App } from './app';
-import { MainLayout } from './components/layout/main-layout/main-layout';
-import { AuthLayout } from './components/layout/auth-layout/auth-layout';
-import { StudentLayout } from './components/layout/student-layout/student-layout';
-import { StudentHome } from './components/student/student-home/student-home';
-import { ExamPreparation } from './components/student/exam-preparation/exam-preparation';
-import { AdminLayout } from './components/layout/admin-layout/admin-layout';
-import { AdminDashboard } from './components/admin/admin-dashboard/admin-dashboard';
-import { CreateTest } from './components/admin/create-test/create-test';
+import { MainLayout } from './layout/main-layout/main-layout';
+import { AuthLayout } from './layout/auth-layout/auth-layout';
+import { StudentLayout } from './layout/student-layout/student-layout';
+import { StudentHome } from './student/pages/student-home/student-home';
+import { ExamPreparation } from './student/pages/exam-preparation/exam-preparation';
+import { AdminLayout } from './layout/admin-layout/admin-layout';
+import { AdminDashboard } from './admin/pages/admin-dashboard/admin-dashboard';
+import { CreateTest } from './admin/pages/create-test/create-test';
+import { AUTH_ROUTES } from './auth/auth.routes';
 
 export const routes: Routes = [
     {
@@ -43,6 +44,12 @@ export const routes: Routes = [
             { path: 'login', component: Login },
             { path: 'registration', component: Registration },
         ]
+    },
+    {
+        path: 'auth',
+        component: AuthLayout,
+        loadChildren: () =>
+            AUTH_ROUTES
     },
     {
         path: 'student',

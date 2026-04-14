@@ -68,7 +68,7 @@
 
                 <div class="flex items-baseline justify-between mb-4">
                     <h2 class="text-4xl font-extrabold text-blue-950">Free Sign Up</h2>
-                    <p class="text-sm text-gray-600">Already have an account? <a routerLink="/login" class="font-bold text-blue-600 underline">Log in</a></p>
+                    <p class="text-sm text-gray-600">Already have an account? <a routerLink="/auth/login" class="font-bold text-blue-600 underline">Log in</a></p>
                 </div>
 
                 <p class="mb-4 text-lg font-bold text-gray-700">Join over 2 million students around the world who used E2 to pass their tests.</p>
@@ -79,29 +79,59 @@
                     <span class="flex items-center">✔ 24/7 online support</span>
                 </div>
 
-                <form class="space-y-5">
-                    <div>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-5">
+                    @if (errorMessage()) {
+                        <div class="alert alert-error">
+                        <span class="alert-icon">!</span>
+                        {{ errorMessage() }}
+                        </div>
+                    }
+                    <div class="field" [class.invalid]="email.invalid && email.touched">
                         <label class="block mb-1 text-xs font-bold text-gray-600 uppercase tracking-wide">Email Address</label>
-                        <input type="email" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                        <input type="email" formControlName="email" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                        @if (email.touched && email.hasError('required')) {
+                        <span class="error">Email is required</span>
+                        } @else if (email.touched && email.hasError('email')) {
+                        <span class="error">Enter a valid email</span>
+                        }
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block mb-1 text-xs font-bold text-gray-600 uppercase tracking-wide">First Name</label>
-                            <input type="text" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                            <input type="text" formControlName="firstName" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                            @if (firstName.touched && firstName.hasError('required')) {
+                                <span class="error">Required</span>
+                            }
                         </div>
                         <div>
                             <label class="block mb-1 text-xs font-bold text-gray-600 uppercase tracking-wide">Last Name</label>
-                            <input type="text" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                            <input type="text" formControlName="lastName"  placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                            @if (lastName.touched && lastName.hasError('required')) {
+                                <span class="error">Required</span>
+                            }
                         </div>
                     </div>
 
-                    <div class="relative">
+                    <div class="relative" class="field" [class.invalid]="password.invalid && password.touched">
                         <label class="block mb-1 text-xs font-bold text-gray-600 uppercase tracking-wide">Password <span class="normal-case text-gray-400 font-normal">(At least 8 characters long)</span></label>
-                        <input type="password" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                        <input type="password" formControlName="password" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
                         <button type="button" class="absolute right-3 top-9 text-gray-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                         </button>
+
+                        @if (password.touched && password.hasError('required')) {
+                        <span class="error">Password is required</span>
+                        } @else if (password.touched && password.hasError('minlength')) {
+                        <span class="error">Minimum 6 characters</span>
+                        }
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-xs font-bold text-gray-600 uppercase tracking-wide">Profession</label>
+                        <input type="text" formControlName="profession" placeholder="This field is required." class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 text-sm">
+                        @if (profession.touched && profession.hasError('required')) {
+                            <span class="error">Required</span>
+                        }
                     </div>
 
                     <div class="flex items-center my-6">
@@ -115,8 +145,12 @@
                         Login with Google
                     </button>
 
-                    <button routerLink="/student/home" type="submit" class="w-full p-4 font-bold text-white uppercase bg-blue-600 rounded hover:bg-blue-700 transition tracking-wide">
-                        Start Free Trial
+                    <button type="submit" [disabled]="auth.isLoading()" class="w-full p-4 font-bold text-white uppercase bg-blue-600 rounded hover:bg-blue-700 transition tracking-wide">
+                        @if (auth.isLoading()) {
+                        <span class="spinner"></span> Creating account...
+                        } @else {
+                        Create Account
+                        }
                     </button>
 
                     <p class="mt-4 text-xs text-center text-gray-500">
