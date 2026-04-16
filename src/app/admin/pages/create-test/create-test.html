@@ -42,49 +42,39 @@
     @switch (currentStep) {
       
       @case (1) {
+        <form action="">
         <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
           <h2 class="text-base font-semibold text-gray-800 mb-5">Test Details</h2>
           <div class="flex gap-4 mb-4">
             <div class="flex flex-col gap-1.5 flex-1">
               <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Title</label>
-              <input type="text" [(ngModel)]="test.title" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+              <input type="text" [(ngModel)]="testForm.title" name="title" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
             </div>
-            <div class="flex flex-col gap-1.5 flex-1">
-              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Sub-Test Type</label>
-              <select [(ngModel)]="test.subTestType" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none">
-                <option value="Reading">Reading</option>
-                <option value="Listening">Listening</option>
-              </select>
-            </div>
+            
           </div>
           <div class="flex gap-4 mb-4">
             <div class="flex flex-col gap-1.5 flex-1">
-              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Time limit (minutes)</label>
-              <input type="text" [(ngModel)]="test.time_limit_minutes" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
+              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Sub-Test Type</label>
+              <select [(ngModel)]="testForm.subTestType" name="subTestType" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none">
+                <option value="READING">READING</option>
+                <option value="LISTENING">LISTENING</option>
+              </select>
             </div>
             <div class="flex flex-col gap-1.5 flex-1">
-              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Is Published</label>
-              <div class="flex gap-3">
-                <div class="flex">
-                  <input class="mr-2" type="radio" name="is_published" id="published" [(ngModel)]="test.is_published" value="Published">
-                  <label for="published">Published</label>
-                </div>
-                <div class="flex">
-                  <input class="mr-2" type="radio" name="is_published" id="draft" [(ngModel)]="test.is_published" value="Draft">
-                  <label for="draft">Draft</label>
-                </div>
-              </div>
+              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Time limit (minutes)</label>
+              <input type="text" [(ngModel)]="testForm.totalTimeLimitMinutes" name="totalTimeLimitMinutes" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" />
             </div>
+
           </div>
           <div class="flex flex-col gap-1.5">
             <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Description (Optional)</label>
-            <textarea rows="3" [(ngModel)]="test.description" placeholder="Brief description of this test..." class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
+            <textarea rows="3" [(ngModel)]="testForm.description" name="description" placeholder="Brief description of this test..." class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"></textarea>
           </div>
           <br>
-          <button (click)="clearSavedTest()" class="px-5 -mb-10 py-2 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">Clear</button>
           <button (click)="saveTest()" class="px-5 -mb-10 py-2 mx-4 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">Save</button>
           <ng-container *ngTemplateOutlet="footerBtns; context: { nextLabel: 'Continue' }"></ng-container>
         </div>
+        </form>
       }
 
       @case (2) {
@@ -100,11 +90,11 @@
                 Part Label
               </label>
               <div class="grid grid-cols-3 gap-4">
-                @for(item of partLebels ; track part) {
+                @for(item of partLebels; track item) {
                 <label class="flex items-center gap-3 border border-gray-200 dark:border-gray-700 rounded-lg p-3 cursor-pointer hover:border-blue-500 transition-all">
-                  <input type="radio" name="part_label" [(ngModel)]="part.label" [value]="item" class="w-5 h-5 text-blue-600">
+                  <input type="radio" name="partLabel" [(ngModel)]="partForm.partLabel" [value]="item" class="w-5 h-5 text-blue-600">
                   <div>
-                    <span class="text-sm">{{item}}</span>
+                    <span class="text-sm">{{item.replace('_', ' ')}}</span>
                   </div>
                 </label>
                 }
@@ -118,7 +108,7 @@
                   Time Limit (minutes)
                 </label>
                 <div class="relative">
-                  <input type="number" id="time_limit" [(ngModel)]="part.time_limit"
+                  <input type="number" name="timeLimitMinutes" [(ngModel)]="partForm.timeLimitMinutes"
                         class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-lg"
                         placeholder="15" min="1" required>
                   <span class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">min</span>
@@ -129,7 +119,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Sort Order
                 </label>
-                <input type="number" id="sort_order" [(ngModel)]="part.sort_order"
+                <input type="number" name="sortOrder" [(ngModel)]="partForm.sortOrder"
                       class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-lg"
                       placeholder="1" min="1" required>
               </div>
@@ -140,7 +130,7 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Instructions for this Part
               </label>
-              <textarea id="instructions" rows="6" [(ngModel)]="part.instructions"
+              <textarea name="instructions" rows="6" [(ngModel)]="partForm.instructions"
                         class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[160px]"
                         placeholder="Write clear instructions for candidates..."></textarea>
             </div>
@@ -155,9 +145,9 @@
               Cancel
             </button>
             }
-            <button (click)="addOrUpdatePart()"
+            <button (click)="savePart()"
                     class="px-6 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
-              {{ isEditing ? 'Update Part' : 'Add Part' }}
+              Add Part
             </button>
           </div>
         </div>
@@ -168,17 +158,17 @@
           
           @if(partList.length > 0){
           <div class="space-y-4">
-            @for (part of partList ; track part.id) {
+            @for (part of partList ; track part) {
               <div class="bg-slate-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-all">
                 <div class="flex justify-between items-start">
                   <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-bold text-xl">
-                      {{ part.label.split(' ')[1] }}
+                      {{ part.partLabel.split(' ')[1] }}
                     </div>
                     <div>
-                      <h3 class="font-semibold text-lg">{{ part.label }}</h3>
+                      <h3 class="font-semibold text-lg">{{ part.partLabel }}</h3>
                       <p class="text-sm text-gray-500">
-                        {{ part.time_limit }} minutes • Order: {{ part.sort_order }}
+                        {{ part.timeLimitMinutes }} minutes • Order: {{ part.sortOrder }}
                       </p>
                     </div>
                   </div>
@@ -188,7 +178,7 @@
                             class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-xl text-sm font-medium transition">
                       Edit
                     </button>
-                    <button (click)="deletePart(part.id)"
+                    <button 
                             class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-medium transition">
                       Delete
                     </button>
@@ -225,7 +215,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Passage Label</label>
                 <input type="text" 
-                      [(ngModel)]="passage.label"
+                      [(ngModel)]="passageForm.label"
                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
                       placeholder="Enter passage label" required>
               </div>
@@ -234,10 +224,10 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Select Part
                 </label>
-                <select name="part" [(ngModel)]="passage.test_part" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" required>
+                <select name="part" [(ngModel)]="passageForm.partId" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" required>
                   <option value="">Select Part</option>
-                  @for (p of partList; track p.id) {
-                    <option [value]="p.label">{{ p.label }}</option>
+                  @for (p of partList; track p) {
+                    <option [value]="p.partLabel">{{ p.partLabel }}</option>
                   }
                 </select>
               </div>
@@ -245,7 +235,7 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Sort Order</label>
                 <input type="number" 
-                      [(ngModel)]="passage.sort_order"
+                      [(ngModel)]="passageForm.sortOrder"
                       class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm"
                       placeholder="1" min="1" required>
               </div>
@@ -254,9 +244,13 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-              <textarea [(ngModel)]="passage.content" rows="6"
-                        class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[160px]"
-                        placeholder="Write clear content for candidates..."></textarea>
+                  <editor [(ngModel)]="passageForm.content" 
+                  apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                  [init]="{
+                      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                  }"
+                  ></editor>
             </div>
 
             <div>
@@ -265,8 +259,8 @@
                     (change)="onAudioSelected($event)"
                     accept="audio/*"
                     class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm">
-              <p *ngIf="passage.audio" class="text-xs text-green-600 mt-1">
-                Selected: {{ passage.audio }}
+              <p *ngIf="passageForm.audioFileUrl" class="text-xs text-green-600 mt-1">
+                Selected: {{ passageForm.audioFileUrl }}
               </p>
             </div>
           </div>
@@ -278,7 +272,7 @@
               Cancel
             </button>
             
-            <button (click)="addOrUpdatePassage()"
+            <button (click)="savePassage()"
                     class="px-6 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
               {{ isEditing ? 'Update Passage' : 'Add Passage' }}
             </button>
@@ -290,7 +284,7 @@
           <h2 class="text-xl font-semibold mb-6 text-gray-900">Existing Passages</h2>
           @if(passages.length > 0) {
           <div class="space-y-4">
-            @for (p of passages; track p.id) {
+            @for (p of passages; track p) {
               <div class="bg-slate-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-all">
                 <div class="flex justify-between items-start">
                   <div class="flex items-center gap-4">
@@ -299,17 +293,17 @@
                     </div>
                     <div>
                       <h3 class="font-semibold text-lg">{{ p.label }}</h3>
-                      <p class="text-sm text-gray-500">Order: {{ p.sort_order }}</p>
-                      <p *ngIf="p.audio" class="text-xs text-green-600">♪ Audio: {{ p.audio }}</p>
+                      <p class="text-sm text-gray-500">Order: {{ p.sortOrder }}</p>
+                      <p *ngIf="p.audioFileUrl" class="text-xs text-green-600">♪ Audio: {{ p.audioFileUrl }}</p>
                     </div>
                   </div>
 
                   <div class="flex gap-2">
-                    <button (click)="editPassage(p)"
+                    <button 
                             class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-xl text-sm font-medium transition">
                       Edit
                     </button>
-                    <button (click)="deletePassage(p.id)"
+                    <button 
                             class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-medium transition">
                       Delete
                     </button>
@@ -370,7 +364,7 @@
                 </label>
                 <select name="passage_id" [(ngModel)]="group.passage" class="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm" required>
                   <option value="">Select Passage</option>
-                  @for (p of passages; track p.id) {
+                  @for (p of passages; track p) {
                     <option [value]="p.label">{{ p.label }}</option>
                   }
                 </select>
@@ -861,12 +855,11 @@
               <button (click)="jumpTo(1)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
             </div>
             <div class="grid grid-cols-2 gap-4 text-sm">
-              <div><p class="text-xs text-gray-400 mb-0.5">Title</p><p class="font-medium text-gray-800">{{ test.title }}</p></div>
-              <div><p class="text-xs text-gray-400 mb-0.5">Sub-test type</p><p class="font-medium text-gray-800">{{ test.subTestType }}</p></div>
-              <div><p class="text-xs text-gray-400 mb-0.5">Status</p><p class="font-medium text-gray-800">{{ test.is_published ? 'Published' : 'Draft' }}</p></div>
-              <div><p class="text-xs text-gray-400 mb-0.5">Time limit</p><p class="font-medium text-gray-800">{{ test.time_limit_minutes }} min</p></div>
-              @if (test.description) {
-                <div class="col-span-2"><p class="text-xs text-gray-400 mb-0.5">Description</p><p class="text-gray-700">{{ test.description }}</p></div>
+              <div><p class="text-xs text-gray-400 mb-0.5">Title</p><p class="font-medium text-gray-800">{{ testForm.title }}</p></div>
+              <div><p class="text-xs text-gray-400 mb-0.5">Sub-test type</p><p class="font-medium text-gray-800">{{ testForm.subTestType }}</p></div>
+              <div><p class="text-xs text-gray-400 mb-0.5">Time limit</p><p class="font-medium text-gray-800">{{ testForm.totalTimeLimitMinutes }} min</p></div>
+              @if (testForm.description) {
+                <div class="col-span-2"><p class="text-xs text-gray-400 mb-0.5">Description</p><p class="text-gray-700">{{ testForm.description }}</p></div>
               }
             </div>
           </div>
@@ -876,17 +869,17 @@
               <h2 class="text-base font-semibold text-gray-800">Parts</h2>
               <button (click)="jumpTo(2)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
             </div>
-              <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+              <!-- <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                 <div class="flex items-center gap-2.5">
-                  <div class="w-6 h-6 rounded-md bg-blue-800 text-white text-[11px] font-semibold flex items-center justify-center">{{ partList[0].label }}</div>
-                  <div><p class="text-sm font-medium text-gray-800">{{ partList[0].label }}</p><p class="text-xs text-gray-400">{{ partList[0].label }}</p></div>
+                  <div class="w-6 h-6 rounded-md bg-blue-800 text-white text-[11px] font-semibold flex items-center justify-center">{{ partList[0].partLabel }}</div>
+                  <div><p class="text-sm font-medium text-gray-800">{{ partList[0].partLabel }}</p><p class="text-xs text-gray-400">{{ partList[0].partLabel }}</p></div>
                 </div>
                 <div class="flex gap-5 text-right">
-                  <div><p class="text-xs text-gray-400">Time</p><p class="text-sm font-medium text-gray-700">{{ partList[0].time_limit }} min</p></div>
-                  <div><p class="text-xs text-gray-400">Questions</p><p class="text-sm font-medium text-gray-700">{{ partList[0].sort_order }}</p></div>
+                  <div><p class="text-xs text-gray-400">Time</p><p class="text-sm font-medium text-gray-700">{{ partList[0].timeLimitMinutes }} min</p></div>
+                  <div><p class="text-xs text-gray-400">Questions</p><p class="text-sm font-medium text-gray-700">{{ partList[0].sortOrder }}</p></div>
                   <div><p class="text-xs text-gray-400">Instructions</p><p class="text-sm font-medium text-gray-700">{{ partList[0].instructions }}</p></div>
                 </div>
-              </div>
+              </div> -->
           </div>
 
           <div class="bg-white border border-gray-200 rounded-xl p-6">
@@ -895,7 +888,7 @@
               <button (click)="jumpTo(3)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
             </div>
             <div class="flex flex-wrap gap-2">
-              @for (p of passages; track p.id) {
+              @for (p of passages; track p) {
                 <span class="text-xs px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full font-medium">{{ p.label }} <span class="text-gray-400">· {{ p.label }}</span></span>
               }
             </div>

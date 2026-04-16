@@ -1,26 +1,32 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CreateTestRequest } from '../../models/test';
+import { TestService } from '../../services/test';
+import { Part } from '../../models/part';
+import { PartService } from '../../services/part-service';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import { Passage } from '../../models/passage';
+import { PassageService } from '../../services/passage-service';
+import { Router } from '@angular/router';
 
-interface Test { id: number; title: string; subTestType: string; description: string; is_published: boolean | string; time_limit_minutes: number; }
-interface Part { id: number; test_id: number; label: string; time_limit: number; sort_order: number; instructions: string; }
-interface Passage { id: number; test_part: string; label: string; sort_order: number; audio: string; content: string; }
 interface Group { id: number; question_type: string; title: string; passage: string; sort_order: number; instructions: string; }
 interface Question { id: number; group_id: number; question_number: number; question_text: string; prefix: string; suffix:string; option_a:string, option_b:string, option_c:string, option_d:string, sort_order: number; answer: string }
 
 
 @Component({
   selector: 'app-create-test',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EditorModule],
   templateUrl: './create-test.html',
   styleUrl: './create-test.css',
 })
-export class CreateTest {
+export class CreateTest implements OnInit{
   steps = ['Test Info', 'Parts', 'Passages', 'Questions', 'Review'];
   currentStep = 1;
-  readyTestSave = true;
   isEditing = false;
   editingId: number | null = null;
+  testId: number | null = null;
+
 
   groups: Group[] = [];
   questions: Question[] = [];
@@ -28,15 +34,21 @@ export class CreateTest {
   newQuestion: Partial<Question> = this.getEmptyQuestion();
   selectedGroupId = signal<number | null>(null);
 
-  test : Test = { id: 0, title: '', subTestType: 'Reading', description: '', is_published: 'Draft', time_limit_minutes: 60 };
+  subTestTypes = ['READING', 'LISTENING'];
+  testForm: CreateTestRequest = {
+    title: '',
+    description: '',
+    subTestType: 'READING',
+    totalTimeLimitMinutes: 60
+  };
 
   question_types = ['TEXT_MATCHING', 'SHORT_ANSWER', 'GAP_FILL', 'MCQ_3', 'MCQ_4', 'NOTE_COMPLETION'];
-  partLebels = ['Part A', 'Part B', 'Part C'];
+  partLebels = ['PART_A', 'PART_B', 'PART_C'];
 
-  part: Part = this.getEmptyPart();
+  partForm: Part = this.getEmptyPart();
   partList: Part[] = [];
 
-  passage: Passage = this.getEmptyPassage();
+  passageForm: Passage = this.getEmptyPassage();
   passages : Passage[] = [];
   
     
@@ -45,12 +57,131 @@ export class CreateTest {
   typeColors: Record<string, string> = { TEXT_MATCHING: 'bg-purple-50 text-purple-700', SHORT_ANSWER: 'bg-blue-50 text-blue-700', GAP_FILL: 'bg-teal-50 text-teal-700', MCQ_3: 'bg-amber-50 text-amber-700', MCQ_4: 'bg-orange-50 text-orange-700', NOTE_COMPLETION: 'bg-pink-50 text-pink-700' };
   textOptions = ['Text A', 'Text B', 'Text C', 'Text D'];
 
+  constructor(private testService:TestService, private partService:PartService, private passageService:PassageService, private router:Router){}
+
   ngOnInit() {
     this.loadFromLocalStorage();
     if (this.groups.length > 0) {
       this.selectGroup(this.groups[this.groups.length - 1].id); // auto-select latest group
     }
+
+    const state = history.state as any;
+
+    if (state?.testId) {
+      this.testId = state.testId;
+      this.testById(state.testId); 
+    }
+    else {
+      const testIdString = localStorage.getItem('testId');
+      const testId: number | null = testIdString ? parseInt(testIdString, 10) : null;
+      if(testId != null){
+        this.testId = testId;
+        this.testById(testId);
+      }
+    }
+
+    
   }
+
+  saveTest(): void {
+    if(this.testId != null){
+      this.testById(this.testId);
+    }
+    else{
+      this.testService.createTest(this.testForm).subscribe({
+        next: (response:any) => {
+          localStorage.setItem('testId', response.data.id);
+          console.log('Test created:', response.data);
+          alert('Test saved successfully!');
+        },
+        error: (err) => {
+          alert("Error")
+          console.error('Error saving test:', err);
+        }
+      });
+    }
+  }
+
+  testById(id:number){
+    this.testService.testById(id).subscribe({
+        next: (response:any) => {
+          this.testForm.title = response.data.title;
+          this.testForm.subTestType = response.data.subTestType;
+          this.testForm.totalTimeLimitMinutes = response.data.totalTimeLimitMinutes;
+          this.testForm.description = response.data.description;
+
+          console.log(response.data);
+        }
+      });
+  }
+
+  savePart() {
+    if (!this.partForm.partLabel || !this.partForm.instructions) {
+      alert('Part Label and Instructions are required!');
+      return;
+    }
+
+    if(this.testId != null){
+      this.partService.createPart(this.partForm, this.testId).subscribe({
+        next: (response:any) => {
+          console.log("Part saved == " + response.data);
+          alert('Part saved successfully!');
+        },
+        error: (err) => {
+          alert("Error Part")
+          console.error('Error saving test:', err);
+        }
+      });
+    }
+    else{
+      alert('Test not found!');
+    }
+
+  }
+
+
+  savePassage() {
+    if (!this.passageForm.label || !this.passageForm.content) {
+      alert('Passage Label and Content are required!');
+      return;
+    }
+
+    this.passageService.createPassage(this.passageForm, this.passageForm.partId).subscribe({
+      next: (response:any) => {
+        console.log("Passage saved == " + response.data);
+        alert('Passage saved successfully!');
+      },
+      error: (err) => {
+        alert("Error Passage")
+        console.error('Error saving test:', err);
+      }
+    });
+
+  }
+
+  getEmptyPart(): Part {
+    return {
+      partLabel: '',
+      timeLimitMinutes: 15,
+      instructions: '',
+      sortOrder: 1,
+      
+    };
+  }
+
+  getEmptyPassage(): Passage {
+    return {
+      partId: 1,
+      label: '',
+      content: '',
+      audioFileUrl: '',
+      audioDurationSeconds: 10,
+      sortOrder:1
+     
+    };
+  }
+
+
   getEmptyGroup(): Group {
     return {
       id: 0,
@@ -77,27 +208,7 @@ export class CreateTest {
     };
   }
 
-  getEmptyPart(): Part {
-    return {
-      id: 0,
-      test_id: 0,
-      label: '',
-      time_limit: 15,
-      sort_order: 1,
-      instructions: ''
-    };
-  }
 
-  getEmptyPassage(): Passage {
-    return {
-      id: 0,
-      test_part: '',
-      label: '',
-      sort_order: 1,
-      audio: '',
-      content: ''
-    };
-  }
 
   // ==================== Local Storage ====================
   private loadFromLocalStorage() {
@@ -107,7 +218,6 @@ export class CreateTest {
     const savedParts = localStorage.getItem('parts');
     const savedPassages = localStorage.getItem('passages');
 
-    if (savedTest) this.test = JSON.parse(savedTest);
     if (savedGroups) this.groups = JSON.parse(savedGroups);
     if (savedQuestions) this.questions = JSON.parse(savedQuestions);
     if (savedParts) this.partList = JSON.parse(savedParts);
@@ -121,90 +231,13 @@ export class CreateTest {
     localStorage.setItem('passages', JSON.stringify(this.passages));
   }
 
-  saveTest() {
-    if (!this.test.title?.trim()) {
-      alert('Title is required!');
-      return;
-    }
-    if (!this.test.subTestType) {
-      alert('Sub-Test Type is required!');
-      return;
-    }
-
-    const isPublished = this.test.is_published === 'Published' || 
-                        this.test.is_published === true || 
-                        this.test.is_published === 'true';
-
-    const testToSave: Test = {
-      ...this.test,
-      id: this.test.id || Date.now(),           // Keep existing ID if editing
-      is_published: isPublished,
-    };
-
-    if (!this.readyTestSave) {
-      alert('Test has already been saved. Please make changes before saving again.');
-     this.goNext();
-
-    }
-
-    try {
-      const existingTestsJson = localStorage.getItem('tests');
-      let tests: Test[] = existingTestsJson ? JSON.parse(existingTestsJson) : [];
-
-      if (this.test.id) {
-        const index = tests.findIndex(t => t.id === this.test.id);
-        if (index !== -1) {
-          tests[index] = testToSave;
-        } else {
-          tests.push(testToSave);
-        }
-      } 
-      else {
-        tests.push(testToSave);
-      }
-
-      localStorage.setItem('tests', JSON.stringify(tests));
-
-      alert('Test saved successfully!');
-      console.log('Saved Test:', testToSave);
-      this.readyTestSave = false;
-      // this.goNext(); // Move to next step after saving
-    } catch (error) {
-      console.error('Error saving test to localStorage:', error);
-      alert('Failed to save test. Please try again.');
-    }
-  }
-
+ 
   // Add or Update Part
-  addOrUpdatePart() {
-    if (!this.part.label || !this.part.instructions) {
-      alert('Part Label and Instructions are required!');
-      return;
-    }
-
-    if (this.isEditing && this.editingId !== null) {
-      const index = this.partList.findIndex(p => p.id === this.editingId);
-      if (index !== -1) {
-        this.partList[index] = { ...this.part, id: this.editingId };
-      }
-    } else {
-      const newPart: Part = {
-        ...this.part,
-        id: Date.now()
-      };
-      this.partList.push(newPart);
-    }
-
-    this.saveToLocalStorage();
-    this.resetForm();
-    alert(this.isEditing ? 'Part updated successfully!' : 'Part added successfully!');
-  }
 
   // Edit Part
   editPart(partToEdit: Part) {
-    this.part = { ...partToEdit };
+    this.partForm = { ...partToEdit };
     this.isEditing = true;
-    this.editingId = partToEdit.id;
     
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -213,7 +246,6 @@ export class CreateTest {
   // Delete Part
   deletePart(id: number) {
     if (confirm('Are you sure you want to delete this part?')) {
-      this.partList = this.partList.filter(p => p.id !== id);
       this.saveToLocalStorage();
       alert('Part deleted successfully!');
     }
@@ -221,7 +253,7 @@ export class CreateTest {
 
   // Reset Form
   resetForm() {
-    this.part = this.getEmptyPart();
+    this.partForm = this.getEmptyPart();
     this.isEditing = false;
     this.editingId = null;
   }
@@ -231,60 +263,8 @@ export class CreateTest {
     this.resetForm();
   }
 
-  addOrUpdatePassage() {
-    if (!this.passage.label || !this.passage.content) {
-      alert('Passage Label and Content are required!');
-      return;
-    }
 
-    if (this.isEditing && this.editingId) {
-      // Update
-      const index = this.passages.findIndex(p => p.id === this.editingId);
-      if (index !== -1) {
-        this.passages[index] = { 
-          ...this.passage, 
-          id: this.editingId 
-        };
-      }
-    } else {
-      // Add New
-      const newPassage: Passage = {
-        ...this.passage,
-        id: Date.now(),
-      };
-      this.passages.push(newPassage);
-    }
 
-    this.saveToLocalStorage();
-    this.resetPassageForm();
-
-    alert(this.isEditing ? 'Passage updated successfully!' : 'Passage added successfully!');
-  }
-
-  editPassage(passageToEdit: Passage) {
-    this.passage = { ...passageToEdit };
-    this.isEditing = true;
-    this.editingId = passageToEdit.id;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  deletePassage(id: number) {
-    if (confirm('Are you sure you want to delete this passage?')) {
-      this.passages = this.passages.filter(p => p.id !== id);
-      this.saveToLocalStorage();
-      alert('Passage deleted!');
-    }
-  }
-
-  resetPassageForm() {
-    this.passage = this.getEmptyPassage();
-    this.isEditing = false;
-    this.editingId = null;
-  }
-
-  cancelPassageEdit() {
-    this.resetPassageForm();
-  }
 
   // addGroup() {
   //   if (!this.group.title || !this.group.question_type) {
@@ -363,17 +343,6 @@ export class CreateTest {
   }
 
 
-  clearSavedTest() {
-    localStorage.removeItem('tests');
-    this.test = {
-      id: 0,
-      title: '',
-      subTestType: '',
-      description: '',
-      is_published: false,
-      time_limit_minutes: 60
-    };
-  }
 
   deleteQuestion(qId: number) {
     if (confirm('Delete this question?')) {
@@ -406,7 +375,7 @@ export class CreateTest {
   onAudioSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.passage.audio = file.name;   // You can later convert to base64 if needed
+      this.passageForm.audioFileUrl = file.name;   // You can later convert to base64 if needed
       // For real audio storage in localStorage, use FileReader + base64 (but it's heavy)
     }
   }

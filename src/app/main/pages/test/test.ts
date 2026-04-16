@@ -51,7 +51,7 @@ export class Test implements AfterViewInit, OnDestroy {
     }, 100); // small delay ensures the element is painted and ready
   }
 
-startCountdown() {
+  startCountdown() {
     if (this.isCountdownRunning) return;
 
     this.isCountdownRunning = true;
@@ -102,15 +102,16 @@ startCountdown() {
   private loadFromLocalStorage() {
     const savedGroups = localStorage.getItem('questionGroups');
     const savedQuestions = localStorage.getItem('questions');
-    const savedPassages = localStorage.getItem('passages');
-    const savedParts = localStorage.getItem('parts');
-    const savedTest = localStorage.getItem('tests');
+    // const savedPassages = localStorage.getItem('passages');
+    // const savedParts = localStorage.getItem('parts');
+    // const savedTest = localStorage.getItem('tests');
 
     if (savedGroups) this.groups = JSON.parse(savedGroups);
     if (savedQuestions) this.questions = JSON.parse(savedQuestions);
-    if (savedPassages) this.passages = JSON.parse(savedPassages);
-    if (savedParts) this.parts = JSON.parse(savedParts);
-    if (savedTest) this.testData = JSON.parse(savedTest);
+    // if (savedPassages) this.passages = JSON.parse(savedPassages);
+    // if (savedParts) this.parts = JSON.parse(savedParts);
+    // if (savedTest) this.testData = JSON.parse(savedTest);
+    console.log("Groups == " + this.questions[0].question_text);
   }
 
   getQuestionsForGroup(groupId: number): Question[] {

@@ -20,3 +20,9 @@ export interface TestResponse {
   };
   error: string;
 }
+
+export interface Pageable {
+  page: number;
+  size: number;
+  sort?: string;
+}

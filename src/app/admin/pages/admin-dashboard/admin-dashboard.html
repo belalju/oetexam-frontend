@@ -3,7 +3,7 @@
           <h1 class="font-display text-2xl font-bold text-navy-900">Admin Dashboard</h1>
           <p class="text-slate-500 text-sm mt-1">Manage tests and monitor applicants</p>
         </div>
-        <button onclick="showPage('admin-test-builder')" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+        <button routerLink="/admin/create-test" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
           Create New Test
         </button>
@@ -45,58 +45,105 @@
           </div>
         </div>
         <table class="w-full text-sm">
-          <thead>
-            <tr class="text-xs text-slate-400 uppercase tracking-wider border-b border-slate-100">
-              <th class="text-left pb-3 font-semibold">Title</th>
-              <th class="text-left pb-3 font-semibold">Type</th>
-              <th class="text-left pb-3 font-semibold">Status</th>
-              <th class="text-left pb-3 font-semibold">Questions</th>
-              <th class="text-left pb-3 font-semibold">Attempts</th>
-              <th class="text-left pb-3 font-semibold">Avg Score</th>
-              <th class="text-left pb-3 font-semibold">Created</th>
-              <th class="pb-3"></th>
+          <thead class="">
+            <tr class="text-xs text-slate-500 uppercase tracking-wider border-b border-slate-100 bg-slate-100">
+              <th class="text-left p-3 font-semibold px-6">Title</th>
+              <th class="text-left p-3 font-semibold px-6">Type</th>
+              <th class="text-left p-3 font-semibold px-6">Status</th>
+              <th class="text-left p-3 font-semibold px-6">Questions</th>
+              <th class="text-left p-3 font-semibold px-6">Attempts</th>
+              <th class="text-left p-3 font-semibold px-6">Avg Score</th>
+              <th class="text-left p-3 font-semibold px-6">Created</th>
+              <th class="p-3 px-6"></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-50">
-            <tr class="hover:bg-slate-50/50 transition">
-              <td class="py-3 font-medium text-slate-700">Sample Test 4</td>
-              <td class="py-3"><span class="bg-indigo-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium">Reading</span></td>
-              <td class="py-3"><span class="bg-emerald-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">Published</span></td>
-              <td class="py-3 text-slate-600">42</td>
-              <td class="py-3 text-slate-600">87</td>
-              <td class="py-3 font-semibold text-teal-600">71%</td>
-              <td class="py-3 text-slate-400 text-xs">Apr 1, 2026</td>
-              <td class="py-3 flex gap-2">
-                <button onclick="showPage('admin-question-editor')" class="text-xs text-teal-600 hover:underline">Edit</button>
-                <button class="text-xs text-slate-400 hover:text-slate-600">Unpublish</button>
+            @for(item of tests(); track item.id){
+            <tr
+                class="hover:bg-slate-50/70 transition-all">
+              <td class="py-4 px-6 font-medium text-slate-700">{{ item.title }}</td>
+              
+              <td class="py-4 px-6">
+                <span [ngClass]="getTypeBadge(item).color" 
+                      class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ getTypeBadge(item).label }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6">
+                <span [ngClass]="getStatusBadge(item.published).color" 
+                      class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ getStatusBadge(item.published).label }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6 text-slate-600">42</td>          <!-- Replace with real data later -->
+              <td class="py-4 px-6 text-slate-600">87</td>          <!-- Replace with real data later -->
+              <td class="py-4 px-6 font-semibold text-teal-600">71%</td> <!-- Replace with real data later -->
+
+              <td class="py-4 px-6 text-slate-400 text-xs">
+                {{ formatDate(item.createdAt) }}
+              </td>
+
+              <td class="py-4 px-6">
+                <div class="flex gap-3">
+                  <button (click)="editTest(item.id)"
+                          class="text-xs text-teal-600 hover:underline font-medium">
+                    Edit
+                  </button>
+                  @if(item.published){
+                    <button
+                            class="text-xs text-slate-400 hover:text-slate-600">
+                      Unpublish
+                    </button>
+                  }
+                  @else{
+                    <button class="text-xs text-blue-600 hover:underline font-semibold">
+                      Publish
+                    </button>
+                  }
+                </div>
               </td>
             </tr>
-            <tr class="hover:bg-slate-50/50 transition">
-              <td class="py-3 font-medium text-slate-700">Sample Test 4</td>
-              <td class="py-3"><span class="bg-teal-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">Listening</span></td>
-              <td class="py-3"><span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium">Draft</span></td>
-              <td class="py-3 text-slate-600">38/42</td>
-              <td class="py-3 text-slate-400">—</td>
-              <td class="py-3 text-slate-400">—</td>
-              <td class="py-3 text-slate-400 text-xs">Apr 3, 2026</td>
-              <td class="py-3 flex gap-2">
-                <button onclick="showPage('admin-question-editor')" class="text-xs text-teal-600 hover:underline">Edit</button>
-                <button class="text-xs text-blue-600 hover:underline font-semibold">Publish</button>
-              </td>
-            </tr>
-            <tr class="hover:bg-slate-50/50 transition">
-              <td class="py-3 font-medium text-slate-700">Sample Test 3</td>
-              <td class="py-3"><span class="bg-indigo-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium">Reading</span></td>
-              <td class="py-3"><span class="bg-emerald-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">Published</span></td>
-              <td class="py-3 text-slate-600">42</td>
-              <td class="py-3 text-slate-600">156</td>
-              <td class="py-3 font-semibold text-amber-600">65%</td>
-              <td class="py-3 text-slate-400 text-xs">Mar 15, 2026</td>
-              <td class="py-3 flex gap-2">
-                <button onclick="showPage('admin-question-editor')" class="text-xs text-teal-600 hover:underline">Edit</button>
-                <button class="text-xs text-slate-400 hover:text-slate-600">Unpublish</button>
-              </td>
-            </tr>
+            }
           </tbody>
         </table>
       </div>
+
+      @if(totalPages() > 1){
+      <div class="flex items-center justify-between mt-6 px-2">
+        <div class="text-sm text-slate-500">
+          Showing 
+          <span class="font-medium">{{ currentPage() * pageSize() + 1 }}</span> to 
+          <span class="font-medium">{{ getEndIndex() }}</span> 
+          of <span class="font-medium">{{ totalElements() }}</span> tests
+        </div>
+
+        <div class="flex gap-1">
+          <button 
+            (click)="onPageChange(currentPage() - 1)"
+            [disabled]="currentPage() === 0"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Previous
+          </button>
+
+          @for(p of getPageNumbers(); track p){
+          <button 
+            (click)="onPageChange(p)"
+            [class.bg-teal-600]="p === currentPage()"
+            [class.text-white]="p === currentPage()"
+            [class.border-teal-600]="p === currentPage()"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+            {{ p + 1 }}
+          </button>
+          }
+
+          <button 
+            (click)="onPageChange(currentPage() + 1)"
+            [disabled]="currentPage() === totalPages() - 1"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Next
+          </button>
+        </div>
+      </div>
+      }

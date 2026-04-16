@@ -3,8 +3,6 @@ import { Store } from './main/pages/store/store';
 import { Home } from './main/pages/home/home';
 import { ProductDetails } from './main/pages/product-details/product-details';
 import { Test } from './main/pages/test/test';
-import { Registration } from './components/registration/registration';
-import { Login } from './components/login/login';
 import { App } from './app';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
@@ -38,14 +36,6 @@ export const routes: Routes = [
         ]
     },
     {
-        path: '',
-        component: AuthLayout,
-        children: [
-            { path: 'login', component: Login },
-            { path: 'registration', component: Registration },
-        ]
-    },
-    {
         path: 'auth',
         component: AuthLayout,
         loadChildren: () =>
@@ -68,31 +58,5 @@ export const routes: Routes = [
         ]
     },
 
-
-    // {path:'', redirectTo:'home', pathMatch:'full'},
-    // {
-    //     path:'home',
-    //     component:Home
-    // },
-    // {
-    //     path:'store',
-    //     component:Store
-    // },
-    // {
-    //     path:'product-details',
-    //     component:ProductDetails
-    // },
-    // {
-    //     path:'test',
-    //     component:Test
-    // },
-    // {
-    //     path:'registration',
-    //     component:Registration
-    // },
-    // {
-    //     path:'login',
-    //     component:Login
-    // },
 
 ];
