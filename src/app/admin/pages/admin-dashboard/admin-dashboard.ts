@@ -20,7 +20,7 @@ export class AdminDashboard implements OnInit{
   tests = signal<any[]>([]);
   totalElements = signal(0);
   currentPage = signal(0);
-  pageSize = signal(1);
+  pageSize = signal(10);
   totalPages = signal(0);
 
   displayedColumns: string[] = ['id', 'title', 'subTestType', 'timeLimit', 'published', 'createdBy'];

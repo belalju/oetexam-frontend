@@ -106,6 +106,13 @@
               </td>
             </tr>
             }
+            @if(tests().length === 0){
+            <tr>
+              <td colspan="10" class="py-6 text-center text-slate-400">
+                No tests found. Try adjusting your search or filter.
+              </td>
+            </tr>
+            }
           </tbody>
         </table>
       </div>

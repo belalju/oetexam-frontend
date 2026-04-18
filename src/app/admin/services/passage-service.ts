@@ -14,5 +14,9 @@ export class PassageService {
   createPassage(payload: Passage, partId:number) {
     return this.http.post(`${this.API_URL}/admin/parts/${partId}/passages`, payload);
   }
-  
+
+  passageList(testId:number) {
+    return this.http.get(`${this.API_URL}/admin/tests/${testId}/passages`);
+  }
+
 }

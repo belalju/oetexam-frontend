@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Form, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateTestRequest } from '../../models/test';
 import { TestService } from '../../services/test';
 import { Part } from '../../models/part';
@@ -9,67 +9,72 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { Passage } from '../../models/passage';
 import { PassageService } from '../../services/passage-service';
 import { Router } from '@angular/router';
+import { QuestionGroup } from '../../models/question-group';
+import { QuestionGroupService } from '../../services/question-group-service';
+import { QuestionService } from '../../services/question-service';
 
-interface Group { id: number; question_type: string; title: string; passage: string; sort_order: number; instructions: string; }
 interface Question { id: number; group_id: number; question_number: number; question_text: string; prefix: string; suffix:string; option_a:string, option_b:string, option_c:string, option_d:string, sort_order: number; answer: string }
 
 
 @Component({
   selector: 'app-create-test',
-  imports: [CommonModule, FormsModule, EditorModule],
+  imports: [CommonModule, FormsModule, EditorModule, ReactiveFormsModule],
   templateUrl: './create-test.html',
   styleUrl: './create-test.css',
 })
 export class CreateTest implements OnInit{
-  steps = ['Test Info', 'Parts', 'Passages', 'Questions', 'Review'];
-  currentStep = 1;
+  steps = ['Test Info', 'Parts', 'Passages', 'Question Groups', 'Questions', 'Review'];
+  currentStep = 4;
   isEditing = false;
   editingId: number | null = null;
+
   testId: number | null = null;
+  testForm!: FormGroup;
+  subTestTypes = ['READING', 'LISTENING'];
 
+  partLebels = ['PART_A', 'PART_B', 'PART_C'];
+  partForm!: FormGroup;
+  partList:any = [];
 
-  groups: Group[] = [];
+  passageForm!: FormGroup;
+  passages : any[] = [];
+  selectedFile: File | null = null;
+
+  questionTypes = ['TEXT_MATCHING', 'SHORT_ANSWER', 'GAP_FILL', 'MCQ_3', 'MCQ_4', 'NOTE_COMPLETION'];
+  groupForm!: FormGroup;
+  groups: any[] = [];
+  
+  
+  getSelectedGroup = signal<any>(null);
+  questionForm!: FormGroup;
   questions: Question[] = [];
-  group: Group = this.getEmptyGroup();
+
   newQuestion: Partial<Question> = this.getEmptyQuestion();
   selectedGroupId = signal<number | null>(null);
 
-  subTestTypes = ['READING', 'LISTENING'];
-  testForm: CreateTestRequest = {
-    title: '',
-    description: '',
-    subTestType: 'READING',
-    totalTimeLimitMinutes: 60
-  };
-
-  question_types = ['TEXT_MATCHING', 'SHORT_ANSWER', 'GAP_FILL', 'MCQ_3', 'MCQ_4', 'NOTE_COMPLETION'];
-  partLebels = ['PART_A', 'PART_B', 'PART_C'];
-
-  partForm: Part = this.getEmptyPart();
-  partList: Part[] = [];
-
-  passageForm: Passage = this.getEmptyPassage();
-  passages : Passage[] = [];
   
-    
+
+  private router = inject(Router);
+  private passageService = inject(PassageService);
+  private partService = inject(PartService);
+  private testService = inject(TestService);
+  private questionGroupService = inject(QuestionGroupService);
+  private questionService = inject(QuestionService);
 
   typeLabels: Record<string, string> = { TEXT_MATCHING: 'Text Matching', SHORT_ANSWER: 'Short Answer', GAP_FILL: 'Gap Fill', MCQ_3: 'MCQ (A/B/C)', MCQ_4: 'MCQ (A/B/C/D)', NOTE_COMPLETION: 'Note Completion' };
   typeColors: Record<string, string> = { TEXT_MATCHING: 'bg-purple-50 text-purple-700', SHORT_ANSWER: 'bg-blue-50 text-blue-700', GAP_FILL: 'bg-teal-50 text-teal-700', MCQ_3: 'bg-amber-50 text-amber-700', MCQ_4: 'bg-orange-50 text-orange-700', NOTE_COMPLETION: 'bg-pink-50 text-pink-700' };
   textOptions = ['Text A', 'Text B', 'Text C', 'Text D'];
 
-  constructor(private testService:TestService, private partService:PartService, private passageService:PassageService, private router:Router){}
+  constructor(
+    private fb: FormBuilder,
+  ) {}
 
   ngOnInit() {
-    this.loadFromLocalStorage();
-    if (this.groups.length > 0) {
-      this.selectGroup(this.groups[this.groups.length - 1].id); // auto-select latest group
-    }
-
     const state = history.state as any;
 
     if (state?.testId) {
       this.testId = state.testId;
-      this.testById(state.testId); 
+      this.testById(state.testId as number); 
     }
     else {
       const testIdString = localStorage.getItem('testId');
@@ -79,16 +84,49 @@ export class CreateTest implements OnInit{
         this.testById(testId);
       }
     }
+    this.initTestForm();
+    this.initPartForm();
+    this.initPassageForm();
+    this.initGroupForm();
+    this.initQuestionForm();
 
+    this.partListByTestId();
+    this.passageListByTestId();
+    this.groupListByTestId(state?.testId || this.testId);
     
   }
 
+  // Test Form
+  private initTestForm(): void {
+    this.testForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      subTestType: ['READING', Validators.required],
+      totalTimeLimitMinutes: ['', [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(180),           // max 3 hours
+        Validators.pattern('^[0-9]+$') // only numbers
+      ]],
+      description: ['', [Validators.maxLength(500)]]
+    });
+  }
+
+  get testFormControls() {
+    return this.testForm.controls;
+  }
+
   saveTest(): void {
+    if (this.testForm.invalid) {
+      this.testForm.markAllAsTouched();   // Show all validation errors
+      return;
+    }
+    const formValue = this.testForm.value;
+
     if(this.testId != null){
-      this.testById(this.testId);
+      this.testById(this.testId as number);
     }
     else{
-      this.testService.createTest(this.testForm).subscribe({
+      this.testService.createTest(formValue).subscribe({
         next: (response:any) => {
           localStorage.setItem('testId', response.data.id);
           console.log('Test created:', response.data);
@@ -105,27 +143,52 @@ export class CreateTest implements OnInit{
   testById(id:number){
     this.testService.testById(id).subscribe({
         next: (response:any) => {
-          this.testForm.title = response.data.title;
-          this.testForm.subTestType = response.data.subTestType;
-          this.testForm.totalTimeLimitMinutes = response.data.totalTimeLimitMinutes;
-          this.testForm.description = response.data.description;
+          const data = response.data;
 
-          console.log(response.data);
+          this.testForm.patchValue({
+            title: data.title || '',
+            subTestType: data.subTestType || 'READING',
+            totalTimeLimitMinutes: data.totalTimeLimitMinutes || 60,
+            description: data.description || ''
+          });
+
         }
       });
   }
 
+
+  // Part Form
+  private initPartForm(): void {
+    this.partForm = this.fb.group({
+      partTitle: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      partLabel: ['', Validators.required],
+      timeLimitMinutes: [15, [Validators.required, Validators.min(1), Validators.max(180)]],
+      sortOrder: [1, [Validators.required, Validators.min(1)]],
+      instructions: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]]
+    });
+  }
+
+  get partFormControls() {
+    return this.partForm.controls;
+  }
+
   savePart() {
-    if (!this.partForm.partLabel || !this.partForm.instructions) {
-      alert('Part Label and Instructions are required!');
+    if (this.partForm.invalid) {
+      this.partForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.testId) {
+      alert('Test not found!');
       return;
     }
 
     if(this.testId != null){
-      this.partService.createPart(this.partForm, this.testId).subscribe({
+      this.partService.createPart(this.partForm.value, this.testId as number).subscribe({
         next: (response:any) => {
-          console.log("Part saved == " + response.data);
           alert('Part saved successfully!');
+          this.partListByTestId(); // Refresh the part list
+          this.resetPartForm();
         },
         error: (err) => {
           alert("Error Part")
@@ -139,17 +202,72 @@ export class CreateTest implements OnInit{
 
   }
 
+  resetPartForm(): void {
+    this.partForm.reset({
+      partTitle: '',
+      partLabel: '',
+      timeLimitMinutes: 15,
+      sortOrder: 1,
+      instructions: ''
+    });
+  }
 
+  partListByTestId(){
+    if(this.testId == null) return;
+
+    this.partService.partList(this.testId as number).subscribe({
+      next: (response:any) => {
+        this.partList = response.data || [];
+      },
+      error: (err) => {
+        alert("Error Part List")
+        console.error('Error fetching part list:', err);
+      }
+    });
+  }
+
+  private initPassageForm(): void {
+    this.passageForm = this.fb.group({
+      label: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      partId: ['', Validators.required],
+      sortOrder: [1, [Validators.required, Validators.min(1)]],
+      content: ['', [Validators.required, Validators.minLength(50)]],
+      audioFileUrl: [''],
+      audioDurationSeconds: [10]
+    });
+  }
+
+  get passageFormControls() {
+    return this.passageForm.controls;
+  }
+
+  // Handle audio file selection
+  onAudioSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      // Optional: show file name
+      this.passageForm.patchValue({ audioFileUrl: file.name });
+    }
+  }
+
+
+  // Save Passage
   savePassage() {
-    if (!this.passageForm.label || !this.passageForm.content) {
-      alert('Passage Label and Content are required!');
+    if (this.passageForm.invalid) {
+      this.passageForm.markAllAsTouched();
       return;
     }
 
-    this.passageService.createPassage(this.passageForm, this.passageForm.partId).subscribe({
+    const formData = this.passageForm.value;
+
+    this.passageService.createPassage(formData, formData.partId).subscribe({
       next: (response:any) => {
-        console.log("Passage saved == " + response.data);
+        this.passageListByTestId(); 
+        this.resetPassageForm();
         alert('Passage saved successfully!');
+        
+        
       },
       error: (err) => {
         alert("Error Passage")
@@ -159,39 +277,213 @@ export class CreateTest implements OnInit{
 
   }
 
-  getEmptyPart(): Part {
-    return {
-      partLabel: '',
-      timeLimitMinutes: 15,
-      instructions: '',
-      sortOrder: 1,
-      
-    };
-  }
-
-  getEmptyPassage(): Passage {
-    return {
-      partId: 1,
+  resetPassageForm(): void {
+    this.passageForm.reset({
       label: '',
+      partId: '',
+      sortOrder: 1,
       content: '',
       audioFileUrl: '',
-      audioDurationSeconds: 10,
-      sortOrder:1
-     
-    };
+      audioDurationSeconds: 10
+    });
+    this.selectedFile = null;
+  }
+
+  // Passage List by Test ID (to show in Part section)
+  passageListByTestId(){
+    this.passageService.passageList(this.testId as number).subscribe({
+      next: (response:any) => {
+        this.passages = response.data || [];
+      },
+      error: (err) => {
+        alert("Error Passage List")
+        console.error('Error fetching passage list:', err);
+      }
+    });
   }
 
 
-  getEmptyGroup(): Group {
-    return {
-      id: 0,
-      question_type: '',
+  private initGroupForm(): void {
+    this.groupForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      questionType: ['', Validators.required],
+      partId: ['', Validators.required],
+      passageId: [''],                    // optional
+      sortOrder: [1, [Validators.required, Validators.min(1)]],
+      instructions: ['', [Validators.maxLength(800)]]
+    });
+  }
+
+  get groupFormControls() {
+    return this.groupForm.controls;
+  }
+
+  saveGroup() {
+    if (this.groupForm.invalid) {
+      this.groupForm.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.groupForm.value;
+
+    this.questionGroupService.createQuestionGroup(formValue, formValue.partId).subscribe({
+      next: (response) => {
+        this.groupListByTestId(this.testId as number); 
+        this.resetGroupForm();
+        alert('Question Group saved successfully!');
+      },
+      error: (err) => {
+        alert("Error Question Group")
+        console.error('Error saving question group:', err);
+      }
+    });
+  }
+
+  groupListByTestId(testId: number) {
+    this.questionGroupService.questionGroupList(testId).subscribe({
+      next: (response:any) => {
+        this.groups = response.data || [];
+      },
+      error: (err) => {
+        alert("Error Question Group List")
+        console.error('Error fetching question group list:', err);
+      }
+    });
+  }
+
+  resetGroupForm(): void {
+    this.groupForm.reset({
       title: '',
-      passage: '',
-      sort_order: 1,
+      questionType: '',
+      partId: '',
+      passageId: '',
+      sortOrder: 1,
       instructions: ''
-    };
+    });
   }
+
+  selectGroup(groupId: number) {
+    this.questionGroupService.questionGroupById(groupId).subscribe({
+      next: (response:any) => {
+        this.getSelectedGroup.set(response.data);
+      },
+      error: (err) => {
+        alert("Error fetching group details")
+        console.error('Error fetching group details:', err);
+      }
+    });
+  }
+
+
+  private initQuestionForm(): void {
+    this.questionForm = this.fb.group({
+      questionNumber: [1, [Validators.required, Validators.min(1)]],
+      questionText: ['', [Validators.required, Validators.minLength(5)]],
+      prefixText: [''],
+      suffixText: [''],
+      correctText: [''],
+      sortOrder: [1, [Validators.required, Validators.min(1)]],
+      options: this.fb.array([
+        this.fb.group({
+          optionLabel: ['A', Validators.required],
+          optionText: ['', ],
+          sortOrder: [1, [Validators.required, Validators.min(1)]]
+        }),
+        this.fb.group({
+          optionLabel: ['B', Validators.required],
+          optionText: ['', ],
+          sortOrder: [2, [Validators.required, Validators.min(1)]]
+        }),
+        this.fb.group({
+          optionLabel: ['C', Validators.required],
+          optionText: ['', ],
+          sortOrder: [3, [Validators.required, Validators.min(1)]]
+        }),
+        this.fb.group({
+          optionLabel: ['D', Validators.required],
+          optionText: ['', ],
+          sortOrder: [4, [Validators.required, Validators.min(1)]]
+        })
+      ])
+    });
+  }
+
+  get options(): FormArray {
+    return this.questionForm.get('options') as FormArray;
+  }
+
+  // Helper to get option controls easily
+  getOptionControl(index: number, controlName: string) {
+    return this.options.at(index).get(controlName);
+  }
+
+  get questionFormControls() {
+    return this.questionForm.controls;
+  }
+
+  saveQuestion() {
+    console.log('Saving question with form value:', this.questionForm.value);
+    if (this.questionForm.invalid) {
+      this.questionForm.markAllAsTouched();
+      return;
+    }
+
+    if(!this.getSelectedGroup()) {
+      alert('No group selected!');
+      return;
+    }
+
+    const formValue = this.questionForm.value;
+
+    this.questionService.createQuestion(formValue, this.getSelectedGroup().id).subscribe({
+      next: (response) => {
+        this.questionListByGroupId(this.getSelectedGroup().id);
+        this.resetQuestionForm();
+        alert('Question saved successfully!');
+      },
+      error: (err) => {
+        alert("Error Question")
+        console.error('Error saving question:', err);
+      }
+    });
+  }
+
+  questionListByGroupId(groupId: number) {
+    this.questionService.questionListByGroupId(groupId).subscribe({
+      next: (response:any) => {
+        return response.data || [];
+      },
+      error: (err) => {
+        alert("Error Question Group List")
+        console.error('Error fetching question group list:', err);
+      }
+    });
+  }
+
+  resetQuestionForm(): void {
+    this.questionForm.reset({
+      questionNumber: 1,
+      questionText: '',
+      correctText: '',
+      prefixText: '',
+      suffixText: '',
+      sortOrder: 1,
+      options: [
+        { optionLabel: 'A', optionText: '', sortOrder: 1 },
+        { optionLabel: 'B', optionText: '', sortOrder: 2 },
+        { optionLabel: 'C', optionText: '', sortOrder: 3 },
+        { optionLabel: 'D', optionText: '', sortOrder: 4 }
+      ]
+    });
+  }
+
+
+
+
+
+
+
+
 
   private getEmptyQuestion(): Partial<Question> {
     return {
@@ -212,23 +504,11 @@ export class CreateTest implements OnInit{
 
   // ==================== Local Storage ====================
   private loadFromLocalStorage() {
-    const savedGroups = localStorage.getItem('questionGroups');
-    const savedQuestions = localStorage.getItem('questions');
-    const savedTest = localStorage.getItem('tests');
-    const savedParts = localStorage.getItem('parts');
-    const savedPassages = localStorage.getItem('passages');
-
-    if (savedGroups) this.groups = JSON.parse(savedGroups);
-    if (savedQuestions) this.questions = JSON.parse(savedQuestions);
-    if (savedParts) this.partList = JSON.parse(savedParts);
-    if (savedPassages) this.passages = JSON.parse(savedPassages);
+    
   }
 
   private saveToLocalStorage() {
-    localStorage.setItem('questionGroups', JSON.stringify(this.groups));
-    localStorage.setItem('questions', JSON.stringify(this.questions));
-    localStorage.setItem('parts', JSON.stringify(this.partList));
-    localStorage.setItem('passages', JSON.stringify(this.passages));
+    
   }
 
  
@@ -236,7 +516,7 @@ export class CreateTest implements OnInit{
 
   // Edit Part
   editPart(partToEdit: Part) {
-    this.partForm = { ...partToEdit };
+    // this.partForm = { ...partToEdit };
     this.isEditing = true;
     
     // Scroll to form
@@ -251,17 +531,7 @@ export class CreateTest implements OnInit{
     }
   }
 
-  // Reset Form
-  resetForm() {
-    this.partForm = this.getEmptyPart();
-    this.isEditing = false;
-    this.editingId = null;
-  }
 
-  // Cancel Edit
-  cancelEdit() {
-    this.resetForm();
-  }
 
 
 
@@ -276,36 +546,10 @@ export class CreateTest implements OnInit{
   //   }
   // }
 
-  addGroup() {
-    if (!this.group.title || !this.group.question_type) {
-      alert('Title and Question Type are required!');
-      return;
-    }
 
-    const newGroup: Group = {
-      ...this.group,
-      id: Date.now() // simple unique id
-    };
-
-    this.groups.push(newGroup);
-    this.saveToLocalStorage();
-
-    // Auto-select the newly added group
-    this.selectGroup(newGroup.id);
-
-    // Reset group form
-    this.group = this.getEmptyGroup();
-  }
-
-  selectGroup(groupId: number) {
-    this.selectedGroupId.set(groupId);
-    // Reset new question form when switching group
-    this.newQuestion = { ...this.getEmptyQuestion(), group_id: groupId };
-  }
-
-  getSelectedGroup(): Group | undefined {
-    return this.groups.find(g => g.id === this.selectedGroupId());
-  }
+  // getSelectedGroup(): QuestionGroup | undefined {
+  //   return this.groups.find(g => g.id === this.selectedGroupId());
+  // }
 
   addQuestion() {
     const selectedId = this.selectedGroupId();
@@ -354,13 +598,7 @@ export class CreateTest implements OnInit{
   // Optional: delete group + its questions
   deleteGroup(groupId: number) {
     if (confirm('Delete this group and all its questions?')) {
-      this.groups = this.groups.filter(g => g.id !== groupId);
-      this.questions = this.questions.filter(q => q.group_id !== groupId);
-      this.saveToLocalStorage();
-
-      if (this.selectedGroupId() === groupId) {
-        this.selectedGroupId.set(this.groups.length ? this.groups[0].id : null);
-      }
+      
     }
   }
 
@@ -370,15 +608,6 @@ export class CreateTest implements OnInit{
 
 
 
-
-// Optional: Handle Audio File (stores filename for now)
-  onAudioSelected(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.passageForm.audioFileUrl = file.name;   // You can later convert to base64 if needed
-      // For real audio storage in localStorage, use FileReader + base64 (but it's heavy)
-    }
-  }
 
 
   // Navigation

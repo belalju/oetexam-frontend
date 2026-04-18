@@ -15,5 +15,9 @@ export class PartService {
     return this.http.post(`${this.API_URL}/admin/tests/${testId}/parts`, payload);
   }
 
+  partList(testId:number) {
+    return this.http.get(`${this.API_URL}/admin/tests/${testId}/parts`);
+  }
+
   
 }
