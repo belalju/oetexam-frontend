@@ -15,10 +15,18 @@ export class QuestionGroupService {
     return this.http.post(`${this.API_URL}/admin/parts/${partId}/question-groups`, payload);
   }
 
+  updateQuestionGroup(payload: QuestionGroup, groupId:number) {
+    return this.http.put(`${this.API_URL}/admin/question-groups/${groupId}`, payload);
+  }
+
   questionGroupList(testId:number) {
     return this.http.get(`${this.API_URL}/admin/tests/${testId}/question-groups`);
   }
   questionGroupById(groupId:number) {
     return this.http.get(`${this.API_URL}/admin/question-groups/${groupId}`);
+  }
+
+  deleteQuestionGroup(groupId:number) {
+    return this.http.delete(`${this.API_URL}/admin/question-groups/${groupId}`);
   }
 }

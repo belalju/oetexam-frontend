@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { Store } from './main/pages/store/store';
 import { Home } from './main/pages/home/home';
 import { ProductDetails } from './main/pages/product-details/product-details';
-import { Test } from './main/pages/test/test';
+import { Test } from './student/pages/test/test';
 import { App } from './app';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
@@ -13,6 +13,7 @@ import { AdminLayout } from './layout/admin-layout/admin-layout';
 import { AdminDashboard } from './admin/pages/admin-dashboard/admin-dashboard';
 import { CreateTest } from './admin/pages/create-test/create-test';
 import { AUTH_ROUTES } from './auth/auth.routes';
+import { TestCatalog } from './student/pages/test-catalog/test-catalog';
 
 export const routes: Routes = [
     {
@@ -29,10 +30,8 @@ export const routes: Routes = [
                 path:'product-details',
                 component:ProductDetails
             },
-            {
-                path:'test',
-                component:Test
-            },
+            { path: 'student/test', component: Test },
+            
         ]
     },
     {
@@ -47,6 +46,8 @@ export const routes: Routes = [
         children: [
             { path: 'home', component: StudentHome },
             { path: 'exam-preparation', component: ExamPreparation },
+            { path: 'test-catalog', component: TestCatalog },
+            
         ]
     },
     {

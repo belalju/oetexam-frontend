@@ -98,70 +98,200 @@
             <h3 class="text-xl font-bold">Study Pathway</h3>
         </div>
         <div class="p-8">
-            <div class="flex items-center justify-between mb-8 px-4">
-                <div class="w-8 h-8 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs font-bold">1</div>
-                <div class="flex-1 h-0.5 bg-gray-100"></div>
-                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center text-xs font-bold border border-blue-100">2</div>
-                <div class="flex-1 h-0.5 bg-gray-100"></div>
-                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center text-xs font-bold border border-blue-100">3</div>
-                <div class="flex-1 h-0.5 bg-gray-100"></div>
-                <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center text-xs font-bold border border-blue-100">4</div>
+
+            <!-- Stepper -->
+            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5">
+                <div class="flex items-center w-full">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold step-active border-2 flex-shrink-0">1</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">2</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">3</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">4</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">5</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">6</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">7</div>
+                <div class="step-line"></div>
+                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">8</div>
+                </div>
             </div>
 
-            <div class="space-y-3">
-                <div class="border border-gray-100 rounded-xl overflow-hidden">
-                    <div class="flex items-center justify-between p-4 bg-gray-50/50">
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-headphones text-gray-400 mr-3"></i>
-                            <span class="text-sm font-bold">Listening</span>
-                            <span class="ml-3 text-[9px] bg-red-500 text-white px-2 py-0.5 rounded font-black uppercase">Essential</span>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <span class="text-[10px] font-bold text-gray-400">0% Completed</span>
-                            <i class="fa-solid fa-square-plus text-gray-300"></i>
-                        </div>
-                    </div>
+            <!-- Reading (open by default) -->
+            <div class="section-card bg-slate-50">
+                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row open-state" onclick="toggle('reading', this)">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">👓</span>
+                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Reading</span>
+                    <span class="badge-essential">Essential</span>
                 </div>
-                <div class="border border-gray-100 rounded-xl overflow-hidden">
-                    <div class="flex items-center justify-between p-4 bg-white">
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-book-open-reader text-gray-400 mr-3"></i>
-                            <span class="text-sm font-bold">Reading</span>
-                            <span class="ml-3 text-[9px] bg-red-500 text-white px-2 py-0.5 rounded font-black uppercase">Essential</span>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <span class="text-[10px] font-bold text-gray-400">0% Completed</span>
-                            <i class="fa-solid fa-square-plus text-gray-300"></i>
-                        </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:20%"></div></div>
+                    <span class="text-xs text-slate-500 font-medium">20% Completed</span>
                     </div>
+                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
                 </div>
-                <div class="border border-gray-100 rounded-xl overflow-hidden">
-                    <div class="flex items-center justify-between p-4 bg-white">
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-book-open-reader text-gray-400 mr-3"></i>
-                            <span class="text-sm font-bold">Writing</span>
-                            <span class="ml-3 text-[9px] bg-red-500 text-white px-2 py-0.5 rounded font-black uppercase">Essential</span>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <span class="text-[10px] font-bold text-gray-400">0% Completed</span>
-                            <i class="fa-solid fa-square-plus text-gray-300"></i>
-                        </div>
-                    </div>
                 </div>
-                <div class="border border-gray-100 rounded-xl overflow-hidden">
-                    <div class="flex items-center justify-between p-4 bg-white">
-                        <div class="flex items-center">
-                            <i class="fa-solid fa-book-open-reader text-gray-400 mr-3"></i>
-                            <span class="text-sm font-bold">Speaking</span>
-                            <span class="ml-3 text-[9px] bg-red-500 text-white px-2 py-0.5 rounded font-black uppercase">Essential</span>
+                <div class="accordion-body open" id="reading">
+                <div class="pb-3 pt-1">
+                    <!-- <div class="flex justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                            <span class="text-sm font-medium text-slate-700">Overview</span>
                         </div>
-                        <div class="flex items-center space-x-4">
-                            <span class="text-[10px] font-bold text-gray-400">0% Completed</span>
-                            <i class="fa-solid fa-square-plus text-gray-300"></i>
+                        <button class="circle-btn btn-light">+</button>
+                    </div> -->
+
+                    @for(item of tests(); track item.id){
+                    <div (click)="startTest(item.id)" class="flex cursor-pointer justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                            <span class="text-sm font-medium text-slate-700">{{ item.title }}</span>
                         </div>
+                        <button class="circle-btn btn-light">+</button>
                     </div>
+                    }
+                    
+                </div>
                 </div>
             </div>
+            
+            <!-- Listening -->
+            <div class="section-card">
+                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('listening', this)">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎧</span>
+                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Listening</span>
+                    <span class="badge-essential">Essential</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:14%"></div></div>
+                    <span class="text-xs text-slate-500 font-medium">14% Completed</span>
+                    </div>
+                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
+                </div>
+                </div>
+                <div class="accordion-body" id="listening">
+                <div class="pb-3 pt-1">
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Overview</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Multiple Choice</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-green-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Practice Test 1</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            
+            
+            <!-- Writing Task 1 -->
+            <!-- <div class="section-card">
+                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('writing1', this)">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">✏️</span>
+                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Writing Task 1</span>
+                    <span class="badge-essential">Essential</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+                    <span class="text-xs text-slate-500 font-medium">0% Completed</span>
+                    </div>
+                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
+                </div>
+                </div>
+                <div class="accordion-body" id="writing1">
+                <div class="pb-3 pt-1">
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Introduction</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Bar Charts</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Practice Test 1</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                </div>
+                </div>
+            </div> -->
+            
+           
+            <!-- Speaking -->
+            <!-- <div class="section-card">
+                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('speaking', this)">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🎙️</span>
+                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Speaking</span>
+                    <span class="badge-essential">Essential</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1">
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
+                    <span class="text-xs text-slate-500 font-medium">0% Completed</span>
+                    </div>
+                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
+                </div>
+                </div>
+                <div class="accordion-body" id="speaking">
+                <div class="pb-3 pt-1">
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Part 1 - Introduction</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Part 2 - Cue Card</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                    <div class="sub-item">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <span class="text-sm font-medium text-slate-700">Practice Test 1</span>
+                    </div>
+                    <button class="circle-btn btn-light">+</button>
+                    </div>
+                </div>
+                </div>
+            </div> -->
+            
         </div>
     </div>
 

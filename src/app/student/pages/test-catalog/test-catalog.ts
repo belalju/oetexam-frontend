@@ -1,15 +1,15 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TestService } from '../../services/test-service';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-student-home',
+  selector: 'app-test-catalog',
   imports: [CommonModule],
-  templateUrl: './student-home.html',
-  styleUrl: './student-home.css',
+  templateUrl: './test-catalog.html',
+  styleUrl: './test-catalog.css',
 })
-export class StudentHome  implements OnInit {
+export class TestCatalog {
   private testService = inject(TestService);
   private router = inject(Router);
 
@@ -47,7 +47,5 @@ export class StudentHome  implements OnInit {
       }
     });
   }
-
-
 
 }

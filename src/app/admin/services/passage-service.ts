@@ -19,4 +19,16 @@ export class PassageService {
     return this.http.get(`${this.API_URL}/admin/tests/${testId}/passages`);
   }
 
+  passageById(passageId:number) {
+    return this.http.get(`${this.API_URL}/admin/passages/${passageId}`);
+  }
+
+  updatePassage(payload: Passage, passageId:number) {
+    return this.http.put(`${this.API_URL}/admin/passages/${passageId}`, payload);
+  }
+
+  deletePassage(passageId:number) {
+    return this.http.delete(`${this.API_URL}/admin/passages/${passageId}`);
+  }
+
 }

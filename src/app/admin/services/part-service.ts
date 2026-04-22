@@ -19,5 +19,17 @@ export class PartService {
     return this.http.get(`${this.API_URL}/admin/tests/${testId}/parts`);
   }
 
+  partById(partId:number) {
+    return this.http.get(`${this.API_URL}/admin/parts/${partId}`);
+  }
+
+  updatePart(payload: Part, partId:number) {
+    return this.http.put(`${this.API_URL}/admin/parts/${partId}`, payload);
+  }
+
+  deletePart(partId:number) {
+    return this.http.delete(`${this.API_URL}/admin/parts/${partId}`);
+  }
+
   
 }

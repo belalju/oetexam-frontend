@@ -16,8 +16,19 @@ export class TestService {
     return this.http.post(`${this.API_URL}/admin/tests`, payload);
   }
 
+  updateTest(payload: CreateTestRequest, testId:number) {
+    return this.http.put(`${this.API_URL}/admin/tests/${testId}`, payload);
+  }
+
   testById(id: number) {
     return this.http.get(`${this.API_URL}/admin/tests/${id}`);
+  }
+
+  publishTest(testId: number) {
+    return this.http.put(`${this.API_URL}/admin/tests/${testId}/publish`, {});
+  }
+  unPublishTest(testId: number) {
+    return this.http.put(`${this.API_URL}/admin/tests/${testId}/unpublish`, {});
   }
 
   getTests(pageable: Pageable = { page: 0, size: 10 }) {

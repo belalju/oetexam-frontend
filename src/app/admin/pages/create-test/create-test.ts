@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { Form, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateTestRequest } from '../../models/test';
 import { TestService } from '../../services/test';
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { QuestionGroup } from '../../models/question-group';
 import { QuestionGroupService } from '../../services/question-group-service';
 import { QuestionService } from '../../services/question-service';
+import { toast } from 'ngx-sonner';
 
 interface Question { id: number; group_id: number; question_number: number; question_text: string; prefix: string; suffix:string; option_a:string, option_b:string, option_c:string, option_d:string, sort_order: number; answer: string }
 
@@ -24,7 +25,7 @@ interface Question { id: number; group_id: number; question_number: number; ques
 })
 export class CreateTest implements OnInit{
   steps = ['Test Info', 'Parts', 'Passages', 'Question Groups', 'Questions', 'Review'];
-  currentStep = 4;
+  currentStep = 1;
   isEditing = false;
   editingId: number | null = null;
 
@@ -35,22 +36,27 @@ export class CreateTest implements OnInit{
   partLebels = ['PART_A', 'PART_B', 'PART_C'];
   partForm!: FormGroup;
   partList:any = [];
+  editingPartId = signal<number | null>(null);
 
   passageForm!: FormGroup;
   passages : any[] = [];
   selectedFile: File | null = null;
+  editingPassageId = signal<number | null>(null);
 
   questionTypes = ['TEXT_MATCHING', 'SHORT_ANSWER', 'GAP_FILL', 'MCQ_3', 'MCQ_4', 'NOTE_COMPLETION'];
   groupForm!: FormGroup;
   groups: any[] = [];
+  editingGroupId = signal<number | null>(null);
   
   
   getSelectedGroup = signal<any>(null);
   questionForm!: FormGroup;
   questions: Question[] = [];
 
-  newQuestion: Partial<Question> = this.getEmptyQuestion();
   selectedGroupId = signal<number | null>(null);
+  questionsByGroup: { [key: number]: any[] } = {};
+  editingQuestionId = signal<number | null>(null);
+  questionEditData: any = {};
 
   
 
@@ -60,6 +66,7 @@ export class CreateTest implements OnInit{
   private testService = inject(TestService);
   private questionGroupService = inject(QuestionGroupService);
   private questionService = inject(QuestionService);
+  private cdr = inject(ChangeDetectorRef);
 
   typeLabels: Record<string, string> = { TEXT_MATCHING: 'Text Matching', SHORT_ANSWER: 'Short Answer', GAP_FILL: 'Gap Fill', MCQ_3: 'MCQ (A/B/C)', MCQ_4: 'MCQ (A/B/C/D)', NOTE_COMPLETION: 'Note Completion' };
   typeColors: Record<string, string> = { TEXT_MATCHING: 'bg-purple-50 text-purple-700', SHORT_ANSWER: 'bg-blue-50 text-blue-700', GAP_FILL: 'bg-teal-50 text-teal-700', MCQ_3: 'bg-amber-50 text-amber-700', MCQ_4: 'bg-orange-50 text-orange-700', NOTE_COMPLETION: 'bg-pink-50 text-pink-700' };
@@ -107,7 +114,7 @@ export class CreateTest implements OnInit{
         Validators.max(180),           // max 3 hours
         Validators.pattern('^[0-9]+$') // only numbers
       ]],
-      description: ['', [Validators.maxLength(500)]]
+      description: ['', []]
     });
   }
 
@@ -123,17 +130,26 @@ export class CreateTest implements OnInit{
     const formValue = this.testForm.value;
 
     if(this.testId != null){
-      this.testById(this.testId as number);
+      // UPDATE
+      this.testService.updateTest(formValue, this.testId as number).subscribe({
+        next: (response:any) => {
+          toast.success('Test updated successfully!');
+        },
+        error: (err) => {
+          toast.error('Error updating test');
+          console.error('Error updating test:', err);
+        }
+      });
+
     }
     else{
       this.testService.createTest(formValue).subscribe({
         next: (response:any) => {
           localStorage.setItem('testId', response.data.id);
-          console.log('Test created:', response.data);
-          alert('Test saved successfully!');
+          toast.success('Test saved successfully!');
         },
         error: (err) => {
-          alert("Error")
+          toast.error('Error saving test');
           console.error('Error saving test:', err);
         }
       });
@@ -157,10 +173,10 @@ export class CreateTest implements OnInit{
   }
 
 
-  // Part Form
+  // ========================== Part Section ===============================
   private initPartForm(): void {
     this.partForm = this.fb.group({
-      partTitle: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      partTitle: ['', [ Validators.minLength(3), Validators.maxLength(255)]],
       partLabel: ['', Validators.required],
       timeLimitMinutes: [15, [Validators.required, Validators.min(1), Validators.max(180)]],
       sortOrder: [1, [Validators.required, Validators.min(1)]],
@@ -179,30 +195,77 @@ export class CreateTest implements OnInit{
     }
 
     if (!this.testId) {
-      alert('Test not found!');
+      toast.error('Test not found!');
       return;
     }
 
-    if(this.testId != null){
-      this.partService.createPart(this.partForm.value, this.testId as number).subscribe({
-        next: (response:any) => {
-          alert('Part saved successfully!');
-          this.partListByTestId(); // Refresh the part list
+    if (this.editingPartId()) {
+      // UPDATE
+      this.partService.updatePart(this.partForm.value, this.editingPartId()!).subscribe({
+        next: () => {
+          toast.success('Part updated successfully!');
+          this.partListByTestId();
           this.resetPartForm();
         },
         error: (err) => {
-          alert("Error Part")
-          console.error('Error saving test:', err);
+          toast.error('Error updating part');
+          console.error(err);
+        }
+      });
+    } else {
+      // CREATE
+      this.partService.createPart(this.partForm.value, this.testId as number).subscribe({
+        next: () => {
+          toast.success('Part saved successfully!');
+          this.partListByTestId();
+          this.resetPartForm();
+        },
+        error: (err) => {
+          toast.error('Error saving part');
+          console.error(err);
         }
       });
     }
-    else{
-      alert('Test not found!');
-    }
+  }
 
+  editPart(partId: number): void {
+    this.partService.partById(partId).subscribe({
+      next: (response: any) => {
+        const part = response.data;
+        this.editingPartId.set(part.id);
+        this.partForm.patchValue({
+          partTitle: part.partTitle,
+          partLabel: part.partLabel,
+          timeLimitMinutes: part.timeLimitMinutes,
+          sortOrder: part.sortOrder,
+          instructions: part.instructions
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      error: (err) => {
+        toast.error('Error fetching part details');
+        console.error(err);
+      }
+    });
+  }
+
+  deletePart(partId: number): void {
+    if (!confirm('Are you sure you want to delete this part?')) return;
+
+    this.partService.deletePart(partId).subscribe({
+      next: () => {
+        toast.success('Part deleted successfully!');
+        this.partListByTestId();
+      },
+      error: (err) => {
+        toast.error('Error deleting part');
+        console.error(err);
+      }
+    });
   }
 
   resetPartForm(): void {
+    this.editingPartId.set(null);
     this.partForm.reset({
       partTitle: '',
       partLabel: '',
@@ -218,6 +281,7 @@ export class CreateTest implements OnInit{
     this.partService.partList(this.testId as number).subscribe({
       next: (response:any) => {
         this.partList = response.data || [];
+        this.cdr.detectChanges(); // <-- ensure UI updates after fetching parts
       },
       error: (err) => {
         alert("Error Part List")
@@ -226,10 +290,12 @@ export class CreateTest implements OnInit{
     });
   }
 
+  // ========================== Passage Section ===============================
+  
   private initPassageForm(): void {
     this.passageForm = this.fb.group({
       label: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      partId: ['', Validators.required],
+      partId: [''],
       sortOrder: [1, [Validators.required, Validators.min(1)]],
       content: ['', [Validators.required, Validators.minLength(50)]],
       audioFileUrl: [''],
@@ -241,18 +307,15 @@ export class CreateTest implements OnInit{
     return this.passageForm.controls;
   }
 
-  // Handle audio file selection
   onAudioSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      // Optional: show file name
       this.passageForm.patchValue({ audioFileUrl: file.name });
     }
   }
 
 
-  // Save Passage
   savePassage() {
     if (this.passageForm.invalid) {
       this.passageForm.markAllAsTouched();
@@ -261,23 +324,75 @@ export class CreateTest implements OnInit{
 
     const formData = this.passageForm.value;
 
-    this.passageService.createPassage(formData, formData.partId).subscribe({
-      next: (response:any) => {
-        this.passageListByTestId(); 
-        this.resetPassageForm();
-        alert('Passage saved successfully!');
-        
-        
+    if (this.editingPassageId()) {
+      // UPDATE
+      this.passageService.updatePassage(formData, this.editingPassageId()!).subscribe({
+        next: () => {
+          this.passageListByTestId();
+          toast.success('Passage updated successfully!');
+          this.resetPassageForm();
+        },
+        error: (err) => {
+          toast.error('Error updating passage');
+          console.error(err);
+        }
+      });
+    } else {
+      // CREATE
+      this.passageService.createPassage(formData, formData.partId).subscribe({
+        next: () => {
+          this.passageListByTestId();
+          this.resetPassageForm();
+          toast.success('Passage saved successfully!');
+        },
+        error: (err) => {
+          toast.error('Error saving passage');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  editPassage(passageId: number): void {
+    this.passageService.passageById(passageId).subscribe({
+      next: (response: any) => {
+        const passage = response.data;
+        this.editingPassageId.set(passage.id);
+        this.isEditing = true;
+        this.passageForm.patchValue({
+          label: passage.label,
+          partId: passage.partId,
+          sortOrder: passage.sortOrder,
+          content: passage.content,
+          audioFileUrl: passage.audioFileUrl,
+          audioDurationSeconds: passage.audioDurationSeconds
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
       error: (err) => {
-        alert("Error Passage")
-        console.error('Error saving test:', err);
+        toast.error('Error fetching passage details');
+        console.error(err);
       }
     });
+  }
 
+  deletePassage(passageId: number): void {
+    if (!confirm('Are you sure you want to delete this passage?')) return;
+
+    this.passageService.deletePassage(passageId).subscribe({
+      next: () => {
+        this.passageListByTestId();
+        toast.success('Passage deleted successfully!');
+      },
+      error: (err) => {
+        toast.error('Error deleting passage');
+        console.error(err);
+      }
+    });
   }
 
   resetPassageForm(): void {
+    this.editingPassageId.set(null);
     this.passageForm.reset({
       label: '',
       partId: '',
@@ -294,9 +409,10 @@ export class CreateTest implements OnInit{
     this.passageService.passageList(this.testId as number).subscribe({
       next: (response:any) => {
         this.passages = response.data || [];
+        // this.cdr.detectChanges(); // <-- ensure UI updates after fetching passages
       },
       error: (err) => {
-        alert("Error Passage List")
+        toast.error('Error fetching passage list');
         console.error('Error fetching passage list:', err);
       }
     });
@@ -307,7 +423,7 @@ export class CreateTest implements OnInit{
     this.groupForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
       questionType: ['', Validators.required],
-      partId: ['', Validators.required],
+      partId: ['', ],
       passageId: [''],                    // optional
       sortOrder: [1, [Validators.required, Validators.min(1)]],
       instructions: ['', [Validators.maxLength(800)]]
@@ -326,32 +442,92 @@ export class CreateTest implements OnInit{
 
     const formValue = this.groupForm.value;
 
-    this.questionGroupService.createQuestionGroup(formValue, formValue.partId).subscribe({
-      next: (response) => {
-        this.groupListByTestId(this.testId as number); 
-        this.resetGroupForm();
-        alert('Question Group saved successfully!');
-      },
-      error: (err) => {
-        alert("Error Question Group")
-        console.error('Error saving question group:', err);
-      }
-    });
+    if (this.editingGroupId()) {
+      // UPDATE
+      this.questionGroupService.updateQuestionGroup(formValue, this.editingGroupId()!).subscribe({
+        next: () => {
+          this.groupListByTestId(this.testId as number);
+          this.resetGroupForm();
+          toast.success('Question Group updated successfully!');
+        },
+        error: (err) => {
+          toast.error('Error updating Question Group');
+          console.error(err);
+        }
+      });
+    } else {
+      // CREATE
+      this.questionGroupService.createQuestionGroup(formValue, formValue.partId).subscribe({
+        next: () => {
+          this.groupListByTestId(this.testId as number);
+          this.resetGroupForm();
+          toast.success('Question Group saved successfully!');
+        },
+        error: (err) => {
+          toast.error('Error saving Question Group');
+          console.error(err);
+        }
+      });
+    }
   }
 
   groupListByTestId(testId: number) {
     this.questionGroupService.questionGroupList(testId).subscribe({
       next: (response:any) => {
         this.groups = response.data || [];
+        // this.groups.forEach(g => this.questionListByGroupId(g.id));
+        this.groups.forEach((g: any) => {
+          this.questionsByGroup[g.id] = []; 
+          this.questionListByGroupId(g.id); 
+        });
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        alert("Error Question Group List")
+        toast.error('Error fetching question group list');
         console.error('Error fetching question group list:', err);
       }
     });
   }
 
+  editGroup(groupId: number): void {
+    this.questionGroupService.questionGroupById(groupId).subscribe({
+      next: (response: any) => {
+        const group = response.data;
+        this.editingGroupId.set(group.id);
+        this.groupForm.patchValue({
+          title: group.title,
+          questionType: group.questionType,
+          partId: group.partId,
+          passageId: group.passageId,
+          sortOrder: group.sortOrder,
+          instructions: group.instructions
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      error: (err) => {
+        toast.error('Error fetching group details');
+        console.error(err);
+      }
+    });
+  }
+
+  deleteGroup(groupId: number): void {
+    if (!confirm('Are you sure you want to delete this group?')) return;
+
+    this.questionGroupService.deleteQuestionGroup(groupId).subscribe({
+      next: () => {
+        this.groupListByTestId(this.testId as number);
+        toast.success('Question Group deleted successfully!');
+      },
+      error: (err) => {
+        toast.error('Error deleting Question Group');
+        console.error(err);
+      }
+    });
+  }
+
   resetGroupForm(): void {
+    this.editingGroupId.set(null);
     this.groupForm.reset({
       title: '',
       questionType: '',
@@ -368,7 +544,7 @@ export class CreateTest implements OnInit{
         this.getSelectedGroup.set(response.data);
       },
       error: (err) => {
-        alert("Error fetching group details")
+        toast.error('Error fetching group details');
         console.error('Error fetching group details:', err);
       }
     });
@@ -378,10 +554,10 @@ export class CreateTest implements OnInit{
   private initQuestionForm(): void {
     this.questionForm = this.fb.group({
       questionNumber: [1, [Validators.required, Validators.min(1)]],
-      questionText: ['', [Validators.required, Validators.minLength(5)]],
+      questionText: ['', [Validators.minLength(5)]],
       prefixText: [''],
       suffixText: [''],
-      correctText: [''],
+      correctText: ['', [Validators.required]],
       sortOrder: [1, [Validators.required, Validators.min(1)]],
       options: this.fb.array([
         this.fb.group({
@@ -412,7 +588,6 @@ export class CreateTest implements OnInit{
     return this.questionForm.get('options') as FormArray;
   }
 
-  // Helper to get option controls easily
   getOptionControl(index: number, controlName: string) {
     return this.options.at(index).get(controlName);
   }
@@ -422,45 +597,121 @@ export class CreateTest implements OnInit{
   }
 
   saveQuestion() {
-    console.log('Saving question with form value:', this.questionForm.value);
     if (this.questionForm.invalid) {
       this.questionForm.markAllAsTouched();
       return;
     }
 
-    if(!this.getSelectedGroup()) {
-      alert('No group selected!');
+    if (!this.getSelectedGroup()) {
+      toast.error('No group selected!');
       return;
     }
 
     const formValue = this.questionForm.value;
+    const groupId = this.getSelectedGroup().id;
 
-    this.questionService.createQuestion(formValue, this.getSelectedGroup().id).subscribe({
-      next: (response) => {
-        this.questionListByGroupId(this.getSelectedGroup().id);
-        this.resetQuestionForm();
-        alert('Question saved successfully!');
+    if (this.editingQuestionId()) {
+      // UPDATE
+      this.questionService.updateQuestion(formValue, this.editingQuestionId()!).subscribe({
+        next: (response: any) => {
+          this.questionListByGroupId(groupId);
+          this.resetQuestionForm();
+          toast.success('Question updated successfully!');
+        },
+        error: (err) => {
+          toast.error('Error updating question');
+          console.error(err);
+        }
+      });
+    } else {
+      // CREATE
+      this.questionService.createQuestion(formValue, groupId).subscribe({
+        next: (response: any) => {
+          this.questionListByGroupId(groupId);
+          this.questionsByGroup = {
+            ...this.questionsByGroup,
+            [groupId]: response.data || []
+          };
+          this.resetQuestionForm();
+          toast.success('Question saved successfully!');
+        },
+        error: (err) => {
+          toast.error('Error saving question');
+          console.error(err);
+        }
+      });
+    }
+  }
+
+  editQuestion(question: any, groupId: number): void {
+    // this.selectedGroupId.set(groupId); // <-- select the group first
+    this.selectGroup(groupId); // <-- load group details (if needed for display)
+    this.editingQuestionId.set(question.id);
+
+    this.questionForm.patchValue({
+      questionNumber: question.questionNumber,
+      questionText: question.questionText,
+      prefixText: question.prefixText,
+      suffixText: question.suffixText,
+      correctText: question.correctAnswer?.correctText ?? question.correctText,
+      sortOrder: question.sortOrder,
+    });
+
+    // Patch FormArray properly
+    question.options?.forEach((opt: any, i: number) => {
+      this.options.at(i)?.patchValue({
+        optionLabel: opt.optionLabel,
+        optionText: opt.optionText,
+        sortOrder: opt.sortOrder
+      });
+    });
+
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+
+  questionListByGroupId(groupId: number): void {
+    this.questionService.questionListByGroupId(groupId).subscribe({
+      next: (response: any) => {
+        const data = response.data;
+        this.questionsByGroup = {
+          ...this.questionsByGroup,
+          [groupId]: Array.isArray(data) ? data : []  // ensure array
+        };
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        alert("Error Question")
-        console.error('Error saving question:', err);
+        this.questionsByGroup = {
+          ...this.questionsByGroup,
+          [groupId]: []
+        };
+        console.error(err);
       }
     });
   }
 
-  questionListByGroupId(groupId: number) {
-    this.questionService.questionListByGroupId(groupId).subscribe({
-      next: (response:any) => {
-        return response.data || [];
+  deleteQuestion(questionId: number): void {
+    if (!confirm('Are you sure you want to delete this question?')) return;
+
+    const groupId = this.getSelectedGroup()?.id;
+
+    this.questionService.deleteQuestion(questionId).subscribe({
+      next: (response: any) => {
+        if (groupId) {
+          this.questionListByGroupId(groupId);
+        }
+        toast.success('Question deleted successfully!');
       },
       error: (err) => {
-        alert("Error Question Group List")
-        console.error('Error fetching question group list:', err);
+        toast.error('Error deleting question');
+        console.error(err);
       }
     });
   }
 
   resetQuestionForm(): void {
+    this.editingQuestionId.set(null); // <-- clear edit mode
     this.questionForm.reset({
       questionNumber: 1,
       questionText: '',
@@ -485,126 +736,6 @@ export class CreateTest implements OnInit{
 
 
 
-  private getEmptyQuestion(): Partial<Question> {
-    return {
-      question_number: 1,
-      question_text: '',
-      prefix: '',
-      suffix: '',
-      option_a: '',
-      option_b: '',
-      option_c: '',
-      option_d: '',
-      sort_order: 1,
-      answer: ''
-    };
-  }
-
-
-
-  // ==================== Local Storage ====================
-  private loadFromLocalStorage() {
-    
-  }
-
-  private saveToLocalStorage() {
-    
-  }
-
- 
-  // Add or Update Part
-
-  // Edit Part
-  editPart(partToEdit: Part) {
-    // this.partForm = { ...partToEdit };
-    this.isEditing = true;
-    
-    // Scroll to form
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // Delete Part
-  deletePart(id: number) {
-    if (confirm('Are you sure you want to delete this part?')) {
-      this.saveToLocalStorage();
-      alert('Part deleted successfully!');
-    }
-  }
-
-
-
-
-
-
-  // addGroup() {
-  //   if (!this.group.title || !this.group.question_type) {
-  //     alert('Title and Question Type are required!');
-
-  //   } catch (error) {
-  //     console.error('Error saving test to localStorage:', error);
-  //     alert('Failed to save test. Please try again.');
-  //   }
-  // }
-
-
-  // getSelectedGroup(): QuestionGroup | undefined {
-  //   return this.groups.find(g => g.id === this.selectedGroupId());
-  // }
-
-  addQuestion() {
-    const selectedId = this.selectedGroupId();
-    if (!selectedId) {
-      alert('Please select or create a group first!');
-      return;
-    }
-
-    const newQ: Question = {
-      id: Date.now(),
-      group_id: selectedId,
-      question_number: this.newQuestion.question_number || 1,
-      question_text: this.newQuestion.question_text || '',
-      prefix: this.newQuestion.prefix || '',
-      suffix: this.newQuestion.suffix || '',
-      option_a: this.newQuestion.option_a || '',
-      option_b: this.newQuestion.option_b || '',
-      option_c: this.newQuestion.option_c || '',
-      option_d: this.newQuestion.option_d || '',
-      sort_order: this.newQuestion.sort_order || 1,
-      answer: this.newQuestion.answer || ''
-    };
-
-    this.questions.push(newQ);
-    this.saveToLocalStorage();
-
-    // Reset question form (keep same group)
-    this.newQuestion = { ...this.getEmptyQuestion(), group_id: selectedId };
-  }
-
-  getQuestionsForGroup(groupId: number): Question[] {
-    return this.questions
-      .filter(q => q.group_id === groupId)
-      .sort((a, b) => a.sort_order - b.sort_order);
-  }
-
-
-
-  deleteQuestion(qId: number) {
-    if (confirm('Delete this question?')) {
-      this.questions = this.questions.filter(q => q.id !== qId);
-      this.saveToLocalStorage();
-    }
-  }
-
-  // Optional: delete group + its questions
-  deleteGroup(groupId: number) {
-    if (confirm('Delete this group and all its questions?')) {
-      
-    }
-  }
-
-
-
-
 
 
 
@@ -612,7 +743,7 @@ export class CreateTest implements OnInit{
 
   // Navigation
   goNext() {
-    if (this.currentStep < 5) {
+    if (this.currentStep < 6) {
       this.currentStep++;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -631,17 +762,34 @@ export class CreateTest implements OnInit{
   }
 
   publishTest() {
-    alert('Test published successfully! 🎉');
+    if (!this.testId) {
+      toast.error('Test not found!');
+      return;
+    }
+
+    if (!confirm('Are you sure you want to publish this test?')) return;
+
+    this.testService.publishTest(this.testId).subscribe({
+      next: () => {
+        localStorage.removeItem('testId');
+        toast.success('Test published successfully!');
+        this.router.navigate(['/admin/dashboard']);
+      },
+      error: (err) => {
+        toast.error('Error publishing test');
+        console.error(err);
+      }
+    });
   }
 
-  // Getters for computed data views
-  get groupedPassages() {
-    const grouped: Record<string, Passage[]> = {};
-    this.passages.forEach(p => {
-      if (!grouped[p.label]) grouped[p.label] = [];
-      grouped[p.label].push(p);
-    });
-    return Object.entries(grouped).map(([part, list]) => ({ part, list }));
+
+
+
+
+  getTotalQuestions(): number {
+    return Object.values(this.questionsByGroup)
+      .reduce((sum, questions) => sum + questions.length, 0);
   }
+
 
 }

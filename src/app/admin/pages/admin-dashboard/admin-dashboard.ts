@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TestService } from '../../services/test';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -45,6 +46,46 @@ export class AdminDashboard implements OnInit{
         console.error(err);
       }
     });
+  }
+
+  publishTest(id:number) {
+    // Call the API to publish the test
+    this.testService.publishTest(id).subscribe({
+      next: (response:any) => {
+        this.loadTests();
+        toast.success('Test published successfully!');
+      },
+      error: (err:any) => {
+        console.error(err);
+        toast.error('Failed to publish test.');
+      }
+    });
+  }
+
+  unPublishTest(id:number) {
+    // Call the API to unpublish the test
+    this.testService.unPublishTest(id).subscribe({
+      next: (response:any) => {
+        this.loadTests();
+        toast.warning('Test unpublished successfully!');
+      },
+      error: (err:any) => {
+        console.error(err);
+        toast.error('Failed to unpublish test.');
+      }
+    });
+  }
+
+  totalTests(): number {
+    return this.totalElements();
+  }
+
+  publishedTests(): number {
+    return this.tests().filter(test => test.published).length;
+  }
+
+  draftTests(): number {
+    return this.tests().filter(test => !test.published).length;
   }
 
   onPageChange(page: number) {
@@ -103,6 +144,5 @@ export class AdminDashboard implements OnInit{
         testId: id,
       }
     });
-    console.log("Routing");
   }
 }
