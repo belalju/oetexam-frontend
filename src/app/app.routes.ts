@@ -14,6 +14,9 @@ import { AdminDashboard } from './admin/pages/admin-dashboard/admin-dashboard';
 import { CreateTest } from './admin/pages/create-test/create-test';
 import { AUTH_ROUTES } from './auth/auth.routes';
 import { TestCatalog } from './student/pages/test-catalog/test-catalog';
+import { adminGuard, authGuard } from './auth/guards/auth-guard';
+import { MyHistory } from './student/pages/my-history/my-history';
+import { Results } from './student/pages/results/results';
 
 export const routes: Routes = [
     {
@@ -30,7 +33,7 @@ export const routes: Routes = [
                 path:'product-details',
                 component:ProductDetails
             },
-            { path: 'student/test', component: Test },
+            { path: 'student/test', component: Test, canActivate: [authGuard] },
             
         ]
     },
@@ -44,9 +47,11 @@ export const routes: Routes = [
         path: 'student',
         component: StudentLayout,
         children: [
-            { path: 'home', component: StudentHome },
-            { path: 'exam-preparation', component: ExamPreparation },
-            { path: 'test-catalog', component: TestCatalog },
+            { path: 'home', component: StudentHome, canActivate: [authGuard] },
+            { path: 'exam-preparation', component: ExamPreparation, canActivate: [authGuard] },
+            { path: 'test-catalog', component: TestCatalog, canActivate: [authGuard] },
+            { path: 'my-history', component: MyHistory, canActivate: [authGuard] },
+            { path: 'results', component: Results, canActivate: [authGuard] },
             
         ]
     },
@@ -54,8 +59,16 @@ export const routes: Routes = [
         path: 'admin',
         component: AdminLayout,
         children: [
-            { path: 'dashboard', component: AdminDashboard },
-            { path: 'create-test', component: CreateTest },
+            { 
+                path: 'dashboard', 
+                component: AdminDashboard,
+                canActivate: [authGuard, adminGuard],
+            },
+            { 
+                path: 'create-test', 
+                component: CreateTest,
+                canActivate: [authGuard, adminGuard]
+            },
         ]
     },
 

@@ -62,8 +62,18 @@
                     <button class="text-gray-600 hover:text-black"><i class="fas fa-search text-lg"></i></button>
                     <button class="text-gray-600 hover:text-black"><i class="fas fa-shopping-cart text-lg"></i></button>
                     
-                    <a routerLink="/login" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
-                    <a routerLink="/registration" class="hidden md:inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Trial</a>
+                    @if(isAuthenticated) {
+                        @if(isAdmin) {
+                            <a routerLink="/admin/dashboard" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
+                        }
+                        @else {
+                        <a routerLink="/student/home" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
+                        }
+                    } 
+                    @else {
+                    <a routerLink="/auth/login" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
+                    <a routerLink="/auth/register" class="hidden md:inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Trial</a>
+                    }
                 </div>
             </div>
         </div>

@@ -1,0 +1,86 @@
+ 
+    <!-- Header Row -->
+    <div class="flex items-start justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">My History</h1>
+        <p class="text-sm text-gray-500 mt-1">Review your past test attempts</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" placeholder="Search tests..."
+            class="pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg text-gray-600 placeholder-gray-400 focus:outline-none w-56 shadow-sm"/>
+        </div>
+        <select class="text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 text-gray-700 focus:outline-none shadow-sm cursor-pointer">
+          <option>All Types</option>
+          <option>Reading</option>
+          <option>Listening</option>
+        </select>
+      </div>
+    </div>
+ 
+    <!-- Filter Tabs -->
+    <div class="flex items-center gap-1 mb-6">
+      <button class="px-4 py-1.5 text-sm font-semibold rounded-md bg-white text-gray-800 shadow-sm border border-gray-200">All</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:bg-white hover:text-gray-700 transition">In Progress</button>
+      <button class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:bg-white hover:text-gray-700 transition">Completed</button>
+    </div>
+ 
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-3 gap-5">
+ 
+      <!-- Test Attempt Card -->
+      @for(item of tests(); track item.attemptId){
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
+        <div>
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-500">{{item.subTestType}}</span>
+          </div>
+
+          <!-- Title -->
+          <h2 class="text-base font-bold text-gray-900">{{item.testTitle}}</h2>
+          <div class="text-xs text-gray-500 space-y-1 flex items-center justify-between mt-2">
+            <p><span class="font-medium text-gray-600">Started:</span> {{item.startedAt | date: 'short'}}</p>
+            <p><span class="font-medium text-gray-600">Completed:</span> {{item.completedAt | date: 'short'}}</p>
+          </div>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="h-px bg-gray-100 my-4"></div>
+
+        <!-- Score Section -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-gray-600">Score</span>
+            <span class="text-sm font-bold text-blue-600">{{item.totalScore}}/{{item.maxScore}}</span>
+          </div>
+          <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-blue-600 rounded-full" 
+              [style.width.%]="item.percentage"></div>
+          </div>
+          <div class="text-xs text-gray-500 mt-1">{{item.percentage}}%</div>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button (click)="viewResults(item.attemptId)" class="text-sm text-blue-500 font-medium hover:underline">Review Results</button>
+            @if(item.status === 'IN_PROGRESS'){
+            <button class="border border-blue-500 text-blue-500 hover:bg-blue-50 text-sm font-semibold px-5 py-1.5 rounded-lg transition">In Progress</button>
+            } @else {
+            <button class="bg-teal-500 hover:bg-teal-600 text-white text-sm font-semibold px-5 py-1.5 rounded-lg transition">Completed</button>
+            }
+        </div>
+
+        
+      </div>
+      }
+ 
+    </div>

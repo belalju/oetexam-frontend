@@ -15,8 +15,8 @@
         </div>
       </div>
     <div class="flex items-center gap-6">
-      <button (click)="finishSection()" class="bg-[#A3C644] hover:bg-[#8eb039] text-[#1a3a06] font-bold py-2 px-4 rounded transition-colors text-sm shadow-sm">
-        Finish Section
+      <button (click)="submitAttempt()" class="bg-[#A3C644] hover:bg-[#8eb039] text-[#1a3a06] font-bold py-2 px-4 rounded transition-colors text-sm shadow-sm">
+        Submit Test
       </button>
     </div>
   </header>
@@ -66,7 +66,7 @@
         </div>
 
         <!-- RIGHT: Questions -->
-        <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto pb-40">
+        <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}}">
           <div class="flex-1 overflow-y-auto p-6">
 
             <!-- Part A global instructions banner -->
@@ -198,55 +198,8 @@
       @if(currentStep === '3'){
         <section #section03 class="grid grid-cols-1 gap-4 h-screen">
 
-          <!-- LEFT: Passages for B and C -->
-          <!-- <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen">
-
-            @if(partB()){
-              <div class="mb-4">
-                <span class="inline-block bg-green-200 text-green-900 text-xs font-bold px-2 py-0.5 mb-2 rounded-md">PART B</span>
-                @if(partB()!.instructions){
-                  <p class="text-sm text-gray-600 mb-3">{{ partB()!.instructions }}</p>
-                }
-              </div>
-              @for(passage of partBPassages(); track passage.id){
-                <div class="mb-5">
-                  <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-0.5 mb-2 rounded-md">
-                    {{ passage.label }}
-                  </span>
-                  <div class="bg-[#F2F6F9] p-6 rounded border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line">
-                    {{ passage.content }}
-                  </div>
-                </div>
-              }
-            }
-
-            @if(partB() && partC()){
-              <hr class="my-6 border-gray-300" />
-            }
-
-            @if(partC()){
-              <div class="mb-4">
-                <span class="inline-block bg-purple-200 text-purple-900 text-xs font-bold px-2 py-0.5 mb-2 rounded-md">PART C</span>
-                @if(partC()!.instructions){
-                  <p class="text-sm text-gray-600 mb-3">{{ partC()!.instructions }}</p>
-                }
-              </div>
-              @for(passage of partCPassages(); track passage.id){
-                <div class="mb-5">
-                  <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-0.5 mb-2 rounded-md">
-                    {{ passage.label }}
-                  </span>
-                  <div class="bg-[#F2F6F9] p-6 rounded border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line">
-                    {{ passage.content }}
-                  </div>
-                </div>
-              }
-            }
-
-          </div> -->
-
           <!-- RIGHT: Questions for B and C -->
-          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto pb-40">
+          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}}">
             <div class="p-6">
 
               <!-- Part B Questions -->
@@ -443,10 +396,18 @@
         }
     </div>
     <div class="flex items-center gap-4">
-        <button (click)="goBack()" class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md">
+        <button (click)="goBack()" 
+          [disabled]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
+          [class.opacity-50]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
+          [class.cursor-not-allowed]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
+          class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md">
         <span class="text-xs">❮</span> Back
         </button>
-        <button (click)="goNext()" class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md border-l border-blue-800">
+        <button (click)="goNext()" 
+          [disabled]="currentStep === '2' && !sectionTimeExpired()"
+          [class.opacity-50]="currentStep === '2' && !sectionTimeExpired()"
+          [class.cursor-not-allowed]="currentStep === '2' && !sectionTimeExpired()"
+          class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md border-l border-blue-800">
         Next <span class="text-xs">❯</span>
         </button>
     </div>

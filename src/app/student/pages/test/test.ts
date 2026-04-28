@@ -18,10 +18,11 @@ export class Test implements AfterViewInit, OnDestroy {
   activeQuestion: number = 1;
   currentQuestion: number = 1;
   isFullScreen: boolean = true;
-  countdownDisplay: string = '00:00:00';     // ← as you requested
+  countdownDisplay: string = '00:00:00';
   private timeLeftInSeconds: number = 0;
   private timerInterval: any = null;
   isCountdownRunning: boolean = false;
+  sectionTimeExpired = signal<boolean>(false);  // Track if current section time has expired
  
 
   testId: number | null = null;
@@ -37,7 +38,7 @@ export class Test implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    const minutes = this.testData().totalTimeLimitMinutes || 60;
+    const minutes = this.getSectionTimeLimit();
     this.timeLeftInSeconds = minutes * 60;
 
     this.startCountdown();
@@ -113,11 +114,27 @@ export class Test implements AfterViewInit, OnDestroy {
     return group?.questions ?? [];
   }
 
+  // Get section-specific time limit based on currentStep
+  getSectionTimeLimit(): number {
+    if (this.currentStep === '2') {
+      return this.partA()?.timeLimitMinutes || 60;
+    } else if (this.currentStep === '3') {
+      const partBTime = this.partB()?.timeLimitMinutes || 0;
+      const partCTime = this.partC()?.timeLimitMinutes || 0;
+      return partBTime + partCTime || 60;
+    }
+    // Section 1 (Introduction) doesn't need a specific timer
+    return this.testData()?.totalTimeLimitMinutes || 60;
+  }
+
   selectAnswer(questionId: number, value: string, optionId: number | null = null) {
-    // this.answers.update(current => ({
-    //   ...current,
-    //   [questionId]: { answerText: value, selectedOptionId: optionId }
-    // }));
+    // Update local state immediately for UI feedback
+    this.answers.update(current => ({
+      ...current,
+      [questionId]: { answerText: value, selectedOptionId: optionId }
+    }));
+    
+    // Save to backend
     const payload = {
       questionId: Number(questionId),
       answerText: value,
@@ -131,25 +148,12 @@ export class Test implements AfterViewInit, OnDestroy {
   }
 
   saveAnswers(payload: any) {
-    const attemptId = this.attemptData()?.attemptId || 1;
-    console.log('attemptId:', attemptId);
-    console.log('answers:', this.answers());
-
-    // if (!attemptId) {
-    //   toast.error('Attempt not started. Cannot save answers.');
-    //   return;
-    // }
-
-    // const payload = {
-    //     questionId: Number(questionId),
-    //     answerText,
-    //     selectedOptionId
-    //   }
-    // };
-
+    const attemptId = this.attemptData()?.attemptId;
 
     this.testService.saveAnswer(attemptId, payload).subscribe({
-      next: () => toast.success('Answers saved successfully!'),
+      next: () => {
+        toast.success('Answers saved successfully!');
+      },
       error: (err) => {
         console.error('Failed to save answers:', err);
         toast.error('Failed to save answers. Please try again later.');
@@ -166,10 +170,57 @@ export class Test implements AfterViewInit, OnDestroy {
         this.attemptData.set(response.data);
         toast.success('Test started successfully!');
         // this.router.navigate(['/student/attempt', attemptId]);
+        localStorage.setItem('currentAttemptId', attemptId.toString());
       },
       error: (err) => {
         console.error('Failed to start attempt:', err);
         toast.error('Failed to start the test. Please try again later.');
+      }
+    });
+  }
+
+  attemptById(attemptId: number) {
+    this.testService.attemptById(attemptId).subscribe({
+      next: (response: any) => {
+        this.attemptData.set(response.data);
+        attemptId = response.data.attemptId;
+      },
+      error: (err) => {
+        console.error('Failed to fetch attempt data:', err);
+        toast.error('Failed to load attempt data. Please try again later.');
+      }
+    });
+  }
+
+  submitAttempt() {
+    const attemptIdFromData = this.attemptData()?.attemptId;
+    const attemptIdFromStorage = localStorage.getItem('currentAttemptId');
+
+    // Determine which attemptId to use
+    let attemptId: number | null = null;
+
+    if (attemptIdFromData) {
+      attemptId = attemptIdFromData;
+    } else if (attemptIdFromStorage) {
+      attemptId = parseInt(attemptIdFromStorage, 10);
+    }
+
+    // Validation
+    if (!attemptId || isNaN(attemptId)) {
+      toast.error('No active attempt found to submit.');
+      return;
+    }
+
+    this.testService.submitAttempt(attemptId).subscribe({
+      next: () => {
+        toast.success('Test submitted successfully!');
+        localStorage.removeItem('currentAttemptId');
+        // this.router.navigate(['/student/test-results', attemptId]);
+        this.router.navigate(['/student/my-history']);
+      },
+      error: (err) => {
+        console.error('Failed to submit attempt:', err);
+        toast.error('Failed to submit the test. Please try again later.');
       }
     });
   }
@@ -189,6 +240,7 @@ export class Test implements AfterViewInit, OnDestroy {
     if (this.isCountdownRunning) return;
 
     this.isCountdownRunning = true;
+    this.sectionTimeExpired.set(false);
 
     this.timerInterval = setInterval(() => {
       if (this.timeLeftInSeconds > 0) {
@@ -216,8 +268,8 @@ export class Test implements AfterViewInit, OnDestroy {
   private timeUp() {
     this.stopCountdown();
     this.countdownDisplay = '00:00:00';
-    alert('Time is up!');
-    // Call your test submit function here
+    this.sectionTimeExpired.set(true);
+    alert(`Time is up for ${this.currentStep === '2' ? 'Part A' : this.currentStep === '3' ? 'Part B & C' : 'this section'}!`);
   }
 
   stopCountdown() {
@@ -261,19 +313,50 @@ export class Test implements AfterViewInit, OnDestroy {
   goNext() { 
     if (this.currentStep === '1') {
       this.currentStep = '2';
-      this.startAttempt();
-      console.log('Current Step:', this.currentStep);
+      this.resetSectionTimer();
+
+      const currentAttemptId = localStorage.getItem('currentAttemptId');
+      console.log('Current Attempt ID from localStorage:', currentAttemptId);
+      if (!this.attemptData() && currentAttemptId) {
+        this.attemptById(parseInt(currentAttemptId));
+      } else if (!this.attemptData()) {
+        this.startAttempt();
+      }
+
     } else if (this.currentStep === '2') {
+      // Can only move to section 3 if Part A time has expired
+      if (!this.sectionTimeExpired()) {
+        toast.error('You must complete Part A time limit before proceeding to Part B & C');
+        return;
+      }
       this.currentStep = '3';
-      console.log('Current Step:', this.currentStep);
+      this.resetSectionTimer();
     }
   }
+
   goBack() { 
     if (this.currentStep === '3') {
-      this.currentStep = '2';
+      // Cannot go back from section 3 (Part B & C)
+      toast.error('You cannot go back to Part A after starting Part B & C');
+      return;
     } else if (this.currentStep === '2') {
+      // Can go back from section 2 if Part A time hasn't expired or if not started
+      if (this.sectionTimeExpired()) {
+        toast.error('Cannot go back to Introduction after Part A time has expired');
+        return;
+      }
       this.currentStep = '1';
+      this.resetSectionTimer();
     }
+  }
+
+  // Reset countdown timer for the new section
+  private resetSectionTimer() {
+    this.stopCountdown();
+    const minutes = this.getSectionTimeLimit();
+    this.timeLeftInSeconds = minutes * 60;
+    this.startCountdown();
+    this.updateDisplay();
   }
   finishSection() { console.log('Finishing...'); }
 

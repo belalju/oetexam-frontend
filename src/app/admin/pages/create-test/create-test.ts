@@ -194,9 +194,15 @@ export class CreateTest implements OnInit{
       return;
     }
 
+    const testIdString = localStorage.getItem('testId');
+    const testId: number | null = testIdString ? parseInt(testIdString, 10) : null;
+
     if (!this.testId) {
-      toast.error('Test not found!');
-      return;
+      if (!testId) {
+        toast.error('Test not found!');
+        return;
+      }
+      this.testId = testId;
     }
 
     if (this.editingPartId()) {
@@ -284,7 +290,7 @@ export class CreateTest implements OnInit{
         this.cdr.detectChanges(); // <-- ensure UI updates after fetching parts
       },
       error: (err) => {
-        alert("Error Part List")
+        // alert("Error Part List")
         console.error('Error fetching part list:', err);
       }
     });
@@ -370,7 +376,7 @@ export class CreateTest implements OnInit{
         window.scrollTo({ top: 0, behavior: 'smooth' });
       },
       error: (err) => {
-        toast.error('Error fetching passage details');
+        // toast.error('Error fetching passage details');
         console.error(err);
       }
     });
@@ -409,10 +415,10 @@ export class CreateTest implements OnInit{
     this.passageService.passageList(this.testId as number).subscribe({
       next: (response:any) => {
         this.passages = response.data || [];
-        // this.cdr.detectChanges(); // <-- ensure UI updates after fetching passages
+        this.cdr.detectChanges(); // <-- ensure UI updates after fetching passages
       },
       error: (err) => {
-        toast.error('Error fetching passage list');
+        // toast.error('Error fetching passage list');
         console.error('Error fetching passage list:', err);
       }
     });
@@ -421,7 +427,7 @@ export class CreateTest implements OnInit{
 
   private initGroupForm(): void {
     this.groupForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      title: ['', [Validators.minLength(1), Validators.maxLength(255)]],
       questionType: ['', Validators.required],
       partId: ['', ],
       passageId: [''],                    // optional
@@ -483,7 +489,7 @@ export class CreateTest implements OnInit{
         this.cdr.detectChanges();
       },
       error: (err) => {
-        toast.error('Error fetching question group list');
+        // toast.error('Error fetching question group list');
         console.error('Error fetching question group list:', err);
       }
     });

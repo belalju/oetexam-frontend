@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../../services/auth';
 import { RouterLink } from '@angular/router';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +33,9 @@ export class Login {
     this.errorMessage.set(null);
     this.auth.login(this.form.value as any).subscribe({
       error: (err) => {
+        toast.error(
+          err?.error?.error || 'Login failed. Please check your credentials.'
+        );
         this.errorMessage.set(
           err?.error?.error || 'Login failed. Please check your credentials.'
         );

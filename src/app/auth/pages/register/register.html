@@ -71,7 +71,7 @@
                     <p class="text-sm text-gray-600">Already have an account? <a routerLink="/auth/login" class="font-bold text-blue-600 underline">Log in</a></p>
                 </div>
 
-                <p class="mb-4 text-lg font-bold text-gray-700">Join over 2 million students around the world who used E2 to pass their tests.</p>
+                <p class="mb-4 text-lg font-bold text-gray-700">Join over 2 million students around the world who used IELTS to pass their tests.</p>
                 
                 <div class="flex flex-wrap gap-4 mb-8 text-xs font-medium text-gray-500">
                     <span class="flex items-center">✔ No credit card required</span>
@@ -134,7 +134,14 @@
                         }
                     </div>
 
-                    <div class="flex items-center my-6">
+                    <button type="submit" [disabled]="auth.isLoading()" class="w-full p-4 font-bold text-white uppercase bg-blue-600 rounded hover:bg-blue-700 transition tracking-wide">
+                        @if (auth.isLoading()) {
+                        <span class="spinner"></span> Creating account...
+                        } @else {
+                        Create Account
+                        }
+                    </button>
+                    <!-- <div class="flex items-center my-6">
                         <div class="flex-grow border-t border-gray-300"></div>
                         <span class="px-4 text-sm font-bold text-gray-400">OR</span>
                         <div class="flex-grow border-t border-gray-300"></div>
@@ -143,15 +150,7 @@
                     <button type="button" class="flex items-center justify-center w-full p-3 mb-3 font-bold border border-gray-300 rounded hover:bg-gray-50 transition">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-3" alt="Google">
                         Login with Google
-                    </button>
-
-                    <button type="submit" [disabled]="auth.isLoading()" class="w-full p-4 font-bold text-white uppercase bg-blue-600 rounded hover:bg-blue-700 transition tracking-wide">
-                        @if (auth.isLoading()) {
-                        <span class="spinner"></span> Creating account...
-                        } @else {
-                        Create Account
-                        }
-                    </button>
+                    </button> -->
 
                     <p class="mt-4 text-xs text-center text-gray-500">
                         by clicking 'next', I agree to the <a href="#" class="font-bold underline">terms of use</a>, and <a href="#" class="font-bold underline">privacy notice</a>

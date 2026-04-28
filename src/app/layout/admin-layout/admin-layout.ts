@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { EditorModule } from '@tinymce/tinymce-angular';
+import { Auth } from '../../auth/services/auth';
 
 @Component({
   selector: 'app-admin-layout',
@@ -10,5 +11,9 @@ import { EditorModule } from '@tinymce/tinymce-angular';
   styleUrl: './admin-layout.css',
 })
 export class AdminLayout {
+  private authService = inject(Auth);
 
+  logout() {
+    this.authService.logout();
+  }
 }

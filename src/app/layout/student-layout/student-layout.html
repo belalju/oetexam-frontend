@@ -39,6 +39,9 @@
                 <a routerLink="/student/test-catalog" routerLinkActive="text-blue-700 bg-blue-50" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-book w-6"></i> Test Catalog
                 </a>
+                <a routerLink="/student/my-history" routerLinkActive="text-blue-700 bg-blue-50" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition">
+                    <i class="fa-solid fa-history w-6"></i> My History
+                </a>
                 <a routerLink="/student/exam-preparation" routerLinkActive="text-blue-700 bg-blue-50" class="flex items-center px-4 py-3 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-lg transition">
                     <i class="fa-solid fa-calculator w-6"></i> Exam Preparation
                 </a>
@@ -61,13 +64,13 @@
                 </a>
             </nav>
 
-            <div class="p-4 mt-10 space-y-2">
-                <button class="w-full py-2.5 text-[11px] font-black text-red-500 border border-red-100 bg-red-50 rounded uppercase text-left pl-2">
-                    <i class="fa-solid fa-calculator w-4"></i> Upgrade Account</button>
+            <div class="p-4 mt-3 absolute bottom-0 space-y-2">
                 <button class="w-full py-2.5 text-[11px] font-black text-blue-500 bg-blue-50 rounded uppercase text-left pl-2">
                     <i class="fa-solid fa-shopping-cart w-4"></i> Shop</button>
                 <button class="w-full py-2.5 text-[11px] font-black text-green-500 bg-green-50 rounded uppercase text-left pl-2">
-                    <i class="fa-solid fa-gift w-4"></i> E2 Rewards</button>
+                    <i class="fa-solid fa-gift w-4"></i> IELTS Rewards</button>
+                <button class="w-full py-2.5 text-[11px] font-black text-red-500 border border-red-100 bg-red-50 rounded uppercase text-left pl-2" (click)="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Logout</button>
             </div>
         </aside>
 

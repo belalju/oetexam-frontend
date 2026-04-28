@@ -19,8 +19,20 @@ export class TestService {
     return this.http.post(`${this.API_URL}/attempts/start`, {testId: testId});
   }
 
+  attemptById(attemptId: number) {
+    return this.http.get(`${this.API_URL}/attempts/${attemptId}`);
+  }
+
   saveAnswer(attemptId: number, payload: any) {
-    return this.http.post(`${this.API_URL}/attempts/${attemptId}/answers`, payload);
+    return this.http.put(`${this.API_URL}/attempts/${attemptId}/answer`, payload);
+  }
+
+  submitAttempt(attemptId: number) {
+    return this.http.post(`${this.API_URL}/attempts/${attemptId}/submit`, {});
+  }
+
+  getResults(attemptId: number) {
+    return this.http.get(`${this.API_URL}/attempts/${attemptId}/results`);
   }
 
   getTests(pageable: Pageable = { page: 0, size: 10 }) {
@@ -34,6 +46,20 @@ export class TestService {
 
     return this.http.get(`${this.API_URL}/tests`, { params });
   }
+
+  getMyHistory(pageable: Pageable = { page: 0, size: 10 }) {
+    let params = new HttpParams()
+      .set('page', pageable.page.toString())
+      .set('size', pageable.size.toString());
+
+    if (pageable.sort) {
+      params = params.set('sort', pageable.sort);
+    }
+
+    return this.http.get(`${this.API_URL}/attempts/my-history`, { params });
+  }
+
+
 
 
   

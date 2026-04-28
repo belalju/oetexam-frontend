@@ -11,12 +11,12 @@ export const AUTH_ROUTES: Routes = [
   },
   {
     path: 'login',
-    // canActivate: [guestGuard],
+    canActivate: [guestGuard],
     component: Login
   },
   {
     path: 'register',
-    // canActivate: [guestGuard],
+    canActivate: [guestGuard],
     component: Register
   }
 ];
