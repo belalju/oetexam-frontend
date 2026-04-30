@@ -1,0 +1,100 @@
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-navy-900">User Dashboard</h1>
+          <p class="text-slate-500 text-sm mt-1">Manage applicants</p>
+        </div>
+
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Applicants</p>
+          <p class="text-3xl font-bold text-navy-900">{{ users().length }}</p>
+          <!-- <p class="text-xs text-slate-400 mt-1">
+            <span class=" text-green-600">{{ publishedTests() }} published</span> · 
+            <span class=" text-amber-600">{{ draftTests() }} drafts</span>
+          </p> -->
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Active Applicants</p>
+          <p class="text-3xl font-bold text-navy-900">248</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Attempts This Month</p>
+          <p class="text-3xl font-bold text-navy-900">614</p>
+          <p class="text-xs text-teal-600 mt-1">↑ 23% vs last month</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Avg Score</p>
+          <p class="text-3xl font-bold text-navy-900">67<span class="text-lg text-slate-400">%</span></p>
+          <p class="text-xs text-slate-400 mt-1">Across all tests</p>
+        </div>
+      </div>
+
+      <!-- Test Management Table -->
+      <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-semibold text-navy-900">Applicants List</h2>
+          <div class="flex gap-2">
+            <input type="text" placeholder="Search..." class="border border-slate-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 w-40">
+          </div>
+        </div>
+        <table class="w-full text-sm">
+          <thead class="">
+            <tr class="text-xs text-slate-500 uppercase tracking-wider border-b border-slate-100 bg-slate-100">
+              <th class="text-left p-3 font-semibold px-6">Name</th>
+              <th class="text-left p-3 font-semibold px-6">Email</th>
+              <th class="text-left p-3 font-semibold px-6">Profession</th>
+              <th class="text-left p-3 font-semibold px-6">Status</th>
+              <th class="text-left p-3 font-semibold px-6">Created</th>
+              <th class="p-3 px-6"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            @for(item of users(); track item.id){
+            <tr class="hover:bg-slate-50/70 transition-all">
+              <td class="py-4 px-6 font-medium text-slate-700">{{ item.firstName }} {{item.lastName}}</td>
+              <td class="py-4 px-6 font-medium text-slate-700">{{ item.email }}</td>
+              <td class="py-4 px-6 font-medium text-slate-700">{{ item.profession }}</td>
+              <td class="py-4 px-6">
+                <span [ngClass]="getStatusBadge(item.active).color" 
+                      class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ getStatusBadge(item.active).label }}
+                </span>
+              </td>
+
+
+              <td class="py-4 px-6 text-slate-400 text-xs">
+                {{ formatDate(item.createdAt) }}
+              </td>
+
+              <td class="py-4 px-6">
+                <div class="flex gap-5">
+                  @if(item.active){
+                    <button (click)="updateStatus(item.id)"
+                            class="text-xs font-bold text-red-500 hover:text-red-600">
+                      InActive
+                    </button>
+                  }
+                  @else{
+                    <button (click)="updateStatus(item.id)" class="text-xs font-bold text-blue-600 hover:underline">
+                      Active
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+            @if(users().length === 0){
+            <tr>
+              <td colspan="10" class="py-6 text-center text-slate-400">
+                No users found. Try adjusting your search or filter.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      

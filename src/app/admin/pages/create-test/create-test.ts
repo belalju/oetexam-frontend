@@ -563,8 +563,9 @@ export class CreateTest implements OnInit{
       questionText: ['', [Validators.minLength(5)]],
       prefixText: [''],
       suffixText: [''],
-      correctText: ['', [Validators.required]],
-      sortOrder: [1, [Validators.required, Validators.min(1)]],
+      correctText: [''],
+      correctOptionLabel: [''],
+      sortOrder: [0, [Validators.required, Validators.min(1)]],
       options: this.fb.array([
         this.fb.group({
           optionLabel: ['A', Validators.required],

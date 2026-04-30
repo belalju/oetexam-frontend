@@ -16,4 +16,11 @@ export class AdminLayout {
   logout() {
     this.authService.logout();
   }
+
+  user:any;
+
+  ngOnInit(){
+    this.user = this.authService.currentUser();
+  }
+
 }

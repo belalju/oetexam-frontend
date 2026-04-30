@@ -17,6 +17,7 @@ import { TestCatalog } from './student/pages/test-catalog/test-catalog';
 import { adminGuard, authGuard } from './auth/guards/auth-guard';
 import { MyHistory } from './student/pages/my-history/my-history';
 import { Results } from './student/pages/results/results';
+import { Users } from './admin/pages/users/users';
 
 export const routes: Routes = [
     {
@@ -67,6 +68,11 @@ export const routes: Routes = [
             { 
                 path: 'create-test', 
                 component: CreateTest,
+                canActivate: [authGuard, adminGuard]
+            },
+            { 
+                path: 'users', 
+                component: Users,
                 canActivate: [authGuard, adminGuard]
             },
         ]
