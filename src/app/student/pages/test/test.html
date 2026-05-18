@@ -233,7 +233,7 @@
                 </span>
 
                 @if(audioUrls[passage.audioFileUrl]){
-                  <audio controls preload="metadata" [src]="audioUrls[passage.audioFileUrl]">
+                  <audio class="w-full" controls preload="metadata" [src]="audioUrls[passage.audioFileUrl]" style="width: 100%;">
                     Your browser does not support the audio element.
                   </audio>
                 }
