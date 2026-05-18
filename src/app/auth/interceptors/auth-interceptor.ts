@@ -87,9 +87,32 @@ function handle401Error(
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
+  // For FormData → only Authorization header
+  if (req.body instanceof FormData) {
+    return req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  // For normal JSON requests
   return req.clone({
-    setHeaders: { Authorization: `Bearer ${token}` }
+    setHeaders: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
   });
+  // const headers: { [key: string]: string } = {
+  //       Authorization: `Bearer ${token}`
+  //     };
+  //     if (!(req.body instanceof FormData)) {
+  //       headers['Content-Type'] = 'application/json';
+  //     }
+
+  // return req.clone({
+  //   setHeaders: headers
+  // });
 }
 
 function isAuthEndpoint(url: string): boolean {

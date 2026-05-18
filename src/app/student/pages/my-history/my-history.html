@@ -48,8 +48,8 @@
           <!-- Title -->
           <h2 class="text-base font-bold text-gray-900">{{item.testTitle}}</h2>
           <div class="text-xs text-gray-500 space-y-1 flex items-center justify-between mt-2">
-            <p><span class="font-medium text-gray-600">Started:</span> {{item.startedAt | date: 'short'}}</p>
-            <p><span class="font-medium text-gray-600">Completed:</span> {{item.completedAt | date: 'short'}}</p>
+            <p><span class="font-medium text-gray-600">Started:</span> {{ formatDhakaShort(item.startedAt) }}</p>
+            <p><span class="font-medium text-gray-600">Completed:</span> {{ formatDhakaShort(item.completedAt) }}</p>
           </div>
 
         </div>

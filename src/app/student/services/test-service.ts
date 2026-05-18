@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Pageable } from '../models/test';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,6 +23,12 @@ export class TestService {
   attemptById(attemptId: number) {
     return this.http.get(`${this.API_URL}/attempts/${attemptId}`);
   }
+
+getAudioSrc(filename: string): Observable<Blob> {
+  return this.http.get(`${this.API_URL}/media/${filename}`, {
+    responseType: 'blob'
+  });
+}
 
   saveAnswer(attemptId: number, payload: any) {
     return this.http.put(`${this.API_URL}/attempts/${attemptId}/answer`, payload);

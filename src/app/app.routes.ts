@@ -35,6 +35,7 @@ export const routes: Routes = [
                 component:ProductDetails
             },
             { path: 'student/test', component: Test, canActivate: [authGuard] },
+            { path: 'results', component: Results, canActivate: [authGuard] },
             
         ]
     },

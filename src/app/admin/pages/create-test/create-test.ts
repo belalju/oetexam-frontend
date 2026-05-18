@@ -303,8 +303,8 @@ export class CreateTest implements OnInit{
       label: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       partId: [''],
       sortOrder: [1, [Validators.required, Validators.min(1)]],
-      content: ['', [Validators.required, Validators.minLength(50)]],
-      audioFileUrl: [''],
+      content: ['',],
+      audioFileUrl: [{}],
       audioDurationSeconds: [10]
     });
   }
@@ -315,6 +315,7 @@ export class CreateTest implements OnInit{
 
   onAudioSelected(event: any): void {
     const file = event.target.files[0];
+    console.log("files === " , file);
     if (file) {
       this.selectedFile = file;
       this.passageForm.patchValue({ audioFileUrl: file.name });
@@ -323,16 +324,33 @@ export class CreateTest implements OnInit{
 
 
   savePassage() {
-    if (this.passageForm.invalid) {
-      this.passageForm.markAllAsTouched();
-      return;
-    }
 
-    const formData = this.passageForm.value;
+  if (this.passageForm.invalid) {
+    this.passageForm.markAllAsTouched();
+    return;
+  }
 
-    if (this.editingPassageId()) {
-      // UPDATE
-      this.passageService.updatePassage(formData, this.editingPassageId()!).subscribe({
+  const formData = new FormData();
+
+  if (this.selectedFile) {
+    formData.append('audioFile', this.selectedFile);
+  }
+
+  const passageData = {
+    label: this.passageForm.value.label,
+    content: this.passageForm.value.content || '',
+    audioDurationSeconds: this.passageForm.value.audioDurationSeconds,
+    sortOrder: this.passageForm.value.sortOrder
+  };
+
+  const jsonBlob = new Blob([JSON.stringify(passageData)], { type: 'application/json' });
+  formData.append('data', jsonBlob);
+
+  if (this.editingPassageId()) {
+
+    this.passageService
+      .updatePassage(formData, this.editingPassageId()!)
+      .subscribe({
         next: () => {
           this.passageListByTestId();
           toast.success('Passage updated successfully!');
@@ -343,9 +361,12 @@ export class CreateTest implements OnInit{
           console.error(err);
         }
       });
-    } else {
-      // CREATE
-      this.passageService.createPassage(formData, formData.partId).subscribe({
+
+  } else {
+
+    this.passageService
+      .createPassage(formData, this.passageForm.value.partId)
+      .subscribe({
         next: () => {
           this.passageListByTestId();
           this.resetPassageForm();
@@ -356,8 +377,9 @@ export class CreateTest implements OnInit{
           console.error(err);
         }
       });
-    }
+
   }
+}
 
   editPassage(passageId: number): void {
     this.passageService.passageById(passageId).subscribe({
@@ -622,6 +644,10 @@ export class CreateTest implements OnInit{
       this.questionService.updateQuestion(formValue, this.editingQuestionId()!).subscribe({
         next: (response: any) => {
           this.questionListByGroupId(groupId);
+          this.questionsByGroup = {
+            ...this.questionsByGroup,
+            [groupId]: response.data || []
+          };
           this.resetQuestionForm();
           toast.success('Question updated successfully!');
         },
@@ -661,6 +687,7 @@ export class CreateTest implements OnInit{
       prefixText: question.prefixText,
       suffixText: question.suffixText,
       correctText: question.correctAnswer?.correctText ?? question.correctText,
+      correctOptionLabel: question.correctAnswer?.optionLabel ?? question.optionLabel,
       sortOrder: question.sortOrder,
     });
 

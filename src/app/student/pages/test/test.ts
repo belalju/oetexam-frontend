@@ -1,8 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, DOCUMENT, ElementRef, inject, Inject, OnDestroy, OnInit, signal, Signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, DOCUMENT, ElementRef, inject, Inject, OnDestroy, signal, ViewChild } from '@angular/core';
 import { TestService } from '../../services/test-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toast } from 'ngx-sonner';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 
@@ -22,17 +23,16 @@ export class Test implements AfterViewInit, OnDestroy {
   private timeLeftInSeconds: number = 0;
   private timerInterval: any = null;
   isCountdownRunning: boolean = false;
-  sectionTimeExpired = signal<boolean>(false);  // Track if current section time has expired
+  sectionTimeExpired = signal<boolean>(false); 
  
-
   testId: number | null = null;
   testData = signal<any | null>(null);
   attemptData = signal<any | null>(null);
 
-  
   private cdr = inject(ChangeDetectorRef);
   private testService = inject(TestService);
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
@@ -49,6 +49,9 @@ export class Test implements AfterViewInit, OnDestroy {
     }, 100);
   }
 
+  audioUrls: { [key: string]: string } = {};
+
+
   ngOnInit() {
     const state = history.state as any;
 
@@ -57,6 +60,42 @@ export class Test implements AfterViewInit, OnDestroy {
       this.testById(state.testId as number); 
     }
 
+  }
+
+  loadAudio(filename: string): void {
+    if (this.audioUrls[filename]) {
+      return;
+    }
+    this.testService.getAudioSrc(filename).subscribe((blob) => {
+      this.audioUrls[filename] = URL.createObjectURL(blob);
+    });
+  }
+
+  loadAllPassagesAudio() {
+
+    const allPassages = [
+      ...this.partAPassages(),
+      ...this.partBPassages(),
+      ...this.partCPassages()
+    ];
+
+    allPassages.forEach((p: any) => {
+      if (p.audioFileUrl) {
+        this.loadAudio(p.audioFileUrl);
+      }
+    });
+  }
+
+  testById(id: number) {
+    this.testService.testById(id).subscribe({
+      next: (response: any) => {
+        this.testData.set(response.data);
+
+        setTimeout(() => {
+          this.loadAllPassagesAudio();
+        });
+      }
+    });
   }
 
 
@@ -104,17 +143,23 @@ export class Test implements AfterViewInit, OnDestroy {
     return bCount + cCount;
   });
 
+  allPassages = computed(() => {
+    return [
+      ...this.partAPassages(),
+      ...this.partBPassages(),
+      ...this.partCPassages()
+    ];
+  });
 
-  // Signal to track all answers: { [questionId]: selectedValue }
+
   answers = signal<Record<number, { answerText: string; selectedOptionId: number | null }>>({});
 
-  
+
   getQuestionsForGroup(groupId: number) {
     const group = this.partAGroups().find((g: any) => g.id === groupId);
     return group?.questions ?? [];
   }
 
-  // Get section-specific time limit based on currentStep
   getSectionTimeLimit(): number {
     if (this.currentStep === '2') {
       return this.partA()?.timeLimitMinutes || 60;
@@ -123,7 +168,6 @@ export class Test implements AfterViewInit, OnDestroy {
       const partCTime = this.partC()?.timeLimitMinutes || 0;
       return partBTime + partCTime || 60;
     }
-    // Section 1 (Introduction) doesn't need a specific timer
     return this.testData()?.totalTimeLimitMinutes || 60;
   }
 
@@ -179,6 +223,7 @@ export class Test implements AfterViewInit, OnDestroy {
     });
   }
 
+
   attemptById(attemptId: number) {
     this.testService.attemptById(attemptId).subscribe({
       next: (response: any) => {
@@ -212,11 +257,15 @@ export class Test implements AfterViewInit, OnDestroy {
     }
 
     this.testService.submitAttempt(attemptId).subscribe({
-      next: () => {
+      next: (response:any) => {
         toast.success('Test submitted successfully!');
         localStorage.removeItem('currentAttemptId');
-        // this.router.navigate(['/student/test-results', attemptId]);
-        this.router.navigate(['/student/my-history']);
+        // this.router.navigate(['/student/my-history']);
+        this.router.navigate(['/results'], {
+          state: { 
+            attemptId: response.data.attemptId,
+          }
+        });
       },
       error: (err) => {
         console.error('Failed to submit attempt:', err);
@@ -227,14 +276,6 @@ export class Test implements AfterViewInit, OnDestroy {
 
 
 
-  testById(id:number){
-    this.testService.testById(id).subscribe({
-        next: (response:any) => {
-          const data = response.data;
-          this.testData.set(data);
-        }
-      });
-  }
 
   startCountdown() {
     if (this.isCountdownRunning) return;
@@ -269,7 +310,8 @@ export class Test implements AfterViewInit, OnDestroy {
     this.stopCountdown();
     this.countdownDisplay = '00:00:00';
     this.sectionTimeExpired.set(true);
-    alert(`Time is up for ${this.currentStep === '2' ? 'Part A' : this.currentStep === '3' ? 'Part B & C' : 'this section'}!`);
+    this.currentStep = '3';
+    // alert(`Time is up for ${this.currentStep === '2' ? 'Part A' : this.currentStep === '3' ? 'Part B & C' : 'this section'}!`);
   }
 
   stopCountdown() {
@@ -283,6 +325,9 @@ export class Test implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.stopCountdown();
     this.exitFullScreen();
+    // this.audioUrlCache.forEach((url) => URL.revokeObjectURL(url));
+    // this.audioUrlCache.clear();
+
   }
 
 
@@ -312,11 +357,17 @@ export class Test implements AfterViewInit, OnDestroy {
 
   goNext() { 
     if (this.currentStep === '1') {
-      this.currentStep = '2';
+      if(this.testData()?.subTestType === 'LISTENING'){
+        this.currentStep = '3';
+      }
+      else{
+        this.currentStep = '2';
+      }
+      
       this.resetSectionTimer();
 
       const currentAttemptId = localStorage.getItem('currentAttemptId');
-      console.log('Current Attempt ID from localStorage:', currentAttemptId);
+      // console.log('Current Attempt ID from localStorage:', currentAttemptId);
       if (!this.attemptData() && currentAttemptId) {
         this.attemptById(parseInt(currentAttemptId));
       } else if (!this.attemptData()) {
