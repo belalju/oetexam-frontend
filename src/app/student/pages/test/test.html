@@ -75,7 +75,13 @@
               </span>
 
               @if(audioUrls[passage.audioFileUrl]){
-                <audio controls preload="metadata" [src]="audioUrls[passage.audioFileUrl]">
+                <audio
+                  controls
+                  controlsList="nodownload noplaybackrate"
+                  disableRemotePlayback
+                  preload="metadata"
+                  [src]="audioUrls[passage.audioFileUrl]"
+                  (contextmenu)="$event.preventDefault()">
                   Your browser does not support the audio element.
                 </audio>
               }
@@ -233,7 +239,15 @@
                 </span>
 
                 @if(audioUrls[passage.audioFileUrl]){
-                  <audio class="w-full" controls preload="metadata" [src]="audioUrls[passage.audioFileUrl]" style="width: 100%;">
+                  <audio
+                    class="w-full"
+                    controls
+                    controlsList="nodownload noplaybackrate"
+                    disableRemotePlayback
+                    preload="metadata"
+                    [src]="audioUrls[passage.audioFileUrl]"
+                    style="width: 100%;"
+                    (contextmenu)="$event.preventDefault()">
                     Your browser does not support the audio element.
                   </audio>
                 }
@@ -379,7 +393,7 @@
                       </p>
                       <input type="text" placeholder="Your answer..."
                         class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        [value]="answers()[q.id] ?? ''"
+                        [value]="answers()[q.id]?.answerText ?? ''"
                         (change)="selectAnswer(q.id, $any($event.target).value)" />
                     </div>
                   }
@@ -398,7 +412,7 @@
                         <span [innerHTML]="q.prefixText"></span>
                         <input type="text" placeholder="..."
                           class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
-                          [value]="answers()[q.id] ?? ''"
+                          [value]="answers()[q.id]?.answerText ?? ''"
                           (change)="selectAnswer(q.id, $any($event.target).value)" />
                         <span [innerHTML]="q.suffixText"></span>
                       </p>

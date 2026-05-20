@@ -3,7 +3,6 @@ import { TestService } from '../../services/test-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toast } from 'ngx-sonner';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 
@@ -32,8 +31,6 @@ export class Test implements AfterViewInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private testService = inject(TestService);
   private router = inject(Router);
-  private http = inject(HttpClient);
-
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
@@ -325,8 +322,8 @@ export class Test implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.stopCountdown();
     this.exitFullScreen();
-    // this.audioUrlCache.forEach((url) => URL.revokeObjectURL(url));
-    // this.audioUrlCache.clear();
+    Object.values(this.audioUrls).forEach((url) => URL.revokeObjectURL(url));
+    this.audioUrls = {};
 
   }
 
