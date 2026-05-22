@@ -227,7 +227,7 @@
       }
     
       @if(currentStep === '3'){
-        <section #section03 class="grid grid-cols-2 gap-4 h-screen">
+        <section #section03 class="grid grid-cols-2 {{ testData().subTestType === 'LISTENING' ? 'lg:grid-cols-3' : 'grid-cols-2' }} gap-4 h-screen">
 
           <!-- LEFT: Passages -->
           <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen {{isFullScreen ? 'pb-60' : ''}}">
@@ -263,7 +263,7 @@
           </div>
 
           <!-- RIGHT: Questions for B and C -->
-          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}}">
+          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}} {{ testData().subTestType === 'LISTENING' ? 'col-span-2' : '' }}">
             <div class="p-6">
 
               @if(testData().subTestType === 'LISTENING'){
@@ -407,7 +407,7 @@
                 <div class="space-y-3">
                   @for(q of getQuestionsForGroup(g.id); track q.id){
                     <div class="bg-white border border-slate-200 rounded-xl p-4">
-                      <p class="text-sm text-slate-700 leading-relaxed">
+                      <!-- <p class="text-sm text-slate-700 leading-relaxed">
                         <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
                         <span [innerHTML]="q.prefixText"></span>
                         <input type="text" placeholder="..."
@@ -415,7 +415,19 @@
                           [value]="answers()[q.id]?.answerText ?? ''"
                           (change)="selectAnswer(q.id, $any($event.target).value)" />
                         <span [innerHTML]="q.suffixText"></span>
-                      </p>
+                      </p> -->
+
+                      <div class="text-sm text-slate-700 leading-relaxed">
+                        <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
+                        <span [innerHTML]="q.prefixText" class="inline-html-content"></span>
+                        <input type="text" placeholder="..."
+                          class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
+                          [value]="answers()[q.id]?.answerText ?? ''"
+                          (change)="selectAnswer(q.id, $any($event.target).value)" />
+                        <span [innerHTML]="q.suffixText" class="inline-html-content"></span>
+                      </div>
+
+
                     </div>
                   }
                 </div>

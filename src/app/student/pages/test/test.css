@@ -28,3 +28,20 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
+
+
+
+
+/* // styles.scss or component with ::ng-deep */
+::ng-deep .inline-html-content > *:last-child {
+  display: inline !important;
+}
+
+::ng-deep .inline-html-content > *:not(:last-child) {
+  display: block;
+}
+
+/* // Also handle nested last elements (li, p inside div) */
+::ng-deep .inline-html-content > *:last-child > *:last-child {
+  display: inline !important;
+}
