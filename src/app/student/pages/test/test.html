@@ -418,8 +418,9 @@
                       </p> -->
 
                       <div class="text-sm text-slate-700 leading-relaxed">
-                        <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
+                        <!-- <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span> -->
                         <span [innerHTML]="q.prefixText" class="inline-html-content"></span>
+                        <span class="font-bold text-navy-600 ml-2">({{ q.questionNumber }}) </span>
                         <input type="text" placeholder="..."
                           class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
                           [value]="answers()[q.id]?.answerText ?? ''"
