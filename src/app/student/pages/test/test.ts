@@ -1,8 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, computed, DOCUMENT, ElementRef, inject, Inject, OnDestroy, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, DOCUMENT, ElementRef, inject, Inject, Input, OnDestroy, signal, ViewChild } from '@angular/core';
 import { TestService } from '../../services/test-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toast } from 'ngx-sonner';
+import { SafeUrl } from '@angular/platform-browser';
 
 
 
@@ -27,6 +28,21 @@ export class Test implements AfterViewInit, OnDestroy {
   testId: number | null = null;
   testData = signal<any | null>(null);
   attemptData = signal<any | null>(null);
+
+  @Input({ required: true }) filename!: string;
+  @Input() allowReplay = false; // set false for real exam mode
+
+  @ViewChild('audioEl') audioEl!: ElementRef<HTMLAudioElement>;
+
+  blobUrl: SafeUrl | null = null;
+  private rawBlobUrl: string | null = null;
+  loading = false;
+  error: string | null = null;
+  isPlaying = false;
+  played = false;
+  currentTime = 0;
+  duration = 0;
+  private timeInterval?: ReturnType<typeof setInterval>;
 
   private cdr = inject(ChangeDetectorRef);
   private testService = inject(TestService);
@@ -67,6 +83,101 @@ export class Test implements AfterViewInit, OnDestroy {
       this.audioUrls[filename] = URL.createObjectURL(blob);
     });
   }
+
+    togglePlay() {
+      const audio = this.audioEl.nativeElement;
+      if (this.isPlaying) {
+        audio.pause();
+      } else {
+        audio.play();
+      }
+    }
+
+   onPlay() {
+      this.isPlaying = true;
+      this.played = true;
+      const audio = this.audioEl.nativeElement;
+      this.duration = audio.duration;
+      this.timeInterval = setInterval(() => {
+        this.currentTime = audio.currentTime;
+      }, 500);
+    }
+
+    onEnded() {
+      this.isPlaying = false;
+      clearInterval(this.timeInterval);
+      if (!this.allowReplay) {
+        this.audioEl.nativeElement.controls = false;
+      }
+    }
+    updateProgress() {
+      const audio = this.audioEl.nativeElement;
+      this.currentTime = audio.currentTime;
+    }
+
+    loadMetadata() {
+      const audio = this.audioEl.nativeElement;
+      this.duration = audio.duration;
+    }
+
+    // seekAudio(event: any) {
+    //   const audio = this.audioEl.nativeElement;
+    //   audio.currentTime = event.target.value;
+    // }
+    seekAudio(event: any) {
+      const audio = this.audioEl.nativeElement;
+      audio.currentTime = (event.target.value / 100) * this.duration;
+    }
+
+    formatTime(seconds: number): string {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    volume = 1;
+    previousVolume = 1;
+
+    changeVolume(event: any) {
+      this.volume = Number(event.target.value);
+
+      const audio = this.audioEl.nativeElement;
+      audio.volume = this.volume;
+    }
+
+    toggleMute() {
+      const audio = this.audioEl.nativeElement;
+
+      if (audio.volume > 0) {
+        this.previousVolume = audio.volume;
+        audio.volume = 0;
+        this.volume = 0;
+      } else {
+        audio.volume = this.previousVolume || 1;
+        this.volume = audio.volume;
+      }
+    }
+
+    waveHeights = [30,45,55,70,60,80,65,50,75,55,40,65,80,70,45,55,68,72,48,60];
+
+    get progressPct(): number {
+      return this.duration ? (this.currentTime / this.duration) * 100 : 0;
+    }
+
+    get activeBars(): number {
+      return Math.floor((this.progressPct / 100) * this.waveHeights.length);
+    }
+
+    skipBack() {
+      this.audioEl.nativeElement.currentTime = 
+        Math.max(0, this.audioEl.nativeElement.currentTime - 10);
+    }
+
+    skipForward() {
+      this.audioEl.nativeElement.currentTime = 
+        Math.min(this.duration, this.audioEl.nativeElement.currentTime + 10);
+    }
+
 
   loadAllPassagesAudio() {
 

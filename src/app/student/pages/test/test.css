@@ -45,3 +45,264 @@
 ::ng-deep .inline-html-content > *:last-child > *:last-child {
   display: inline !important;
 }
+
+
+
+/* .audio-player {
+  @apply flex items-center gap-4 bg-white rounded-2xl shadow-lg p-4 border;
+}
+
+.play-btn {
+  @apply w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition;
+}
+
+.progress-container {
+  @apply flex items-center gap-3 flex-1;
+}
+
+.progress-bar {
+  @apply flex-1 cursor-pointer;
+}
+
+.once-notice {
+  @apply text-red-500 text-sm mt-2 font-medium;
+}
+
+.audio-player {
+  @apply flex items-center gap-4 bg-white rounded-2xl shadow-lg border p-4;
+}
+
+.play-btn {
+  @apply w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center;
+}
+
+input[type="range"] {
+  @apply cursor-pointer;
+} */
+
+
+
+
+/* player.component.scss */
+
+.player-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 1rem;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+
+/* Cover / Waveform */
+.cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  height: 180px;
+}
+
+.waveform-bars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 30px;
+}
+
+.bar {
+  width: 4px;
+  border-radius: 2px;
+  background: #d1d5db;
+  transition: background 0.3s, height 0.08s;
+}
+
+.bar.active {
+  background: #111827;
+}
+
+/* Meta */
+.meta {
+  margin-bottom: 1.25rem;
+}
+
+.meta-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 3px;
+}
+
+.meta-sub {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Progress */
+.progress-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.prog-track {
+  position: relative;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.prog-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #111827;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.prog-thumb {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #111827;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: left 0.1s linear;
+}
+
+.prog-input {
+  position: absolute;
+  inset: -8px 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Buttons row */
+.btn-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 18px;
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: #111827;
+    background: #f3f4f6;
+  }
+}
+
+.btn-play {
+  width: 52px;
+  height: 52px;
+  background: #111827;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #ffffff;
+  transition: opacity 0.15s, transform 0.1s;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+/* Volume row */
+.vol-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vol-track {
+  flex: 1;
+  position: relative;
+  height: 3px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.vol-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: #6b7280;
+  pointer-events: none;
+}
+
+.vol-input {
+  position: absolute;
+  inset: -8px 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.vol-pct {
+  font-size: 12px;
+  color: #6b7280;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* Once notice */
+.once-notice {
+  margin-top: 1rem;
+  padding: 10px 14px;
+  background: #fffbeb;
+  color: #92400e;
+  border-radius: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  i { font-size: 16px; }
+}
