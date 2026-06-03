@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { toast } from 'ngx-sonner';
 import { SafeUrl } from '@angular/platform-browser';
+import { Auth } from '../../../auth/services/auth';
 
 
 
@@ -16,6 +17,7 @@ import { SafeUrl } from '@angular/platform-browser';
 export class Test implements AfterViewInit, OnDestroy { 
   @ViewChild('testUI') testElement!: ElementRef;
   currentStep: '1' | '2' | '3' = '1'; 
+  user: any;
   activeQuestion: number = 1;
   currentQuestion: number = 1;
   isFullScreen: boolean = true;
@@ -46,6 +48,7 @@ export class Test implements AfterViewInit, OnDestroy {
 
   private cdr = inject(ChangeDetectorRef);
   private testService = inject(TestService);
+  private authService = inject(Auth);
   private router = inject(Router);
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
@@ -72,6 +75,8 @@ export class Test implements AfterViewInit, OnDestroy {
       this.testId = state.testId;
       this.testById(state.testId as number); 
     }
+
+    this.user = this.authService.currentUser();
 
   }
 
@@ -251,6 +256,10 @@ export class Test implements AfterViewInit, OnDestroy {
     return bCount + cCount;
   });
 
+  partABCQuestionCount = computed(() =>
+    this.partAQuestionCount() + this.partBCQuestionCount()
+  );
+
   allPassages = computed(() => {
     return [
       ...this.partAPassages(),
@@ -264,7 +273,11 @@ export class Test implements AfterViewInit, OnDestroy {
 
 
   getQuestionsForGroup(groupId: number) {
-    const group = this.partAGroups().find((g: any) => g.id === groupId);
+    const group = [
+      ...this.partAGroups(),
+      ...this.partBGroups(),
+      ...this.partCGroups()
+    ].find((g: any) => g.id === groupId);
     return group?.questions ?? [];
   }
 

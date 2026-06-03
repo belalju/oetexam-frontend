@@ -24,9 +24,9 @@
   <div class="bg-[#004A70] text-white px-4 py-1 text-xs flex justify-between shrink-0 border-t border-blue-400/20">
     <span class="text-base">
       {{ currentStep == '2' ? 'Part A || Questions 1 – ' + partAQuestionCount() :
-        currentStep == '3' ? 'Part B & C || Questions 1 – ' + partBCQuestionCount() : 'Introduction' }}
+        currentStep == '3' ? (testData().subTestType === 'LISTENING' ? 'Part A, B & C || Questions 1 – ' + partABCQuestionCount() : 'Part B & C || Questions 1 – ' + partBCQuestionCount()) : 'Introduction' }}
     </span>    
-    <span>Candidate: <span class="font-bold uppercase">USER Demo</span></span>
+    <span>Candidate: <span class="font-bold uppercase">{{user.firstName}} {{user.lastName}}</span></span>
   </div>
 
   <main class="flex-grow overflow-hidden p-4 md:p-4 lg:p-6">
@@ -302,28 +302,7 @@
 
                         <span>{{ formatTime(duration) }}</span>
                       </div>
-                      <div class="flex items-center gap-2 min-w-[140px]">
-                        <button (click)="toggleMute()">
-                          <i
-                            class="fas"
-                            [ngClass]="{
-                              'fa-volume-mute': volume === 0,
-                              'fa-volume-down': volume > 0 && volume < 0.5,
-                              'fa-volume-up': volume >= 0.5
-                            }"
-                          ></i>
-                        </button>
-
-                        <input
-                          type="range"
-                          min="0"
-                          max="1"
-                          step="0.01"
-                          [value]="volume"
-                          (input)="changeVolume($event)"
-                          class="w-24"
-                        />
-                      </div>
+                      
                     </div>
 
                     @if (played && !allowReplay) {
@@ -333,89 +312,89 @@
                     } -->
 
                     <audio
-  #audioEl
-  [src]="audioUrls[passage.audioFileUrl]"
-  preload="metadata"
-  (ended)="onEnded()"
-  (play)="onPlay()"
-  (timeupdate)="updateProgress()"
-  (loadedmetadata)="loadMetadata()"
-></audio>
+                      #audioEl
+                      [src]="audioUrls[passage.audioFileUrl]"
+                      preload="metadata"
+                      (ended)="onEnded()"
+                      (play)="onPlay()"
+                      (timeupdate)="updateProgress()"
+                      (loadedmetadata)="loadMetadata()"
+                    ></audio>
 
-<div class="player-card">
+                    <div class="player-card">
 
-  <!-- Waveform cover -->
-  <div class="cover">
-    <div class="waveform-bars">
-      <span *ngFor="let h of waveHeights; let i = index"
-        class="bar"
-        [class.active]="isPlaying && i < activeBars"
-        [style.height.px]="h">
-      </span>
-    </div>
-  </div>
+                      <!-- Waveform cover -->
+                      <div class="cover">
+                        <div class="waveform-bars">
+                          <span *ngFor="let h of waveHeights; let i = index"
+                            class="bar"
+                            [class.active]="isPlaying && i < activeBars"
+                            [style.height.px]="h">
+                          </span>
+                        </div>
+                      </div>
 
-  <!-- Meta -->
-  <div class="meta">
-    <div class="meta-title">Listening Passage</div>
-    <div class="meta-sub">Audio track • plays once</div>
-  </div>
+                      <!-- Meta -->
+                      <div class="meta">
+                        <div class="meta-title">Listening Passage</div>
+                        <div class="meta-sub">Audio track • plays once</div>
+                      </div>
 
-  <!-- Progress -->
-  <div class="progress-wrap">
-    <div class="prog-track">
-      <div class="prog-fill" [style.width]="progressPct + '%'"></div>
-      <div class="prog-thumb" [style.left]="progressPct + '%'"></div>
-      <input type="range" class="prog-input"
-        min="0" max="100" step="0.01"
-        [value]="progressPct"
-        (input)="seekAudio($event)">
-    </div>
-    <div class="time-row">
-      <span>{{ formatTime(currentTime) }}</span>
-      <span>{{ formatTime(duration) }}</span>
-    </div>
-  </div>
+                      <!-- Progress -->
+                      <div class="progress-wrap">
+                        <div class="prog-track">
+                          <div class="prog-fill" [style.width]="progressPct + '%'"></div>
+                          <div class="prog-thumb" [style.left]="progressPct + '%'"></div>
+                          <input type="range" class="prog-input"
+                            min="0" max="100" step="0.01"
+                            [value]="progressPct"
+                            (input)="seekAudio($event)">
+                        </div>
+                        <div class="time-row">
+                          <span>{{ formatTime(currentTime) }}</span>
+                          <span>{{ formatTime(duration) }}</span>
+                        </div>
+                      </div>
 
-  <!-- Controls -->
-  <div class="btn-row">
-    <button class="btn-icon" (click)="skipBack()" aria-label="Skip back 10s">
-      <i class="fas fa-rotate-left"></i>
-    </button>
-    <button class="btn-play" (click)="togglePlay()" [disabled]="played && !allowReplay">
-      <i class="fas" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
-    </button>
-    <button class="btn-icon" (click)="skipForward()" aria-label="Skip forward 10s">
-      <i class="fas fa-rotate-right"></i>
-    </button>
-  </div>
+                      <!-- Controls -->
+                      <div class="btn-row">
+                        <button class="btn-icon" (click)="skipBack()" aria-label="Skip back 10s">
+                          <i class="fas fa-rotate-left"></i>
+                        </button>
+                        <button class="btn-play" (click)="togglePlay()" [disabled]="played && !allowReplay">
+                          <i class="fas" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
+                        </button>
+                        <button class="btn-icon" (click)="skipForward()" aria-label="Skip forward 10s">
+                          <i class="fas fa-rotate-right"></i>
+                        </button>
+                      </div>
 
-  <!-- Volume -->
-  <div class="vol-row">
-    <button class="btn-icon" (click)="toggleMute()">
-      <i class="fas" [ngClass]="{
-        'fa-volume-xmark': volume === 0,
-        'fa-volume-low':   volume > 0 && volume < 0.5,
-        'fa-volume-high':  volume >= 0.5
-      }"></i>
-    </button>
-    <div class="vol-track">
-      <div class="vol-fill" [style.width]="(volume * 100) + '%'"></div>
-      <input type="range" class="vol-input"
-        min="0" max="1" step="0.01"
-        [value]="volume"
-        (input)="changeVolume($event)">
-    </div>
-    <span class="vol-pct">{{ (volume * 100).toFixed(0) }}%</span>
-  </div>
+                      <!-- Volume -->
+                      <div class="vol-row">
+                        <button class="btn-icon" (click)="toggleMute()">
+                          <i class="fas" [ngClass]="{
+                            'fa-volume-xmark': volume === 0,
+                            'fa-volume-low':   volume > 0 && volume < 0.5,
+                            'fa-volume-high':  volume >= 0.5
+                          }"></i>
+                        </button>
+                        <div class="vol-track">
+                          <div class="vol-fill" [style.width]="(volume * 100) + '%'"></div>
+                          <input type="range" class="vol-input"
+                            min="0" max="1" step="0.01"
+                            [value]="volume"
+                            (input)="changeVolume($event)">
+                        </div>
+                        <span class="vol-pct">{{ (volume * 100).toFixed(0) }}%</span>
+                      </div>
 
-  @if (played && !allowReplay) {
-    <div class="once-notice">
-      <i class="fas fa-circle-info"></i>
-      Audio has been played. Replay is not allowed.
-    </div>
-  }
-</div>
+                      @if (played && !allowReplay) {
+                        <div class="once-notice">
+                          <i class="fas fa-circle-info"></i>
+                          Audio has been played. Replay is not allowed.
+                        </div>
+                      }
+                    </div>
                 }
 
                 @if(passage.content != ''){

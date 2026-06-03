@@ -10,8 +10,15 @@ import { Auth } from '../../auth/services/auth';
 })
 export class StudentLayout {
   private authService = inject(Auth);
+  user: any;
+  
+  ngOnInit() {
+    this.user = this.authService.currentUser();
+  }
 
   logout() {
     this.authService.logout();
   }
+
+
 }
