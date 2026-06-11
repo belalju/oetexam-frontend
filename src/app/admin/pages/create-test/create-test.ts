@@ -639,6 +639,7 @@ export class CreateTest implements OnInit{
     const formValue = this.questionForm.value;
     const groupId = this.getSelectedGroup().id;
 
+    
     if (this.editingQuestionId()) {
       // UPDATE
       this.questionService.updateQuestion(formValue, this.editingQuestionId()!).subscribe({
@@ -677,31 +678,51 @@ export class CreateTest implements OnInit{
   }
 
   editQuestion(question: any, groupId: number): void {
-    // this.selectedGroupId.set(groupId); // <-- select the group first
-    this.selectGroup(groupId); // <-- load group details (if needed for display)
-    this.editingQuestionId.set(question.id);
+    if (!question?.id) {
+      toast.error('Question not found!');
+      return;
+    }
 
-    this.questionForm.patchValue({
-      questionNumber: question.questionNumber,
-      questionText: question.questionText,
-      prefixText: question.prefixText,
-      suffixText: question.suffixText,
-      correctText: question.correctAnswer?.correctText ?? question.correctText,
-      correctOptionLabel: question.correctAnswer?.optionLabel ?? question.optionLabel,
-      sortOrder: question.sortOrder,
+    this.selectGroup(groupId);
+
+    this.questionService.questionById(question.id).subscribe({
+      next: (response: any) => {
+        const questionData = response.data;
+
+        this.editingQuestionId.set(questionData.id);
+        this.questionForm.patchValue({
+          questionNumber: questionData.questionNumber,
+          questionText: questionData.questionText || '',
+          prefixText: questionData.prefixText || '',
+          suffixText: questionData.suffixText || '',
+          correctText: questionData.correctAnswer?.correctText ?? questionData.correctText ?? '',
+          correctOptionLabel: questionData.correctAnswer?.optionLabel ?? questionData.optionLabel ?? '',
+          sortOrder: questionData.sortOrder,
+        });
+
+        this.options.controls.forEach((control, index) => {
+          control.reset({
+            optionLabel: ['A', 'B', 'C', 'D'][index],
+            optionText: '',
+            sortOrder: index + 1
+          });
+        });
+
+        questionData.options?.forEach((opt: any, index: number) => {
+          this.options.at(index)?.patchValue({
+            optionLabel: opt.optionLabel,
+            optionText: opt.optionText || '',
+            sortOrder: opt.sortOrder
+          });
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+      error: (err) => {
+        toast.error('Error fetching question details');
+        console.error(err);
+      }
     });
-
-    // Patch FormArray properly
-    question.options?.forEach((opt: any, i: number) => {
-      this.options.at(i)?.patchValue({
-        optionLabel: opt.optionLabel,
-        optionText: opt.optionText,
-        sortOrder: opt.sortOrder
-      });
-    });
-
-    // Scroll to form
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
 

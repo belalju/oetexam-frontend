@@ -68,31 +68,7 @@
             </div>
           }
 
-          @for(passage of allPassages(); track passage.id){
-            <div class="mb-5">
-              <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-1 mb-2 rounded-md">
-                {{ passage.label }}
-              </span>
-
-              @if(audioUrls[passage.audioFileUrl]){
-                <audio
-                  controls
-                  controlsList="nodownload noplaybackrate"
-                  disableRemotePlayback
-                  preload="metadata"
-                  [src]="audioUrls[passage.audioFileUrl]"
-                  (contextmenu)="$event.preventDefault()">
-                  Your browser does not support the audio element.
-                </audio>
-              }
-
-              @if(passage.content != ''){
-                <div class="bg-[#F2F6F9] p-3 rounded-lg border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line"
-                    [innerHTML]="passage.content">
-                </div>
-              }
-            </div>
-          }
+          
 
         </div>
 
@@ -146,9 +122,9 @@
                   <div class="space-y-3">
                     @for(q of getQuestionsForGroup(g.id); track q.id){
                       <div class="bg-white border border-slate-200 rounded-xl p-4">
-                        <p class="text-sm text-slate-700 mb-3">
+                        <p class="text-sm text-slate-700 mb-3 leading-relaxed">
                           <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                          {{ q.questionText }}
+                          <span [innerHTML]="q.questionText"></span>
                         </p>
                         <input
                           type="text"
@@ -229,6 +205,7 @@
       @if(currentStep === '3'){
         <section #section03 class="grid grid-cols-2 {{ testData().subTestType === 'LISTENING' ? 'lg:grid-cols-3' : 'grid-cols-2' }} gap-4 h-screen">
 
+          @if(testData().subTestType === 'LISTENING'){
           <!-- LEFT: Passages -->
           <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen {{isFullScreen ? 'pb-60' : ''}}">
 
@@ -397,18 +374,19 @@
                     </div>
                 }
 
-                @if(passage.content != ''){
+                <!-- @if(passage.content != ''){
                   <div class="bg-[#F2F6F9] p-3 rounded-lg border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line"
                       [innerHTML]="passage.content">
                   </div>
-                }
+                } -->
               </div>
             }
 
           </div>
+        }
 
           <!-- RIGHT: Questions for B and C -->
-          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}} {{ testData().subTestType === 'LISTENING' ? 'col-span-2' : '' }}">
+          <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}} col-span-2">
             <div class="p-6">
 
               @if(testData().subTestType === 'LISTENING'){
