@@ -118,6 +118,17 @@
       <!-- Question Content -->
       <div>
         <p class="text-[13px] leading-relaxed text-gray-800 mb-3" [innerHTML]="q.questionText"></p>
+        @if(q.prefixText || q.suffixText){
+        <p class="text-sm text-slate-700 leading-relaxed mb-2">
+          <span [innerHTML]="q.prefixText"></span>
+          <input
+            type="text" readonly
+            class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
+            [value]="q.answerText"
+             />
+          <span [innerHTML]="q.suffixText"></span>
+        </p>
+        }
         
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
           <div>

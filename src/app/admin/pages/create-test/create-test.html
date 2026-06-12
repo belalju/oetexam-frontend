@@ -1134,7 +1134,12 @@
                   {{ q.questionNumber }}
                 </span>
                 <div class="flex-1">
-                  <p class="text-sm text-gray-800">{{ q.questionText || (q.prefixText + ' ___ ' + q.suffixText) }}</p>
+                  <!-- <p class="text-sm text-gray-800">{{ q.questionText || (q.prefixText + ' ___ ' + q.suffixText) }}</p> -->
+                   <div class="text-sm text-gray-800">
+                      <div [innerHTML]="q.questionText"></div>
+                      <div [innerHTML]="q.prefixText"></div>
+                      <div [innerHTML]="q.suffixText"></div>
+                    </div>
                 </div>
                 <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
                   {{ q.correctAnswer?.correctText }}
