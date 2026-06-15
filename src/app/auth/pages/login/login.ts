@@ -19,7 +19,7 @@ export class Login {
  
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    password: ['', [Validators.required, Validators.minLength(8)]]
   });
  
   get email() { return this.form.get('email')!; }

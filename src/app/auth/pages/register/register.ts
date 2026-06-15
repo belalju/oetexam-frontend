@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-register',
@@ -23,9 +24,9 @@ export class Register {
  
   form = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
-    lastName:  ['', [Validators.required, Validators.minLength(2)]],
+    lastName:  ['', [,Validators.required, Validators.minLength(1)]],
     email:     ['', [Validators.required, Validators.email]],
-    password:  ['', [Validators.required, Validators.minLength(6)]],
+    password:  ['', [Validators.required, Validators.minLength(8)]],
     profession:['', Validators.required]
   });
  
@@ -43,6 +44,9 @@ export class Register {
     this.errorMessage.set(null);
     this.auth.register(this.form.value as any).subscribe({
       error: (err) => {
+        toast.error(
+          err?.error?.error || 'Registration failed. Please try again.'
+        );
         this.errorMessage.set(
           err?.error?.error || 'Registration failed. Please try again.'
         );
