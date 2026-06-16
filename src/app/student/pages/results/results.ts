@@ -134,13 +134,19 @@ export class Results implements OnInit {
   }
 
 
-  filters = [
-    { label: 'All (14)', value: 'all' },
-    { label: 'Correct (10)', value: 'correct' },
-    { label: 'Wrong (4)', value: 'wrong' }
-  ];
-
   activeFilter: 'all' | 'correct' | 'wrong' = 'all';
+
+  get totalQuestions(): number {
+    return this.results().answers?.length || 0;
+  }
+
+  get correctCount(): number {
+    return this.results().answers?.filter((a: any) => a.correct).length || 0;
+  }
+
+  get wrongCount(): number {
+    return this.results().answers?.filter((a: any) => !a.correct).length || 0;
+  }
 
   get filteredAnswers() {
     if (!this.results()) return [];

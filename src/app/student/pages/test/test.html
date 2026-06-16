@@ -96,7 +96,8 @@
                       <div class="bg-white border border-slate-200 rounded-xl p-4">
                         <p class="text-sm text-slate-700 mb-3">
                           <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                          {{ q.questionText }}
+                          <!-- {{ q.questionText }} -->
+                          <span class="inline-html-content" [innerHTML]="q.questionText"></span>
                         </p>
                         <div class="flex gap-2">
                           @for(opt of q.options; track opt.id){
@@ -124,7 +125,7 @@
                       <div class="bg-white border border-slate-200 rounded-xl p-4">
                         <p class="text-sm text-slate-700 mb-3 leading-relaxed">
                           <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                          <span [innerHTML]="q.questionText"></span>
+                          <span class="inline-html-content" [innerHTML]="q.questionText"></span>
                         </p>
                         <input
                           type="text"
@@ -147,14 +148,14 @@
                       <div class="bg-white border border-slate-200 rounded-xl p-4">
                         <p class="text-sm text-slate-700 leading-relaxed">
                           <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                          <span [innerHTML]="q.prefixText"></span>
+                          <span class="inline-html-content" [innerHTML]="q.prefixText"></span>
                           <input
                             type="text"
                             placeholder="..."
                             class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
                             [value]="answers()[q.id]?.answerText ?? ''"
                             (change)="selectAnswer(q.id, $any($event.target).value)" />
-                          <span [innerHTML]="q.suffixText"></span>
+                          <span class="inline-html-content" [innerHTML]="q.suffixText"></span>
                         </p>
                       </div>
                     }
@@ -171,7 +172,7 @@
                       <div class="bg-white border border-slate-200 rounded-xl p-4">
                         <p class="text-sm text-slate-700 mb-3">
                           <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                          <span [innerHTML]="q.questionText"></span>
+                          <span class="inline-html-content" [innerHTML]="q.questionText"></span>
                         </p>
                         @for(opt of q.options; track opt.id){
                           <div class="flex gap-2 w-full mb-2">
@@ -568,7 +569,7 @@
                     <div class="bg-white border border-slate-200 rounded-xl p-4">
                       <p class="text-sm text-slate-700 mb-3 font-bold">
                         <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span>
-                        <span [innerHTML]="q.questionText"></span>
+                        <span class="inline-html-content" [innerHTML]="q.questionText"></span>
                       </p>
                       @for(opt of q.options; track opt.id){
                         @if(opt.optionText){  
