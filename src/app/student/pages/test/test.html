@@ -151,7 +151,7 @@
                           <span class="inline-html-content" [innerHTML]="q.prefixText"></span>
                           <input
                             type="text"
-                            placeholder="..."
+                            placeholder=""
                             class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
                             [value]="answers()[q.id]?.answerText ?? ''"
                             (change)="selectAnswer(q.id, $any($event.target).value)" />
@@ -208,7 +208,7 @@
 
           @if(testData().subTestType === 'LISTENING'){
           <!-- LEFT: Passages -->
-          <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen {{isFullScreen ? 'pb-60' : ''}}">
+          <div class="col-span-2 lg:col-span-1 bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen {{isFullScreen ? 'pb-60' : ''}}">
 
             @for(passage of allPassages(); track passage.id){
               <div class="mb-5">
@@ -339,7 +339,8 @@
                         <button class="btn-icon" (click)="skipBack()" aria-label="Skip back 10s">
                           <i class="fas fa-rotate-left"></i>
                         </button>
-                        <button class="btn-play" (click)="togglePlay()" [disabled]="played && !allowReplay">
+                        <!-- <button class="btn-play" (click)="togglePlay()" [disabled]="played && !allowReplay"> -->
+                        <button class="btn-play" (click)="togglePlay()">
                           <i class="fas" [ngClass]="isPlaying ? 'fa-pause' : 'fa-play'"></i>
                         </button>
                         <button class="btn-icon" (click)="skipForward()" aria-label="Skip forward 10s">
@@ -369,7 +370,8 @@
                       @if (played && !allowReplay) {
                         <div class="once-notice">
                           <i class="fas fa-circle-info"></i>
-                          Audio has been played. Replay is not allowed.
+                          For the main test/examination, the audio playback controls must be restricted. Candidates should not be able to pause, stop, fast-forward, or rewind the audio.
+                          <!-- Audio has been played. Replay is not allowed. -->
                         </div>
                       }
                     </div>
@@ -545,7 +547,7 @@
                         <!-- <span class="font-bold text-navy-600">{{ q.questionNumber }}. </span> -->
                         <span [innerHTML]="q.prefixText" class="inline-html-content"></span>
                         <span class="font-bold text-navy-600 ml-2">({{ q.questionNumber }}) </span>
-                        <input type="text" placeholder="..."
+                        <input type="text" placeholder=""
                           class="inline-block border-b-2 border-blue-400 px-2 py-0.5 text-sm font-semibold text-blue-700 focus:outline-none bg-transparent w-28"
                           [value]="answers()[q.id]?.answerText ?? ''"
                           (change)="selectAnswer(q.id, $any($event.target).value)" />

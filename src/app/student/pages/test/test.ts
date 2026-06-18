@@ -93,8 +93,10 @@ export class Test implements AfterViewInit, OnDestroy {
       const audio = this.audioEl.nativeElement;
       if (this.isPlaying) {
         audio.pause();
+        this.isPlaying = false;
       } else {
         audio.play();
+        this.isPlaying = true;
       }
     }
 
@@ -175,12 +177,12 @@ export class Test implements AfterViewInit, OnDestroy {
 
     skipBack() {
       this.audioEl.nativeElement.currentTime = 
-        Math.max(0, this.audioEl.nativeElement.currentTime - 10);
+        Math.max(0, this.audioEl.nativeElement.currentTime - 5);
     }
 
     skipForward() {
       this.audioEl.nativeElement.currentTime = 
-        Math.min(this.duration, this.audioEl.nativeElement.currentTime + 10);
+        Math.min(this.duration, this.audioEl.nativeElement.currentTime + 5);
     }
 
 
@@ -433,6 +435,9 @@ export class Test implements AfterViewInit, OnDestroy {
     this.sectionTimeExpired.set(true);
     this.currentStep = '3';
     // alert(`Time is up for ${this.currentStep === '2' ? 'Part A' : this.currentStep === '3' ? 'Part B & C' : 'this section'}!`);
+    
+    // Reset and restart countdown for Part B & C
+    this.resetSectionTimer();
   }
 
   stopCountdown() {

@@ -17,9 +17,11 @@
     <nav class="border-b border-gray-100 sticky top-0 bg-white z-50">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
                 <div class="flex items-center gap-8">
-                    <a href="#" class="text-3xl font-bold text-[#005eb8]">IELTS</a>
+                    <a href="/" class="text-3xl font-bold text-[#005eb8] flex-shrink-0">IELTS</a>
                     
+                    <!-- Desktop Navigation -->
                     <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
                         <a href="#" class="hover:text-[#005eb8] mt-2">About</a>
                         <a href="#" class="hover:text-[#005eb8] mt-2">Ready</a>
@@ -58,24 +60,135 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <!-- Desktop Right Section -->
+                <div class="hidden md:flex items-center gap-4">
                     <button class="text-gray-600 hover:text-black"><i class="fas fa-search text-lg"></i></button>
                     <button class="text-gray-600 hover:text-black"><i class="fas fa-shopping-cart text-lg"></i></button>
                     
                     @if(isAuthenticated) {
                         @if(isAdmin) {
-                            <a routerLink="/admin/dashboard" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
+                            <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
                         }
                         @else {
-                        <a routerLink="/student/home" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
+                        <a routerLink="/student/home" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
                         }
                     } 
                     @else {
-                    <a routerLink="/auth/login" class="hidden md:inline-block border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
-                    <a routerLink="/auth/register" class="hidden md:inline-block bg-black text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Trial</a>
+                    <a routerLink="/auth/login" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
+                    <a routerLink="/auth/register" class="bg-black text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Trial</a>
                     }
                 </div>
+
+                <div class="flex md:hidden items-center gap-4">
+                    @if(isAuthenticated) {
+                        @if(isAdmin) {
+                            <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
+                        }
+                        @else {
+                        <a routerLink="/student/home" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
+                        }
+                    } 
+                    @else {
+                    <a routerLink="/auth/login" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
+                    }
+
+                    <!-- Mobile Menu Button -->
+                    <button 
+                        (click)="toggleMobileMenu()"
+                        class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition">
+                        <svg class="w-6 h-6 text-gray-700" [ngClass]="{'hidden': mobileMenuOpen()}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <!-- Close X icon -->
+                        <svg class="w-6 h-6 text-gray-700" [ngClass]="{'hidden': !mobileMenuOpen()}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
+
+            <!-- Mobile Menu Dropdown -->
+            @if(mobileMenuOpen()) {
+                <div class="md:hidden border-t border-gray-100 pb-4 animate-in slide-in-from-top-2 duration-200">
+                    <div class="space-y-1 py-4">
+                        <!-- Mobile Navigation Links -->
+                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">About</a>
+                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Ready</a>
+                        <a routerLink="/store" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Store</a>
+                        <a routerLink="/test" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Test</a>
+                        
+                        <!-- Mobile Dropdown: IELTS -->
+                        <div class="border-t border-gray-100 pt-2">
+                            <button 
+                                (click)="toggleDropdown('ielts')"
+                                class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
+                                <span>IELTS</span>
+                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'ielts'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            @if(showDropdown() === 'ielts') {
+                                <div class="bg-gray-50 pl-4 space-y-1">
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">IELTS General</a>
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">IELTS Academic</a>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Mobile Dropdown: PTE -->
+                        <div class="border-t border-gray-100 pt-2">
+                            <button 
+                                (click)="toggleDropdown('pte')"
+                                class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
+                                <span>PTE</span>
+                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'pte'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            @if(showDropdown() === 'pte') {
+                                <div class="bg-gray-50 pl-4 space-y-1">
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">PTE Academic</a>
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">PTE Core</a>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Mobile Dropdown: OET -->
+                        <div class="border-t border-gray-100 pt-2">
+                            <button 
+                                (click)="toggleDropdown('oet')"
+                                class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
+                                <span>OET</span>
+                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'oet'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            @if(showDropdown() === 'oet') {
+                                <div class="bg-gray-50 pl-4 space-y-1">
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">OET Nurses</a>
+                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">OET Doctors</a>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Mobile Auth Section -->
+                        <div class="border-t border-gray-100 pt-4 space-y-2">
+                            @if(isAuthenticated) {
+                                @if(isAdmin) {
+                                    <a routerLink="/admin/dashboard" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-[#005eb8] hover:bg-gray-50">Admin Dashboard</a>
+                                }
+                                @else {
+                                    <a routerLink="/student/home" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-[#005eb8] hover:bg-gray-50">Dashboard</a>
+                                }
+                            } 
+                            @else {
+                                <a routerLink="/auth/login" (click)="closeMobileMenu()" class="block px-4 py-2 text-center text-sm font-semibold border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Log in</a>
+                                <a routerLink="/auth/register" (click)="closeMobileMenu()" class="block px-4 py-2 text-center text-sm font-semibold bg-black text-white rounded-lg hover:bg-gray-800 transition">Start Free Trial</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </nav>
 
