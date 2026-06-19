@@ -20,7 +20,7 @@ export class Test implements AfterViewInit, OnDestroy {
   user: any;
   activeQuestion: number = 1;
   currentQuestion: number = 1;
-  isFullScreen: boolean = true;
+  isFullScreen: boolean = false;
   countdownDisplay: string = '00:00:00';
   private timeLeftInSeconds: number = 0;
   private timerInterval: any = null;
@@ -60,9 +60,9 @@ export class Test implements AfterViewInit, OnDestroy {
     this.startCountdown();
     this.updateDisplay();   
 
-    setTimeout(() => {
-      this.enterFullScreen();
-    }, 100);
+    // setTimeout(() => {
+    //   this.enterFullScreen();
+    // }, 100);
   }
 
   audioUrls: { [key: string]: string } = {};
