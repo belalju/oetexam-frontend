@@ -596,7 +596,7 @@
                         class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm">
                   <option value="">Select Passage</option>
                   @for (p of passages; track p.id) {
-                    <option [value]="p.id">{{ p.label }}</option>
+                    <option [ngValue]="p.id">{{ p.label }}</option>
                   }
                 </select>
               </div>

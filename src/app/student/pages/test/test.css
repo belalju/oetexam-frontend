@@ -306,3 +306,37 @@ input[type="range"] {
 
   i { font-size: 16px; }
 }
+
+
+
+::ng-deep ul {
+  list-style-type: disc !important;
+  padding-left: 2rem !important;
+  /* display: block !important; */
+  margin-bottom: 0 !important;
+}
+
+::ng-deep ol {
+  list-style-type: decimal !important;
+  padding-left: 2rem !important;
+}
+
+::ng-deep li {
+  display: list-item !important;
+}
+
+::ng-deep  table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+::ng-deep  table,
+::ng-deep  th,
+::ng-deep  td {
+  border: 1px solid #d1d5db !important;
+}
+
+::ng-deep  th,
+::ng-deep  td {
+  padding: 8px;
+}

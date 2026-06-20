@@ -50,7 +50,7 @@
       <section #section02 class="grid grid-cols-2 gap-4 h-screen">
 
         <!-- LEFT: Passages -->
-        <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen {{isFullScreen ? 'pb-60' : ''}}">
+        <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen pb-64">
 
 
           @for(passage of partAPassages(); track passage.id){
@@ -73,7 +73,7 @@
         </div>
 
         <!-- RIGHT: Questions -->
-        <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto {{isFullScreen ? 'pb-40' : ''}}">
+        <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto pb-64">
           <div class="flex-1 overflow-y-auto p-6">
 
             <!-- Part A global instructions banner -->

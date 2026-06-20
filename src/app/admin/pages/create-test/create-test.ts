@@ -452,7 +452,7 @@ export class CreateTest implements OnInit{
       title: ['', [Validators.minLength(1), Validators.maxLength(255)]],
       questionType: ['', Validators.required],
       partId: ['', ],
-      passageId: [''],                    // optional
+      passageId: [null],                    // optional
       sortOrder: [1, [Validators.required, Validators.min(1)]],
       instructions: ['', [Validators.maxLength(800)]]
     });
