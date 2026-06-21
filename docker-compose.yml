@@ -1,0 +1,10 @@
+services:
+  oetexam-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: oetexam-frontend:latest
+    container_name: oetexam-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
