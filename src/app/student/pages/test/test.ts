@@ -493,7 +493,6 @@ export class Test implements AfterViewInit, OnDestroy {
       this.resetSectionTimer();
 
       const currentAttemptId = localStorage.getItem('currentAttemptId');
-      // console.log('Current Attempt ID from localStorage:', currentAttemptId);
       if (!this.attemptData() && currentAttemptId) {
         this.attemptById(parseInt(currentAttemptId));
       } else if (!this.attemptData()) {
