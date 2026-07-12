@@ -13,6 +13,30 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface GoogleLoginRequest {
+  idToken: string;
+}
+
+export interface VerifyEmailRequest {
+  token: string;
+}
+
+export interface ResendVerificationRequest {
+  email: string;
+}
+
+export interface RegisterData {
+  message: string;
+  email: string;
+}
+
+export interface RegisterResponse {
+  timestamp: string;
+  status: number;
+  data: RegisterData;
+  error: string | null;
+}
+
 // Response Models
 export interface AuthData {
   accessToken: string;

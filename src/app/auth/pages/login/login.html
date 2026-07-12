@@ -34,12 +34,18 @@
                 </div>
 
                 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-6">
-                    <!-- @if (errorMessage()) {
-                        <div class="alert alert-error">
-                        <span class="alert-icon">!</span>
-                        {{ errorMessage() }}
+                    @if (showResendBanner()) {
+                        <div class="p-4 border border-amber-300 rounded-lg bg-amber-50 text-amber-800 text-sm">
+                            <p class="mb-2">{{ errorMessage() }}</p>
+                            @if (resendSent()) {
+                                <p class="font-semibold">Verification email sent. Please check your inbox.</p>
+                            } @else {
+                                <button type="button" (click)="onResend()" class="font-bold underline hover:text-amber-900">
+                                    Resend verification email
+                                </button>
+                            }
                         </div>
-                    } -->
+                    }
                     <div class="field" [class.invalid]="email.invalid && email.touched">
                         <label for="email" class="block mb-2 text-xs font-bold text-gray-700 uppercase tracking-wider">Email Address</label>
                         <input type="email" placeholder="Enter your email" formControlName="email"
@@ -91,22 +97,13 @@
                         }
                     </button>
 
-                    <!-- <div class="flex items-center my-8">
+                    <div class="flex items-center my-8">
                         <div class="flex-grow border-t border-gray-200"></div>
                         <span class="px-4 text-xs font-bold text-gray-400 uppercase">Or login with</span>
                         <div class="flex-grow border-t border-gray-200"></div>
-                    </div> -->
+                    </div>
 
-                    <!-- <div class="grid grid-cols-2 gap-4">
-                        <button type="button" class="flex items-center justify-center p-3 font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 mr-2" alt="Google">
-                            Google
-                        </button>
-                        <button type="button" class="flex items-center justify-center p-3 font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition text-[#1877F2]">
-                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                            Facebook
-                        </button>
-                    </div> -->
+                    <div #googleBtn class="flex justify-center"></div>
                 </form>
             </div>
         </div>

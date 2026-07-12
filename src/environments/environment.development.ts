@@ -1,5 +1,6 @@
 
 export const environment = {
   production: false,
-  API_URL: 'https://oet.belalhossain.dev/api'   // ← Your development API URL
+  API_URL: 'http://localhost:8080/api',
+  googleClientId: '480399955475-en9hgiaa5cf6bp6oggb86m0ffhnobpcr.apps.googleusercontent.com'
 };

@@ -1,0 +1,38 @@
+
+<div class="flex items-center justify-center min-h-screen p-8 bg-white">
+    <div class="w-full max-w-md text-center">
+
+        @if (state() === 'verifying') {
+            <h2 class="mb-2 text-2xl font-extrabold text-blue-950">Verifying your email…</h2>
+            <p class="text-gray-600">Please wait a moment.</p>
+        }
+
+        @if (state() === 'success') {
+            <h2 class="mb-2 text-2xl font-extrabold text-blue-950">Email verified!</h2>
+            <p class="text-gray-600">You're all set — redirecting you now.</p>
+        }
+
+        @if (state() === 'error') {
+            <h2 class="mb-2 text-2xl font-extrabold text-red-700">Verification failed</h2>
+            <p class="mb-6 text-gray-600">{{ errorMessage() }}</p>
+
+            @if (resendSent()) {
+                <p class="text-sm font-semibold text-blue-700">Verification email sent. Please check your inbox.</p>
+            } @else {
+                <div class="mb-4 space-y-3 text-left">
+                    <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide">Email Address</label>
+                    <input type="email" [(ngModel)]="emailInput" placeholder="you@example.com"
+                           class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+                    <button type="button" (click)="onResend()" class="w-full p-3 font-bold text-white uppercase bg-blue-600 rounded hover:bg-blue-700 transition">
+                        Resend verification email
+                    </button>
+                </div>
+            }
+
+            <p class="text-sm text-gray-600">
+                <a routerLink="/auth/login" class="font-bold text-blue-600 underline">Back to login</a>
+            </p>
+        }
+
+    </div>
+</div>

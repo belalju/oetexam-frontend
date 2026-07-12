@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { guestGuard } from './guards/auth-guard';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { VerifyEmail } from './pages/verify-email/verify-email';
 
 export const AUTH_ROUTES: Routes = [
   {
@@ -18,5 +19,9 @@ export const AUTH_ROUTES: Routes = [
     path: 'register',
     canActivate: [guestGuard],
     component: Register
+  },
+  {
+    path: 'verify-email',
+    component: VerifyEmail
   }
 ];
