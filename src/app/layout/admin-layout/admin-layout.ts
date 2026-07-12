@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, HostListener, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { Auth } from '../../auth/services/auth';
 
@@ -13,14 +13,29 @@ import { Auth } from '../../auth/services/auth';
 export class AdminLayout {
   private authService = inject(Auth);
 
-  logout() {
-    this.authService.logout();
-  }
-
+  isProfileMenuOpen = false;
   user:any;
 
   ngOnInit(){
     this.user = this.authService.currentUser();
   }
+
+  logout() {
+    this.authService.logout();
+  }
+
+  toggleProfileMenu(): void {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+
+    if (!target.closest('.profile-menu')) {
+      this.isProfileMenuOpen = false;
+    }
+  }
+
 
 }

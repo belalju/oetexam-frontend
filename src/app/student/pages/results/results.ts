@@ -136,6 +136,13 @@ export class Results implements OnInit {
 
   activeFilter: 'all' | 'correct' | 'wrong' = 'all';
 
+  get isBelowB(): boolean {
+    const grade = (this.results().grade ?? '').toString().trim().toUpperCase();
+    if (!grade) return false;
+    // Letter grades C, D, E, F all sort after 'B' — i.e. below a B.
+    return grade.charAt(0) > 'B';
+  }
+
   get totalQuestions(): number {
     return this.results().answers?.length || 0;
   }

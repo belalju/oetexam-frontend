@@ -1,294 +1,162 @@
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col lg:flex-row items-center justify-between mb-8">
-    <div class="flex-1 w-full">
-        <h2 class="text-2xl font-bold text-slate-800 mb-6">Getting Started</h2>
-        <div class="space-y-3 max-w-2xl">
-            <div class="flex items-center justify-between p-4 border border-blue-200 bg-blue-50/30 rounded-xl">
-                <div class="flex items-center space-x-4">
-                    <span class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-xs font-bold bg-white">1</span>
-                    <p class="text-sm font-medium">Take the score calculator to discover your current score range</p>
-                </div>
-                <button class="bg-blue-600 text-white text-[10px] font-bold px-8 py-2 rounded-lg uppercase">Go</button>
-            </div>
-            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl">
-                <div class="flex items-center space-x-4">
-                    <span class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-xs font-bold">2</span>
-                    <p class="text-sm font-medium">Watch a Method Lesson Video and try a practice activity</p>
-                </div>
-                <button class="border border-gray-200 text-gray-400 text-[10px] font-bold px-8 py-2 rounded-lg uppercase">Go</button>
-            </div>
-            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-xl">
-                <div class="flex items-center space-x-4">
-                    <span class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-xs font-bold">3</span>
-                    <p class="text-sm font-medium">Register for an IELTS General Live Class</p>
-                </div>
-                <button class="border border-gray-200 text-gray-400 text-[10px] font-bold px-8 py-2 rounded-lg uppercase">Go</button>
-            </div>
-        </div>
+<!-- Header Row -->
+<div class="flex flex-col gap-4 mb-8 lg:flex-row lg:items-start lg:justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Test Catalog</h1>
+        <p class="text-sm text-gray-500 mt-1">Choose a practice test to begin</p>
     </div>
-
-    <div class="relative mt-8 lg:mt-0 lg:ml-12 flex flex-col items-center">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div class="relative">
-            <div class="absolute inset-0 bg-green-500 rounded-full opacity-10 blur-2xl"></div>
-            <img src="https://e2assetsv2.e2language.com/e2l-image/v3/Onboarding_ScoreCalculator_1.png" class="w-[80%]" alt="Student">
-        </div>
-        <div class="absolute top-0 right-0 bg-white p-3 rounded-2xl shadow-xl border border-gray-50 flex items-center space-x-3">
-            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-                    <i class="fa-solid fa-play"></i>
-            </div>
-            <div>
-                <div class="w-20 h-2 bg-gray-100 rounded"></div>
-                <div class="w-12 h-2 bg-gray-100 rounded mt-1"></div>
-            </div>
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+                type="text"
+                placeholder="Search tests..."
+                [value]="searchTerm()"
+                (input)="onSearchInput($event)"
+                class="w-full sm:w-56 pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg text-gray-600 placeholder-gray-400 focus:outline-none shadow-sm"
+            />
         </div>
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6 border-b border-gray-50 flex justify-between items-center">
-            <h3 class="text-xl font-bold">Online Classes</h3>
-            <i class="fa-solid fa-calendar-days text-gray-400 cursor-pointer"></i>
+<!-- Type Tabs -->
+<div class="flex items-center gap-1 mb-6 overflow-x-auto">
+    <button
+        type="button"
+        (click)="setTypeFilter('ALL')"
+        class="px-4 py-1.5 text-sm rounded-md transition"
+        [ngClass]="typeFilter() === 'ALL' ? 'font-semibold bg-white text-gray-800 shadow-sm border border-gray-200' : 'font-medium text-gray-500 hover:bg-white hover:text-gray-700'"
+    >
+        All
+    </button>
+    <button
+        type="button"
+        (click)="setTypeFilter('READING')"
+        class="px-4 py-1.5 text-sm rounded-md transition"
+        [ngClass]="typeFilter() === 'READING' ? 'font-semibold bg-white text-gray-800 shadow-sm border border-gray-200' : 'font-medium text-gray-500 hover:bg-white hover:text-gray-700'"
+    >
+        Reading
+    </button>
+    <button
+        type="button"
+        (click)="setTypeFilter('LISTENING')"
+        class="px-4 py-1.5 text-sm rounded-md transition"
+        [ngClass]="typeFilter() === 'LISTENING' ? 'font-semibold bg-white text-gray-800 shadow-sm border border-gray-200' : 'font-medium text-gray-500 hover:bg-white hover:text-gray-700'"
+    >
+        Listening
+    </button>
+</div>
+
+<!-- Test Catalog Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+    @for(item of filteredTests(); track item.id){
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between min-h-56">
+            <div>
+                <div class="flex items-start justify-between gap-4 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                        @if(item.subTestType === 'LISTENING'){
+                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+                            </svg>
+                        } @else {
+                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                        }
+                    </div>
+                    <span
+                        class="text-xs font-semibold px-3 py-1 rounded-full"
+                        [ngClass]="item.subTestType === 'LISTENING' ? 'bg-teal-50 text-teal-500' : 'bg-blue-50 text-blue-500'"
+                    >
+                        {{ item.subTestType }}
+                    </span>
+                </div>
+                <h2 class="text-base font-bold text-gray-900">{{ item.title }}</h2>
+                <p class="text-xs text-gray-400 mt-1">Parts A, B &amp; C · 42 questions · 60 min</p>
+            </div>
+            <div class="flex items-center justify-between gap-4 mt-6">
+                <span class="text-xs text-gray-400">Not attempted</span>
+                <button (click)="startTest(item.id)" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition">Start Test</button>
+            </div>
         </div>
-        <div class="p-6 space-y-4">
-            <div class="flex items-center p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition">
-                <div class="w-16 h-12 bg-blue-900 rounded-lg flex items-center justify-center text-white text-xs font-black italic">G<span class="text-blue-400">*</span></div>
-                <div class="ml-4 flex-1">
-                    <div class="flex items-center text-[10px] text-orange-500 font-bold uppercase mb-1">
-                        <i class="fa-regular fa-clock mr-1"></i> Starts in 16:22:41
-                    </div>
-                    <h4 class="text-sm font-bold leading-tight">Grammar: Learn about Articles</h4>
-                </div>
-                <div class="text-right">
-                    <p class="text-[9px] font-bold text-blue-600 mb-1">47 registered</p>
-                    <button class="bg-blue-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-lg uppercase">Register</button>
-                </div>
-            </div>
-            <div class="flex items-center p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition">
-                <div class="w-16 h-12 bg-blue-900 rounded-lg flex items-center justify-center text-white text-xs font-black italic">G<span class="text-blue-400">*</span></div>
-                <div class="ml-4 flex-1">
-                    <div class="flex items-center text-[10px] text-orange-500 font-bold uppercase mb-1">
-                        <i class="fa-regular fa-clock mr-1"></i> Starts in 16:22:41
-                    </div>
-                    <h4 class="text-sm font-bold leading-tight">Grammar: Learn about Articles</h4>
-                </div>
-                <div class="text-right">
-                    <p class="text-[9px] font-bold text-blue-600 mb-1">47 registered</p>
-                    <button class="bg-blue-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-lg uppercase">Register</button>
-                </div>
-            </div>
-            <div class="flex items-center p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition">
-                <div class="w-16 h-12 bg-blue-900 rounded-lg flex items-center justify-center text-white text-xs font-black italic">G<span class="text-blue-400">*</span></div>
-                <div class="ml-4 flex-1">
-                    <div class="flex items-center text-[10px] text-orange-500 font-bold uppercase mb-1">
-                        <i class="fa-regular fa-clock mr-1"></i> Starts in 16:22:41
-                    </div>
-                    <h4 class="text-sm font-bold leading-tight">Grammar: Learn about Articles</h4>
-                </div>
-                <div class="text-right">
-                    <p class="text-[9px] font-bold text-blue-600 mb-1">47 registered</p>
-                    <button class="bg-blue-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-lg uppercase">Register</button>
-                </div>
-            </div>
+    } @empty {
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-sm text-gray-500">
+            No tests available yet.
         </div>
+    }
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div class="p-6 border-b border-gray-50">
+        <h3 class="text-xl font-bold">Study Pathway</h3>
     </div>
-
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-        <div class="p-6 border-b border-gray-50">
-            <h3 class="text-xl font-bold">Study Pathway</h3>
-        </div>
-        <div class="p-8">
-
-            <!-- Stepper -->
-            <div class="bg-white rounded-2xl shadow-sm px-6 py-5 mb-5">
-                <div class="flex items-center w-full">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold step-active border-2 flex-shrink-0">1</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">2</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">3</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">4</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">5</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">6</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">7</div>
-                <div class="step-line"></div>
-                <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold step-inactive border-2 flex-shrink-0">8</div>
-                </div>
-            </div>
-
-            <!-- Reading (open by default) -->
-            <div class="section-card bg-slate-50">
-                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row open-state" onclick="toggle('reading', this)">
+    <div class="p-8">
+        <!-- Reading (open by default) -->
+        <div class="section-card bg-slate-50">
+            <button
+                type="button"
+                (click)="toggleReading()"
+                class="w-full flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row text-left"
+                [class.open-state]="isReadingOpen()"
+            >
                 <div class="flex items-center gap-3">
                     <span class="text-xl">👓</span>
                     <span class="font-semibold text-[#1e3a5f] text-[15px]">Reading</span>
-                    <span class="badge-essential">Essential</span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1">
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:20%"></div></div>
-                    <span class="text-xs text-slate-500 font-medium">20% Completed</span>
-                    </div>
-                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
-                </div>
-                </div>
-                <div class="accordion-body open" id="reading">
+                <span class="circle-btn btn-light">
+                    <i class="toggle-icon">+</i>
+                </span>
+            </button>
+            <div class="accordion-body" [class.open]="isReadingOpen()" id="reading">
                 <div class="pb-3 pt-1">
-                    <!-- <div class="flex justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
-                        <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                            <span class="text-sm font-medium text-slate-700">Overview</span>
-                        </div>
-                        <button class="circle-btn btn-light">+</button>
-                    </div> -->
-
                     @for(item of tests(); track item.id){
                         @if(item.subTestType === 'READING'){
-                        <div (click)="startTest(item.id)" class="flex cursor-pointer justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
-                            
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                                <span class="text-sm font-medium text-slate-700">{{ item.title }}</span>
+                            <div (click)="startTest(item.id)" class="flex cursor-pointer justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                                    <span class="text-sm font-medium text-slate-700">{{ item.title }}</span>
+                                </div>
+                                <button class="circle-btn btn-light">+</button>
                             </div>
-                            <button class="circle-btn btn-light">+</button>
-                            
-                        </div>
                         }
                     }
-                    
-                </div>
                 </div>
             </div>
-            
-            <!-- Listening -->
-            <div class="section-card">
-                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('listening', this)">
+        </div>
+
+        <!-- Listening -->
+        <div class="section-card">
+            <button
+                type="button"
+                (click)="toggleListening()"
+                class="w-full flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row text-left"
+                [class.open-state]="isListeningOpen()"
+            >
                 <div class="flex items-center gap-3">
                     <span class="text-xl">🎧</span>
                     <span class="font-semibold text-[#1e3a5f] text-[15px]">Listening</span>
-                    <span class="badge-essential">Essential</span>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1">
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:14%"></div></div>
-                    <span class="text-xs text-slate-500 font-medium">14% Completed</span>
-                    </div>
-                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
-                </div>
-                </div>
-                <div class="accordion-body open" id="listening">
+                <span class="circle-btn btn-light">
+                    <i class="toggle-icon">+</i>
+                </span>
+            </button>
+            <div class="accordion-body" [class.open]="isListeningOpen()" id="listening">
                 <div class="pb-3 pt-1">
                     @for(item of tests(); track item.id){
                         @if(item.subTestType === 'LISTENING'){
-                        <div (click)="startTest(item.id)" class="flex cursor-pointer justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
-                            
-                            <div class="flex items-center gap-3">
-                                <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                                <span class="text-sm font-medium text-slate-700">{{ item.title }}</span>
+                            <div (click)="startTest(item.id)" class="flex cursor-pointer justify-between items-center bg-white mb-2 border m-3 rounded-lg border-gray-200 px-4 py-3">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
+                                    <span class="text-sm font-medium text-slate-700">{{ item.title }}</span>
+                                </div>
+                                <button class="circle-btn btn-light">+</button>
                             </div>
-                            <button class="circle-btn btn-light">+</button>
-                            
-                        </div>
                         }
                     }
                 </div>
-                </div>
             </div>
-            
-            
-            
-            <!-- Writing Task 1 -->
-            <!-- <div class="section-card">
-                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('writing1', this)">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">✏️</span>
-                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Writing Task 1</span>
-                    <span class="badge-essential">Essential</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1">
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
-                    <span class="text-xs text-slate-500 font-medium">0% Completed</span>
-                    </div>
-                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
-                </div>
-                </div>
-                <div class="accordion-body" id="writing1">
-                <div class="pb-3 pt-1">
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Introduction</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Bar Charts</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Practice Test 1</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                </div>
-                </div>
-            </div> -->
-            
-           
-            <!-- Speaking -->
-            <!-- <div class="section-card">
-                <div class="flex items-center justify-between px-5 py-4 cursor-pointer select-none header-row" onclick="toggle('speaking', this)">
-                <div class="flex items-center gap-3">
-                    <span class="text-xl">🎙️</span>
-                    <span class="font-semibold text-[#1e3a5f] text-[15px]">Speaking</span>
-                    <span class="badge-essential">Essential</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center gap-1">
-                    <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>
-                    <span class="text-xs text-slate-500 font-medium">0% Completed</span>
-                    </div>
-                    <button class="circle-btn btn-dark"><i class="toggle-icon">+</i></button>
-                </div>
-                </div>
-                <div class="accordion-body" id="speaking">
-                <div class="pb-3 pt-1">
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Part 1 - Introduction</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Part 2 - Cue Card</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                    <div class="sub-item">
-                    <div class="flex items-center gap-3">
-                        <span class="w-3 h-3 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span class="text-sm font-medium text-slate-700">Practice Test 1</span>
-                    </div>
-                    <button class="circle-btn btn-light">+</button>
-                    </div>
-                </div>
-                </div>
-            </div> -->
-            
         </div>
     </div>
-
 </div>

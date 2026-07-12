@@ -1,11 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestService } from '../../services/test-service';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+type TestTypeFilter = 'ALL' | 'READING' | 'LISTENING';
+type StatusFilter = 'ALL' | 'IN_PROGRESS' | 'COMPLETED';
 
 @Component({
   selector: 'app-my-history',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './my-history.html',
   styleUrl: './my-history.css',
 })
@@ -16,6 +20,40 @@ export class MyHistory {
   private readonly dhakaTimeZone = 'Asia/Dhaka';
 
   tests = signal<any[]>([]);
+  searchTerm = signal('');
+  selectedType = signal<TestTypeFilter>('ALL');
+  selectedStatus = signal<StatusFilter>('ALL');
+
+  typeFilters: { label: string; value: TestTypeFilter }[] = [
+    { label: 'All', value: 'ALL' },
+    { label: 'Reading', value: 'READING' },
+    { label: 'Listening', value: 'LISTENING' },
+  ];
+
+  statusFilters: { label: string; value: StatusFilter }[] = [
+    { label: 'All', value: 'ALL' },
+    { label: 'In Progress', value: 'IN_PROGRESS' },
+    { label: 'Completed', value: 'COMPLETED' },
+  ];
+
+  filteredTests = computed(() => {
+    const search = this.searchTerm().trim().toLowerCase();
+    const type = this.selectedType();
+    const status = this.selectedStatus();
+
+    return this.tests().filter((item) => {
+      const itemType = String(item.subTestType || '').toUpperCase();
+      const itemStatus = String(item.status || '').toUpperCase();
+      const title = String(item.testTitle || '').toLowerCase();
+      const attemptId = String(item.attemptId || '').toLowerCase();
+
+      const matchesSearch = !search || title.includes(search) || attemptId.includes(search);
+      const matchesType = type === 'ALL' || itemType === type;
+      const matchesStatus = status === 'ALL' || itemStatus === status;
+
+      return matchesSearch && matchesType && matchesStatus;
+    });
+  });
 
   formatDhakaShort(dateInput: unknown): string {
     if (dateInput === null || dateInput === undefined) return '';
@@ -41,6 +79,28 @@ export class MyHistory {
       hour12: true,
     }).format(d);
   }
+
+  getScorePercentage(item: any): number {
+    const totalScore = Number(item?.totalScore) || 0;
+    const maxScore = Number(item?.maxScore) || 0;
+
+    if (maxScore <= 0) return 0;
+
+    return Math.round((totalScore / maxScore) * 100);
+  }
+
+  setSearchTerm(value: string) {
+    this.searchTerm.set(value);
+  }
+
+  setSelectedType(value: TestTypeFilter) {
+    this.selectedType.set(value);
+  }
+
+  setSelectedStatus(value: StatusFilter) {
+    this.selectedStatus.set(value);
+  }
+
   totalElements = signal(0);
   currentPage = signal(0);
   pageSize = signal(10);

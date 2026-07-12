@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { forkJoin, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { TestService } from '../../services/test';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
@@ -12,17 +13,48 @@ import { toast } from 'ngx-sonner';
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard implements OnInit{
+export class AdminDashboard implements OnInit, OnDestroy{
   private testService = inject(TestService);
   private datePipe = inject(DatePipe);
   private router = inject(Router);
 
+  testTypeTabs = [
+    { value: 'ALL', label: 'All' },
+    { value: 'READING', label: 'Reading' },
+    { value: 'LISTENING', label: 'Listening' },
+  ] as const;
+  activeType = signal<'ALL' | 'READING' | 'LISTENING'>('ALL');
+  searchQuery = signal('');
+  searchInputValue = '';
+  private searchSubject = new Subject<string>();
+  private apiPageSize = 100;
+  private searchSubscription = this.searchSubject.pipe(
+    debounceTime(300),
+    distinctUntilChanged()
+  ).subscribe((query) => {
+    this.searchInputValue = query;
+    this.searchQuery.set(query);
+    this.currentPage.set(0);
+  });
+
   // tests:any = [];
-  tests = signal<any[]>([]);
-  totalElements = signal(0);
+  rawTests = signal<any[]>([]);
+  filteredTests = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    const selectedType = this.activeType();
+
+    return this.rawTests().filter((test) => {
+      const testType = String(test.subTestType ?? '').toUpperCase();
+      const matchesType = selectedType === 'ALL' || testType === selectedType;
+      const matchesSearch = !query || String(test.title ?? '').toLowerCase().includes(query);
+
+      return matchesType && matchesSearch;
+    });
+  });
+  totalElements = computed(() => this.filteredTests().length);
   currentPage = signal(0);
   pageSize = signal(10);
-  totalPages = signal(0);
+  totalPages = computed(() => Math.max(1, Math.ceil(this.filteredTests().length / this.pageSize())));
 
   displayedColumns: string[] = ['id', 'title', 'subTestType', 'timeLimit', 'published', 'createdBy'];
 
@@ -31,19 +63,50 @@ export class AdminDashboard implements OnInit{
     this.loadTests();          
   }
 
+  ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe();
+  }
+
 
   loadTests() {
     this.testService.getTests({
-      page: this.currentPage(),
-      size: this.pageSize()
+      page: 0,
+      size: this.apiPageSize
     }).subscribe({
       next: (response:any) => {
-        this.tests.set(response.data.content || []);        // ✅ Use .set()
-        this.totalElements.set(response.data.totalElements || 0);
-        this.totalPages.set(response.data.totalPages || 0);
+        const firstPage = response.data?.content || [];
+        const totalPages = response.data?.totalPages || 1;
+
+        if (totalPages <= 1) {
+          this.rawTests.set(firstPage);
+          return;
+        }
+
+        forkJoin(
+          Array.from({ length: totalPages - 1 }, (_, index) =>
+            this.testService.getTests({
+              page: index + 1,
+              size: this.apiPageSize
+            })
+          )
+        ).subscribe({
+          next: (pages:any[]) => {
+            const allTests = [
+              ...firstPage,
+              ...pages.flatMap((page:any) => page.data?.content || [])
+            ];
+
+            this.rawTests.set(allTests);
+          },
+          error: (err:any) => {
+            console.error(err);
+            this.rawTests.set(firstPage);
+          }
+        });
       },
       error: (err:any) => {
         console.error(err);
+        this.rawTests.set([]);
       }
     });
   }
@@ -77,21 +140,36 @@ export class AdminDashboard implements OnInit{
   }
 
   totalTests(): number {
-    return this.totalElements();
+    return this.rawTests().length;
   }
 
   publishedTests(): number {
-    return this.tests().filter(test => test.published).length;
+    return this.rawTests().filter(test => test.published).length;
   }
 
   draftTests(): number {
-    return this.tests().filter(test => !test.published).length;
+    return this.rawTests().filter(test => !test.published).length;
   }
 
   onPageChange(page: number) {
     if (page < 0 || page >= this.totalPages()) return;
     this.currentPage.set(page);
-    this.loadTests();
+  }
+
+  setType(type: 'ALL' | 'READING' | 'LISTENING'): void {
+    this.activeType.set(type);
+    this.currentPage.set(0);
+  }
+
+  queueSearch(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchSubject.next(value);
+  }
+
+  clearSearch(): void {
+    this.searchInputValue = '';
+    this.searchQuery.set('');
+    this.currentPage.set(0);
   }
 
   formatDate(dateStr: string): string {
