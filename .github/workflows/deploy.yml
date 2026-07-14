@@ -60,7 +60,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker network inspect oetexam-net >/dev/null 2>&1 || docker network create oetexam-net
             cd ~/oetexam-frontend
             docker compose pull
             docker compose up -d --no-build

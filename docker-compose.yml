@@ -6,11 +6,6 @@ services:
       dockerfile: Dockerfile
     container_name: oetexam-frontend
     ports:
-      - "80:80"
-    networks:
-      - oetexam-net
+      # localhost-only: reachable just by the host nginx on port 80, not from outside
+      - "127.0.0.1:8081:80"
     restart: unless-stopped
-
-networks:
-  oetexam-net:
-    external: true
