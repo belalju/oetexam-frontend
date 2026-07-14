@@ -1,10 +1,16 @@
 services:
   oetexam-frontend:
+    image: ghcr.io/belalju/oetexam-frontend:latest
     build:
       context: .
       dockerfile: Dockerfile
-    image: oetexam-frontend:latest
     container_name: oetexam-frontend
     ports:
       - "80:80"
+    networks:
+      - oetexam-net
     restart: unless-stopped
+
+networks:
+  oetexam-net:
+    external: true
