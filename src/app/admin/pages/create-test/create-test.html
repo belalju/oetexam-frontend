@@ -1,0 +1,1201 @@
+<div class="bg-white min-h-screen">
+  <div class="max-w-5xl mx-auto px-6 py-8">
+
+    <h1 class="text-2xl font-semibold text-gray-900 mb-1">Create New Test</h1>
+    <p class="text-sm text-gray-500 mb-7">Complete all steps to build and publish your test</p>
+
+    <div class="flex items-center mb-8 max-w-4xl mx-auto">
+      @for (label of steps; track label; let i = $index) {
+        @let n = i + 1;
+        @let done = n < currentStep;
+        @let active = n === currentStep;
+
+        <div class="flex flex-col items-center gap-1.5 shrink-0">
+          @if (done) {
+            <div class="w-9 h-9 rounded-full bg-teal-500 border-2 border-teal-500 flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 5"/></svg>
+            </div>
+          } @else if (active) {
+            <div class="w-9 h-9 rounded-full bg-white border-2 border-blue-600 flex items-center justify-center text-sm font-semibold text-blue-600">{{ n }}</div>
+          } @else {
+            <div class="w-9 h-9 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center text-sm font-medium text-gray-400">{{ n }}</div>
+          }
+          <span class="text-xs font-medium whitespace-nowrap" [ngClass]="done ? 'text-teal-600' : (active ? 'text-blue-600' : 'text-gray-400')">{{ label }}</span>
+        </div>
+        
+        @if (i < steps.length - 1) {
+          <div class="flex-1 h-0.5 mx-1 mb-5" [ngClass]="done ? 'bg-blue-600' : 'bg-gray-200'"></div>
+        }
+      }
+    </div>
+
+    <ng-template #footerBtns let-nextLabel="nextLabel">
+      <div class="flex justify-end gap-3 mt-5">
+        @if (currentStep > 1) {
+          <button (click)="goBack()" class="px-5 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition">Back</button>
+        }
+        <button (click)="goNext()" class="px-5 py-2 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">{{ nextLabel || 'Save & Continue' }}</button>
+      </div>
+    </ng-template>
+
+    <div class="max-w-5xl">
+    @switch (currentStep) {
+      
+      @case (1) {
+        <form [formGroup]="testForm" (ngSubmit)="saveTest()">
+        <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
+          <h2 class="text-base font-semibold text-gray-800 mb-5">Test Details</h2>
+          <!-- Title Field -->
+          <div class="flex flex-col gap-1.5 mb-4">
+            <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+              Title <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              formControlName="title"
+              class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 transition
+                    {{ testFormControls['title'].invalid && testFormControls['title'].touched ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500' }}" 
+            />
+            
+            @if (testFormControls['title'].invalid && testFormControls['title'].touched) {
+              <div class="text-red-500 text-xs mt-1">
+                @if (testFormControls['title'].errors?.['required']) {
+                  <span>Title is required</span>
+                }
+                @if (testFormControls['title'].errors?.['minlength']) {
+                  <span>Title must be at least 3 characters</span>
+                }
+                @if (testFormControls['title'].errors?.['maxlength']) {
+                  <span>Title cannot exceed 150 characters</span>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="flex gap-4 mb-4">
+            
+            <!-- Sub-Test Type -->
+            <div class="flex flex-col gap-1.5 flex-1">
+              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                Sub-Test Type <span class="text-red-500">*</span>
+              </label>
+              <select 
+                formControlName="subTestType"
+                class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none">
+                <option value="READING">READING</option>
+                <option value="LISTENING">LISTENING</option>
+              </select>
+            </div>
+
+            <!-- Time Limit -->
+            <div class="flex flex-col gap-1.5 flex-1">
+              <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">
+                Time limit (minutes) <span class="text-red-500">*</span>
+              </label>
+              <input 
+                type="number" 
+                formControlName="totalTimeLimitMinutes"
+                class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 transition
+                      {{ testFormControls['totalTimeLimitMinutes'].invalid && testFormControls['totalTimeLimitMinutes'].touched ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500' }}" 
+              />
+              
+              @if (testFormControls['totalTimeLimitMinutes'].invalid && testFormControls['totalTimeLimitMinutes'].touched) {
+                <div class="text-red-500 text-xs mt-1">
+                  @if (testFormControls['totalTimeLimitMinutes'].errors?.['required']) {
+                    <span>Time limit is required</span>
+                  }
+                  @if (testFormControls['totalTimeLimitMinutes'].errors?.['min']) {
+                    <span>Time must be at least 1 minute</span>
+                  }
+                  @if (testFormControls['totalTimeLimitMinutes'].errors?.['max']) {
+                    <span>Time cannot exceed 180 minutes</span>
+                  }
+                  @if (testFormControls['totalTimeLimitMinutes'].errors?.['pattern']) {
+                    <span>Only numbers allowed</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Description (Optional)</label>
+            <!-- <textarea 
+              rows="6" 
+              formControlName="description"
+              placeholder="Brief description of this test..."
+              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+            </textarea> -->
+            <editor formControlName="description"
+                      apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                      [init]="{
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      }">
+              </editor>
+            
+            @if (testFormControls['description'].invalid && testFormControls['description'].touched) {
+              <div class="text-red-500 text-xs mt-1">
+                @if (testFormControls['description'].errors?.['maxlength']) {
+                  <span>Description cannot exceed 1000 characters</span>
+                }
+              </div>
+            }
+          </div>
+          <br>
+          <button type="submit" class="px-5 -mb-10 py-2 mx-4 text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition">
+            {{ testId ? 'Update Test' : 'Save Test' }}</button>
+          
+        </div>
+        </form>
+        <ng-container *ngTemplateOutlet="footerBtns; context: { nextLabel: 'Continue' }"></ng-container>
+      }
+
+      @case (2) {
+        <form [formGroup]="partForm" (ngSubmit)="savePart()">
+        <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
+          <h2 class="text-base font-semibold text-gray-800 mb-5">
+            {{ isEditing ? 'Edit Part' : 'Configure Parts' }}
+          </h2>
+          
+          <div class="space-y-8">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Part Title
+              </label>
+              <div class="relative">
+                <input type="text" 
+                      formControlName="partTitle"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500
+                              {{ partFormControls['partTitle'].invalid && partFormControls['partTitle'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Enter part title">
+
+              </div>
+
+              @if (partFormControls['partTitle'].invalid && partFormControls['partTitle'].touched) {
+                <p class="text-red-500 text-xs mt-1">
+                  @if (partFormControls['partTitle'].errors?.['required']) { Part title is required }
+                  @if (partFormControls['partTitle'].errors?.['minlength']) { Part title must be at least 3 characters }
+                  @if (partFormControls['partTitle'].errors?.['maxlength']) { Part title cannot exceed 255 characters }
+                </p>
+              }
+            </div>
+            <!-- Part Label -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Part Label <span class="text-red-500">*</span>
+              </label>
+              <div class="grid grid-cols-3 gap-4">
+                @for(item of partLebels; track item) {
+                  <label class="flex items-center gap-3 border rounded-lg p-3 cursor-pointer hover:border-blue-500 transition-all"
+                        [class.border-blue-500]="partFormControls['partLabel'].value === item">
+                    
+                    <input type="radio" 
+                          formControlName="partLabel" 
+                          [value]="item" 
+                          class="w-5 h-5 text-blue-600">
+
+                    <span class="text-sm">{{item.replace('_', ' ')}}</span>
+                  </label>
+                }
+              </div>
+
+              @if (partFormControls['partLabel'].invalid && partFormControls['partLabel'].touched) {
+                <p class="text-red-500 text-xs mt-1">Please select a Part Label</p>
+              }
+            </div>
+
+            <!-- Time Limit & Sort Order -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              <!-- Time Limit -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Time Limit (minutes) <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                  <input type="number" 
+                        formControlName="timeLimitMinutes"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-lg
+                                {{ partFormControls['timeLimitMinutes'].invalid && partFormControls['timeLimitMinutes'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                        placeholder="15" min="1">
+
+                  <span class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">min</span>
+                </div>
+
+                @if (partFormControls['timeLimitMinutes'].invalid && partFormControls['timeLimitMinutes'].touched) {
+                  <p class="text-red-500 text-xs mt-1">
+                    @if (partFormControls['timeLimitMinutes'].errors?.['required']) { Time limit is required }
+                    @if (partFormControls['timeLimitMinutes'].errors?.['min']) { Minimum 1 minute }
+                    @if (partFormControls['timeLimitMinutes'].errors?.['max']) { Maximum 180 minutes }
+                  </p>
+                }
+              </div>
+
+              <!-- Sort Order -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Sort Order <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                      formControlName="sortOrder"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-lg
+                              {{ partFormControls['sortOrder'].invalid && partFormControls['sortOrder'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="1" min="1">
+
+                @if (partFormControls['sortOrder'].invalid && partFormControls['sortOrder'].touched) {
+                  <p class="text-red-500 text-xs mt-1">
+                    @if (partFormControls['sortOrder'].errors?.['required']) { Sort order is required }
+                    @if (partFormControls['sortOrder'].errors?.['min']) { Minimum value is 1 }
+                  </p>
+                }
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Instructions for this Part <span class="text-red-500">*</span>
+              </label>
+              <textarea formControlName="instructions" rows="6"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[160px]
+                              {{ partFormControls['instructions'].invalid && partFormControls['instructions'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                        placeholder="Write clear instructions for candidates...">
+              </textarea>
+
+              @if (partFormControls['instructions'].invalid && partFormControls['instructions'].touched) {
+                <p class="text-red-500 text-xs mt-1">
+                  @if (partFormControls['instructions'].errors?.['required']) { Instructions are required }
+                  @if (partFormControls['instructions'].errors?.['minlength']) { Instructions must be at least 10 characters }
+                  @if (partFormControls['instructions'].errors?.['maxlength']) { Instructions cannot exceed 1000 characters }
+                </p>
+              }
+            </div>
+            
+          </div>
+
+
+          <div class="flex justify-end gap-3 mt-8">
+            <!-- Cancel button -->
+            @if(editingPartId()) {
+              <button type="button" (click)="resetPartForm()"
+                class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                Cancel
+              </button>
+            }
+            <!-- Save button -->
+          <button type="submit" class="px-6 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+            {{ editingPartId() ? 'Update Part' : 'Save Part' }}
+          </button>
+          </div>
+        </div>
+        </form>
+
+        <!-- Existing Parts List -->
+        <div class="mt-12">
+          <h2 class="text-xl font-semibold mb-6 text-gray-900">Existing Parts</h2>
+          
+          @if(partList.length > 0){
+          <div class="space-y-4">
+            @for (part of partList ; track part) {
+              <div class="bg-slate-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-all">
+                <div class="flex justify-between items-start">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-bold text-xl">
+                      {{ part.partLabel.replace('PART_', ' ').split(' ')[1] }}
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-lg">{{ part.partLabel.replace('_', ' ') }}</h3>
+                      <p class="text-sm text-gray-500">
+                        {{ part.timeLimitMinutes }} minutes • Order: {{ part.sortOrder }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="flex gap-2">
+                    <!-- Edit button -->
+                    <button (click)="editPart(part.id)"
+                      class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-xl text-sm font-medium transition">
+                      Edit
+                    </button>
+
+                    <!-- Delete button -->
+                    <button (click)="deletePart(part.id)"
+                      class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-medium transition">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <p class="mt-4 text-gray-600 text-sm line-clamp-3">
+                  {{ part.instructions }}
+                </p>
+              </div>
+            }
+          </div>
+          }
+          @else {
+            <p class="text-gray-500 text-center py-8">
+              No parts added yet. Start by adding a part above.
+            </p>
+          }
+          <br>
+          <hr>
+
+          <ng-container *ngTemplateOutlet="footerBtns"></ng-container>
+        
+        </div>
+      }
+
+      @case (3) {
+        <form [formGroup]="passageForm" (ngSubmit)="savePassage()">
+        <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
+          <h2 class="text-base font-semibold text-gray-800 mb-1">
+            {{ isEditing ? 'Edit Passage' : 'Passages' }}
+          </h2>
+          <p class="text-sm text-gray-400 mb-5">Add reading passages for each part of the test.</p>
+
+          <div class="space-y-5">
+            <!-- Label, Part & Sort Order -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              <!-- Passage Label -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Passage Label <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                      formControlName="label"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ passageFormControls['label'].invalid && passageFormControls['label'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Enter passage label">
+
+                @if (passageFormControls['label'].invalid && passageFormControls['label'].touched) {
+                  <p class="text-red-500 text-xs mt-1">
+                    @if (passageFormControls['label'].errors?.['required']) { Label is required }
+                    @if (passageFormControls['label'].errors?.['minlength']) { Minimum 3 characters }
+                  </p>
+                }
+              </div>
+
+              <!-- Select Part -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Select Part <span class="text-red-500">*</span>
+                </label>
+                <select formControlName="partId"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ passageFormControls['partId'].invalid && passageFormControls['partId'].touched ? 'border-red-500' : 'border-gray-300' }}">
+                  <option value="">Select Part</option>
+                  @for (p of partList; track p.id) {
+                    <option [value]="p.id">{{ p.partLabel }}</option>
+                  }
+                </select>
+
+                @if (passageFormControls['partId'].invalid && passageFormControls['partId'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Please select a part</p>
+                }
+              </div>
+
+              <!-- Sort Order -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Sort Order <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                      formControlName="sortOrder"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ passageFormControls['sortOrder'].invalid && passageFormControls['sortOrder'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="1" min="1">
+
+                @if (passageFormControls['sortOrder'].invalid && passageFormControls['sortOrder'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Sort order is required (minimum 1)</p>
+                }
+              </div>
+            </div>
+
+            <!-- Content (TinyMCE Editor) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Content <span class="text-red-500">*</span>
+              </label>
+              <editor formControlName="content"
+                      apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                      [init]="{
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      }">
+              </editor>
+
+              @if (passageFormControls['content'].invalid && passageFormControls['content'].touched) {
+                <p class="text-red-500 text-xs mt-1">
+                  @if (passageFormControls['content'].errors?.['required']) { Content is required }
+                  @if (passageFormControls['content'].errors?.['minlength']) { Content must be at least 50 characters }
+                </p>
+              }
+            </div>
+
+            <!-- Audio (Optional) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Audio (Optional)</label>
+              <input type="file" 
+                    (change)="onAudioSelected($event)"
+                    accept="audio/*"
+                    class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm">
+
+              @if (passageForm.get('audioFileUrl')?.value) {
+                <p class="text-xs text-green-600 mt-1">
+                  Selected: {{ passageForm.get('audioFileUrl')?.value }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 mt-8">
+            @if(editingPassageId()) {
+            <button type="button" (click)="resetPassageForm()"
+                    class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+              Cancel
+            </button>
+            }
+            
+            <button type="submit" class="px-6 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">
+              {{ editingPassageId() ? 'Update Passage' : 'Save Passage' }}
+            </button>
+          </div>
+        </div>
+        </form>
+
+        <!-- Existing Passages -->
+        <div class="mt-12">
+          <h2 class="text-xl font-semibold mb-6 text-gray-900">Existing Passages</h2>
+          @if(passages.length > 0) {
+          <div class="space-y-4">
+            @for (p of passages; track p) {
+              <div class="bg-slate-50 rounded-xl p-5 border border-gray-100 hover:shadow-md transition-all">
+                <div class="flex justify-between items-start">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-bold text-xl">
+                      {{ (p.label?.trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase() }}
+                    </div>
+                    <div>
+                      <h3 class="font-semibold text-lg">{{ p.label }}</h3>
+                      <p class="text-sm text-gray-500">Order: {{ p.sortOrder }}</p>
+                      <p *ngIf="p.audioFileUrl" class="text-xs text-green-600">♪ Audio: {{ p.audioFileUrl }}</p>
+                    </div>
+                  </div>
+
+                  <div class="flex gap-2">
+                    <!-- Edit button -->
+                    <button (click)="editPassage(p.id)"
+                      class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-xl text-sm font-medium transition">
+                      Edit
+                    </button>
+
+                    <!-- Delete button -->
+                    <button (click)="deletePassage(p.id)"
+                      class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-medium transition">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <p class="mt-4 text-gray-600 text-sm line-clamp-3" [innerHTML]="p.content">
+                </p>
+              </div>
+            }
+          </div>
+          }
+          @else {
+            <p class="text-gray-500 text-center py-12">No passages added yet.</p>
+          }
+        </div>
+
+        <br>
+        <hr class="my-2">
+
+        <ng-container *ngTemplateOutlet="footerBtns"></ng-container>
+      }
+
+      @case (4) {
+        <form [formGroup]="groupForm" (ngSubmit)="saveGroup()">
+        <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
+          <h2 class="text-base font-semibold text-gray-800 mb-1">Questions Group</h2>
+          <p class="text-sm text-gray-400 mb-5">Configure questions for each part and group.</p>
+
+          <div class="space-y-5">
+            
+            <!-- Title & Question Type -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              
+              <!-- Title -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Title <span class="text-red-500">*</span>
+                </label>
+                <input type="text" 
+                      formControlName="title"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ groupFormControls['title'].invalid && groupFormControls['title'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Enter group title">
+
+                @if (groupFormControls['title'].invalid && groupFormControls['title'].touched) {
+                  <p class="text-red-500 text-xs mt-1">
+                    @if (groupFormControls['title'].errors?.['required']) { Title is required }
+                    @if (groupFormControls['title'].errors?.['minlength']) { Title must be at least 3 characters }
+                  </p>
+                }
+              </div>
+
+              <!-- Question Type -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Question Type <span class="text-red-500">*</span>
+                </label>
+                <select formControlName="questionType"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ groupFormControls['questionType'].invalid && groupFormControls['questionType'].touched ? 'border-red-500' : 'border-gray-300' }}">
+                  <option value="">Select Question Type</option>
+                  @for (qt of questionTypes; track qt) {
+                    <option [value]="qt">{{ qt.replace('_', ' ') }}</option>
+                  }
+                </select>
+
+                @if (groupFormControls['questionType'].invalid && groupFormControls['questionType'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Please select a question type</p>
+                }
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+              <!-- Select Part -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Select Part <span class="text-red-500">*</span>
+                </label>
+                <select formControlName="partId"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ groupFormControls['partId'].invalid && groupFormControls['partId'].touched ? 'border-red-500' : 'border-gray-300' }}">
+                  <option value="">Select Part</option>
+                  @for (p of partList; track p.id) {
+                    <option [value]="p.id">{{ p.partLabel }}</option>
+                  }
+                </select>
+
+                @if (groupFormControls['partId'].invalid && groupFormControls['partId'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Please select a part</p>
+                }
+              </div>
+
+              <!-- Link Passage (Optional) -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Link Passage</label>
+                <select formControlName="passageId"
+                        class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm">
+                  <option value="">Select Passage</option>
+                  @for (p of passages; track p.id) {
+                    <option [ngValue]="p.id">{{ p.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Sort Order -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Sort Order <span class="text-red-500">*</span>
+                </label>
+                <input type="number" 
+                      formControlName="sortOrder"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                              {{ groupFormControls['sortOrder'].invalid && groupFormControls['sortOrder'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="1" min="1">
+
+                @if (groupFormControls['sortOrder'].invalid && groupFormControls['sortOrder'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Sort order is required (minimum 1)</p>
+                }
+              </div>
+
+              <!-- Instructions -->
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Instructions</label>
+                <textarea formControlName="instructions" rows="6"
+                          class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[160px]"
+                          placeholder="Write clear instructions for candidates...">
+                </textarea>
+
+                @if (groupFormControls['instructions'].invalid && groupFormControls['instructions'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Instructions cannot exceed 800 characters</p>
+                }
+              </div>
+            </div>
+            <div class="flex justify-end mt-3">
+              <!-- Save button label -->
+              <button type="submit" class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 ...">
+                {{ editingGroupId() ? 'Update Group' : 'Save Question Group' }}
+              </button>
+            </div>
+          </div>
+
+        </div>
+        </form>
+
+        <br>
+
+        <br>
+
+        <!-- List of Groups with their Questions -->
+        @for(item of groups; track item.id) {
+        <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <strong class="text-lg">{{ item.title }}</strong>
+              <span class="ml-3 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
+                {{ item.questionType }}
+              </span>
+              <!-- <span class="ml-2 bg-gray-100 px-2 py-1 text-sm rounded-xl">Passage: {{ item.passageId }}</span> -->
+              <span class="ml-2 bg-gray-100 px-2 py-1 text-sm rounded-xl">Sort: {{ item.sortOrder }}</span>
+            </div>
+            <div class="flex gap-2">
+              <!-- Edit & Delete buttons -->
+              <button (click)="editGroup(item.id)"
+                class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-xl text-sm font-medium transition">
+                Edit
+              </button>
+
+              <!-- Delete button -->
+              <button (click)="deleteGroup(item.id)"
+                class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-medium transition">
+                Delete
+              </button>
+
+              <!-- Cancel button -->
+              @if (editingGroupId()) {
+                <button type="button" (click)="resetGroupForm()"
+                  class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 mr-2">
+                  Cancel
+                </button>
+              }
+            </div>
+          </div>
+
+          <p class="text-sm text-gray-600">{{ item.instructions }}</p>
+
+          
+        </div>
+        }
+
+        @if(groups.length === 0) {
+          <p class="text-gray-500 text-center py-8">
+            No groups yet. Create your first group above.
+          </p>
+        }
+
+
+        <ng-container *ngTemplateOutlet="footerBtns"></ng-container>
+      }
+      
+      @case (5) {
+       <div class="bg-slate-100 border border-gray-200 rounded-xl p-6">
+          <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Question Group <span class="text-red-500">*</span>
+              </label>
+              <select #groupSelect (change)="groupSelect.value && selectGroup(+groupSelect.value)"
+                class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm border-gray-300">
+                <option value="">Select Question Group</option>
+                @for (item of groups; track item.id) {
+                  <option [value]="item.id">{{ item.title }} - {{ item.questionType }}</option>
+                }
+              </select>
+
+            </div>
+        </div>
+
+        <br>
+
+
+        @if(getSelectedGroup(); as g) {
+          <form [formGroup]="questionForm" (ngSubmit)="saveQuestion()">
+         <div class="space-y-5 border border-gray-200 rounded-xl p-3">
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- Question No -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Question No <span class="text-red-500">*</span>
+              </label>
+              <input type="number" formControlName="questionNumber"
+                    class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                          {{ questionFormControls['questionNumber'].invalid && questionFormControls['questionNumber'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                    placeholder="Enter question number">
+
+              @if (questionFormControls['questionNumber'].invalid && questionFormControls['questionNumber'].touched) {
+                <p class="text-red-500 text-xs mt-1">Question number is required (min 1)</p>
+              }
+            </div>
+
+            <!-- Sort Order -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Sort Order <span class="text-red-500">*</span>
+              </label>
+              <input type="number" formControlName="sortOrder"
+                    class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                          {{ questionFormControls['sortOrder'].invalid && questionFormControls['sortOrder'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                    placeholder="1" min="1">
+
+              @if (questionFormControls['sortOrder'].invalid && questionFormControls['sortOrder'].touched) {
+                <p class="text-red-500 text-xs mt-1">Sort order is required (min 1)</p>
+              }
+            </div>
+
+            <!-- Correct Answer -->
+             @if(g.questionType == 'MCQ_3' || g.questionType == 'MCQ_4'){
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Correct Option <span class="text-red-500">*</span>
+                </label>
+                <input type="text" formControlName="correctOptionLabel"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                            {{ questionFormControls['correctOptionLabel'].invalid && questionFormControls['correctOptionLabel'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="B">
+
+                @if (questionFormControls['correctOptionLabel'].invalid && questionFormControls['correctOptionLabel'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Correct Option is required</p>
+                }
+              </div>
+            }
+            @else{
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Correct Answer <span class="text-red-500">*</span>
+                </label>
+                <input type="text" formControlName="correctText"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                            {{ questionFormControls['correctText'].invalid && questionFormControls['correctText'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      [placeholder]="g.questionType === 'SHORT_ANSWER' || g.questionType === 'GAP_FILL' || g.questionType === 'NOTE_COMPLETION' ? 'Enter correct answer' : 'B'">
+
+                @if (questionFormControls['correctText'].invalid && questionFormControls['correctText'].touched) {
+                  <p class="text-red-500 text-xs mt-1">Correct answer is required</p>
+                }
+              </div>
+            }
+
+              @if(g.questionType != 'GAP_FILL') {
+              <div class="col-span-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Question Text <span class="text-red-500">*</span>
+                </label>
+                <!-- <textarea formControlName="questionText" rows="3"
+                          class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-y min-h-[80px]
+                                {{ questionFormControls['questionText'].invalid && questionFormControls['questionText'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                          placeholder="Write the question text here..."></textarea> -->
+
+                <editor formControlName="questionText"
+                      apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                      [init]="{
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      }">
+                </editor>
+
+                @if (questionFormControls['questionText'].invalid && questionFormControls['questionText'].touched) {
+                  <p class="text-red-500 text-xs mt-1">
+                    @if (questionFormControls['questionText'].errors?.['required']) { Question text is required }
+                    @if (questionFormControls['questionText'].errors?.['minlength']) { Question must be at least 5 characters }
+                  </p>
+                }
+              </div>
+              }
+          </div>
+          
+           
+            <!-- Gap Fill -->
+            @if(g.questionType == 'GAP_FILL'){
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Prefix Text <span class="text-red-500">*</span>
+                </label>
+                <!-- <input type="text" formControlName="prefixText"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                            {{ questionFormControls['prefixText'].invalid && questionFormControls['prefixText'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Text before the gap"> -->
+                <editor formControlName="prefixText"
+                      apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                      [init]="{
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      }">
+                </editor>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  Suffix Text <span class="text-red-500">*</span>
+                </label>
+                <!-- <input type="text" formControlName="suffixText"
+                      class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                            {{ questionFormControls['suffixText'].invalid && questionFormControls['suffixText'].touched ? 'border-red-500' : 'border-gray-300' }}"
+                      placeholder="Text after the gap"> -->
+                <editor formControlName="suffixText"
+                      apiKey="36z9grstciunygm8cb05tzdlcpx7ku9m25wiv4o4ejqz7pir"
+                      [init]="{
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                      }">
+                </editor>
+              </div>
+            </div>
+            }
+            
+            <!-- MCQ 3 -->
+            @if (g.questionType === 'MCQ_3' || g.questionType === 'MCQ_4') {
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-3" formArrayName="options">
+
+              @for (opt of options.controls; track opt; let i = $index) {
+                @if ((g.questionType === 'MCQ_3' && i < 3) || g.questionType === 'MCQ_4') {
+                  <div class="flex gap-3 items-start" [formGroupName]="i">
+                    <div class="bg-slate-200 text-gray-800 font-medium rounded-full px-4 py-2 text-center flex-shrink-0">
+                      {{ opt.get('optionLabel')?.value }}
+                    </div>
+                    
+                    <div class="flex-1">
+                      <input type="text" 
+                            formControlName="optionText"
+                            class="w-full bg-white border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 text-sm
+                                    {{ getOptionControl(i, 'optionText')?.invalid && getOptionControl(i, 'optionText')?.touched ? 'border-red-500' : 'border-gray-300' }}"
+                            placeholder="Option {{ opt.get('optionLabel')?.value }} text">
+
+                      @if (getOptionControl(i, 'optionText')?.invalid && getOptionControl(i, 'optionText')?.touched) {
+                        <p class="text-red-500 text-xs mt-1">Option text is required</p>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+
+            </div>
+            }
+
+
+            <div class="flex justify-end mt-3 gap-3">
+               @if(editingQuestionId()) {
+                <button type="button" (click)="resetQuestionForm()"
+                  class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                  Cancel
+                </button>
+              }
+              <button type="submit" class="px-4 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 ...">
+                {{ editingQuestionId() ? 'Update Question' : 'Save Question' }}
+              </button>
+            </div>
+          </div>
+          </form>
+        }
+
+        <br>
+
+        <!-- List of Groups with their Questions -->
+        @for(g of groups; track g.id) {
+  <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+    <div class="flex justify-between items-start mb-4">
+      <div>
+        <strong class="text-lg">{{ g.title }}</strong>
+        <span class="ml-3 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
+          {{ g.questionType }}
+        </span>
+        <span class="ml-2 bg-gray-100 px-2 py-1 text-sm rounded-xl">Sort: {{ g.sortOrder }}</span>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-600 mb-4">{{ g.instructions }}</p>
+
+    <div class="space-y-3">
+      @for(q of (questionsByGroup[g.id] || []); track q.id) {
+        <div class="border rounded-xl shadow-sm bg-white p-5 flex items-start justify-between gap-3">
+          
+          <!-- LEFT: number + content -->
+          <div class="flex gap-3 min-w-0 flex-1">
+            <span class="flex items-center justify-center text-xs font-semibold w-8 h-8 bg-blue-100 text-blue-700 rounded-full shrink-0">
+              Q{{ q.questionNumber }}
+            </span>
+
+            <!-- Content column -->
+            <div class="min-w-0 overflow-hidden">
+              <p class="text-sm font-medium mb-1 break-words" [innerHTML]="q.questionText"></p>
+
+              @if(q.prefixText){
+                <p class="text-sm font-medium break-words">
+                  <span class="text-gray-500">Prefix : </span>
+                  <span [innerHTML]="q.prefixText"></span>
+                </p>
+              }
+              @if(q.suffixText){
+                <p class="text-sm font-medium break-words">
+                  <span class="text-gray-500">Suffix : </span>
+                  <span [innerHTML]="q.suffixText"></span>
+                </p>
+              }
+
+              @if(g.questionType === 'MCQ_3' || g.questionType === 'MCQ_4'){
+                @for(opt of q.options; track opt){
+                  @if(opt.optionText != ''){
+                    <div class="flex gap-2 mb-1 min-w-0">
+                      <label class="block text-sm font-medium text-gray-800 bg-slate-200 rounded-full px-2.5 py-1 shrink-0">
+                        {{ opt.optionLabel }}
+                      </label>
+                      <p class="break-words min-w-0">{{ opt.optionText }}</p>
+                    </div>
+                  }
+                }
+              }
+
+              <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700">
+                Answer:
+                @if(g.questionType === 'MCQ_3' || g.questionType === 'MCQ_4'){
+                  {{ q.correctAnswer.optionLabel }}
+                } @else {
+                  {{ q.correctAnswer.correctText }}
+                }
+              </span>
+            </div>
+          </div>
+
+          <!-- RIGHT: action buttons -->
+          <div class="flex gap-2 shrink-0">
+            <button (click)="deleteQuestion(q.id)"
+              class="text-sm text-red-600 hover:text-red-600 hover:bg-red-100 border-red-200 border py-1 px-2 rounded-lg">
+              Delete
+            </button>
+            <button (click)="editQuestion(q, g.id)"
+              class="text-sm text-blue-600 hover:text-blue-600 hover:bg-blue-100 border-blue-200 border py-1 px-2 rounded-lg">
+              Edit
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+  </div>
+}
+
+        @if(groups.length === 0) {
+          <p class="text-gray-500 text-center py-8">
+            No groups yet. Create your first group above.
+          </p>
+        }
+
+
+        <ng-container *ngTemplateOutlet="footerBtns"></ng-container>
+      }
+
+      @case (6) {
+        <div class="space-y-4">
+
+  <!-- Stats Row -->
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+      <p class="text-xs text-gray-400 mb-1">Total Time</p>
+      <p class="text-2xl font-semibold text-gray-800">
+        {{ testForm.get('totalTimeLimitMinutes')?.value || 0 }}
+        <span class="text-sm font-normal text-gray-400 ml-1">min</span>
+      </p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+      <p class="text-xs text-gray-400 mb-1">Total Questions</p>
+      <p class="text-2xl font-semibold text-gray-800">{{ getTotalQuestions() }}</p>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
+      <p class="text-xs text-gray-400 mb-1">Passages</p>
+      <p class="text-2xl font-semibold text-gray-800">{{ passages.length }}</p>
+    </div>
+  </div>
+
+  <!-- Test Info -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">Test Info</h2>
+      <button (click)="jumpTo(1)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
+    </div>
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <div class="bg-slate-50 rounded-lg p-3">
+        <p class="text-xs text-gray-400 mb-1">Title</p>
+        <p class="font-medium text-gray-800">{{ testForm.get('title')?.value || '—' }}</p>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3">
+        <p class="text-xs text-gray-400 mb-1">Test Type</p>
+        <p class="font-medium text-gray-800">{{ testForm.get('subTestType')?.value || '—' }}</p>
+      </div>
+      <div class="bg-slate-50 rounded-lg p-3 col-span-2">
+        <p class="text-xs text-gray-400 mb-1">Description</p>
+        <p class="font-medium text-gray-800" [innerHTML]="testForm.get('description')?.value || '—'"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parts -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">Parts
+        <span class="ml-2 text-xs font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ partList.length }}</span>
+      </h2>
+      <button (click)="jumpTo(2)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
+    </div>
+    <div class="space-y-2">
+      @for (part of partList; track part.id) {
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-4 py-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">
+              {{ part.partLabel.replace('PART_', '') }}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">{{ part.partTitle }}</p>
+              <p class="text-xs text-gray-400">{{ part.partLabel.replace('_', ' ') }} • Sort: {{ part.sortOrder }}</p>
+            </div>
+          </div>
+          <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">
+            {{ part.timeLimitMinutes }} min
+          </span>
+        </div>
+      }
+      @if (partList.length === 0) {
+        <p class="text-sm text-gray-400 text-center py-3">No parts added</p>
+      }
+    </div>
+  </div>
+
+  <!-- Passages -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">Passages
+        <span class="ml-2 text-xs font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ passages.length }}</span>
+      </h2>
+      <button (click)="jumpTo(3)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
+    </div>
+    <div class="space-y-2">
+      @for (p of passages; track p.id) {
+        <div class="flex items-center justify-between bg-slate-50 rounded-lg px-4 py-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold">
+              {{ (p.label?.trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase() }}
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-800">{{ p.label }}</p>
+              <p class="text-xs text-gray-400">Sort: {{ p.sortOrder }}</p>
+            </div>
+          </div>
+          @if (p.audioFileUrl) {
+            <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-lg">♪ Audio</span>
+          }
+        </div>
+      }
+      @if (passages.length === 0) {
+        <p class="text-sm text-gray-400 text-center py-3">No passages added</p>
+      }
+    </div>
+  </div>
+
+  <!-- Question Groups -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">Question Groups
+        <span class="ml-2 text-xs font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ groups.length }}</span>
+      </h2>
+      <button (click)="jumpTo(4)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
+    </div>
+    <div class="space-y-2">
+      @for (g of groups; track g.id) {
+        <div class="bg-slate-50 rounded-lg px-4 py-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800">{{ g.title }}</p>
+              <p class="text-xs text-gray-400 mt-0.5">Sort: {{ g.sortOrder }}</p>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-100 text-blue-700">
+              {{ g.questionType }}
+            </span>
+          </div>
+        </div>
+      }
+      @if (groups.length === 0) {
+        <p class="text-sm text-gray-400 text-center py-3">No groups added</p>
+      }
+    </div>
+  </div>
+
+  <!-- Questions -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-base font-semibold text-gray-800">Questions
+        <span class="ml-2 text-xs font-normal bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{{ getTotalQuestions() }}</span>
+      </h2>
+      <button (click)="jumpTo(5)" class="text-xs text-blue-600 hover:underline font-medium">Edit</button>
+    </div>
+    <div class="space-y-3">
+      @for (g of groups; track g.id) {
+        @if ((questionsByGroup[g.id] ?? []).length > 0) {
+          <div>
+            <!-- Group Header -->
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              {{ g.title }}
+              <span class="ml-1 text-blue-600">({{ g.questionType }})</span>
+            </p>
+            <!-- Questions -->
+            @for (q of questionsByGroup[g.id]; track q.id) {
+              <div class="flex items-start gap-3 bg-slate-50 rounded-lg px-4 py-3 mb-1">
+                <span class="flex-shrink-0 w-7 h-7 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xs font-semibold">
+                  {{ q.questionNumber }}
+                </span>
+                <div class="flex-1">
+                  <!-- <p class="text-sm text-gray-800">{{ q.questionText || (q.prefixText + ' ___ ' + q.suffixText) }}</p> -->
+                   <div class="text-sm text-gray-800">
+                      <div [innerHTML]="q.questionText"></div>
+                      <div [innerHTML]="q.prefixText"></div>
+                      <div [innerHTML]="q.suffixText"></div>
+                    </div>
+                </div>
+                <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium flex-shrink-0">
+                  {{ q.correctAnswer?.correctText }}
+                </span>
+              </div>
+            }
+          </div>
+        }
+      }
+      @if (getTotalQuestions() === 0) {
+        <p class="text-sm text-gray-400 text-center py-3">No questions added</p>
+      }
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end gap-3 mt-2">
+    <button (click)="goBack()" class="px-5 py-2 text-sm font-medium text-gray-700 border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition">
+      Back
+    </button>
+    <button (click)="publishTest()" class="px-6 py-2 text-sm font-semibold text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 3L6 10M13 3H8M13 3V8"/><path d="M6 3H3v10h10v-3"/>
+      </svg>
+      Publish Test
+    </button>
+  </div>
+
+</div>
+      }
+    }
+
+  </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+

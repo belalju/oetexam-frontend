@@ -1,0 +1,55 @@
+/* Mobile Menu Animations */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideInFromTop 200ms ease-out;
+}
+
+.slide-in-from-top-2 {
+  --tw-enter-translate-y: -0.5rem;
+}
+
+/* Smooth transitions for dropdown arrows */
+svg {
+  transition: transform 200ms ease-out;
+}
+
+/* Mobile menu styling */
+@media (max-width: 768px) {
+  nav {
+    position: relative;
+  }
+
+  /* Ensure hamburger button is always accessible */
+  button[class*="md:hidden"] {
+    z-index: 40;
+  }
+
+  /* Mobile menu drawer styling */
+  .md\:hidden[class*="border-t"] {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Hover effects for mobile menu items */
+a[class*="block"][class*="px-4"] {
+  transition: all 150ms ease-out;
+}
+
+a[class*="block"][class*="px-4"]:active {
+  background-color: #f3f4f6;
+}
+
+/* Logo styling */
+a[class*="text-3xl"][class*="font-bold"] {
+  letter-spacing: -0.5px;
+}

@@ -1,0 +1,224 @@
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-navy-900">Admin Dashboard</h1>
+          <p class="text-slate-500 text-sm mt-1">Manage tests and monitor applicants</p>
+        </div>
+        <button routerLink="/admin/create-test" class="bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+          Create New Test
+        </button>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Tests</p>
+          <p class="text-3xl font-bold text-navy-900">{{ totalTests() }}</p>
+          <p class="text-xs text-slate-400 mt-1">
+            <span class=" text-green-600">{{ publishedTests() }} published</span> · 
+            <span class=" text-amber-600">{{ draftTests() }} drafts</span>
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Registered Applicants</p>
+          <p class="text-3xl font-bold text-navy-900">248</p>
+          <p class="text-xs text-teal-600 mt-1">+12 this week</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Attempts This Month</p>
+          <p class="text-3xl font-bold text-navy-900">614</p>
+          <p class="text-xs text-teal-600 mt-1">↑ 23% vs last month</p>
+        </div>
+        <div class="bg-white rounded-2xl p-5 border border-slate-100">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Avg Score</p>
+          <p class="text-3xl font-bold text-navy-900">67<span class="text-lg text-slate-400">%</span></p>
+          <p class="text-xs text-slate-400 mt-1">Across all tests</p>
+        </div>
+      </div>
+
+      <!-- Test Management Table -->
+      <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5">
+          <!-- <div>
+            <h2 class="font-semibold text-navy-900">Test Library</h2>
+            <p class="text-xs text-slate-500 mt-1">
+              {{ activeType() === 'ALL' ? 'Showing all test types' : 'Showing ' + activeType().toLowerCase() + ' tests' }}
+            </p>
+          </div> -->
+          <div>
+            <h2 class="font-semibold text-navy-900">Test Library</h2>
+            <p class="text-xs text-slate-500 mt-1">
+              {{ activeType() === 'ALL' ? 'Showing all test types' : 'Showing ' + activeType().toLowerCase() + ' tests' }}
+            </p>
+          </div>
+
+
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div class="relative w-full sm:w-72">
+              <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35"/>
+              </svg>
+              <input
+                [value]="searchInputValue"
+                (input)="queueSearch($event)"
+                type="text"
+                placeholder="Search by test title..."
+                class="w-full border border-slate-200 rounded-xl pl-9 pr-9 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+              @if (searchInputValue) {
+                <button
+                  (click)="clearSearch()"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                  type="button"
+                  aria-label="Clear search"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              }
+            </div>
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+              @for (tab of testTypeTabs; track tab.value) {
+                <button
+                  (click)="setType(tab.value)"
+                  [class.bg-teal-600]="activeType() === tab.value"
+                  [class.text-white]="activeType() === tab.value"
+                  [class.border-teal-600]="activeType() === tab.value"
+                  class="px-4 py-2 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600 hover:text-teal-900 hover:bg-slate-50 transition whitespace-nowrap"
+                >
+                  {{ tab.label }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+          @for (tab of testTypeTabs; track tab.value) {
+            <button
+              (click)="setType(tab.value)"
+              [class.bg-teal-600]="activeType() === tab.value"
+              [class.text-white]="activeType() === tab.value"
+              [class.border-teal-600]="activeType() === tab.value"
+              class="px-4 py-2 text-sm font-semibold rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition whitespace-nowrap"
+            >
+              {{ tab.label }}
+            </button>
+          }
+        </div> -->
+
+        <table class="w-full text-sm">
+          <thead class="">
+            <tr class="text-xs text-slate-500 uppercase tracking-wider border-b border-slate-100 bg-slate-100">
+              <th class="text-left p-3 font-semibold px-6">Title</th>
+              <th class="text-left p-3 font-semibold px-6">Type</th>
+              <th class="text-left p-3 font-semibold px-6">Status</th>
+              <th class="text-left p-3 font-semibold px-6">Questions</th>
+              <th class="text-left p-3 font-semibold px-6">Attempts</th>
+              <th class="text-left p-3 font-semibold px-6">Avg Score</th>
+              <th class="text-left p-3 font-semibold px-6">Created</th>
+              <th class="p-3 px-6"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            @for(item of filteredTests(); track item.id){
+            <tr
+                class="hover:bg-slate-50/70 transition-all">
+              <td class="py-4 px-6 font-medium text-slate-700">{{ item.title }}</td>
+              
+              <td class="py-4 px-6">
+                <span [ngClass]="getTypeBadge(item).color" 
+                      class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ getTypeBadge(item).label }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6">
+                <span [ngClass]="getStatusBadge(item.published).color" 
+                      class="text-xs px-3 py-1 rounded-full font-medium">
+                  {{ getStatusBadge(item.published).label }}
+                </span>
+              </td>
+
+              <td class="py-4 px-6 text-slate-600">42</td>          <!-- Replace with real data later -->
+              <td class="py-4 px-6 text-slate-600">87</td>          <!-- Replace with real data later -->
+              <td class="py-4 px-6 font-semibold text-teal-600">71%</td> <!-- Replace with real data later -->
+
+              <td class="py-4 px-6 text-slate-400 text-xs">
+                {{ formatDate(item.createdAt) }}
+              </td>
+
+              <td class="py-4 px-6">
+                <div class="flex gap-5">
+                  <button (click)="editTest(item.id)"
+                          class="text-xs text-teal-600 hover:underline font-medium">
+                    Edit
+                  </button>
+                  @if(item.published){
+                    <button (click)="unPublishTest(item.id)"
+                            class="text-xs font-bold text-red-500 hover:text-red-600">
+                      Unpublish
+                    </button>
+                  }
+                  @else{
+                    <button (click)="publishTest(item.id)" class="text-xs font-bold text-blue-600 hover:underline">
+                      Publish
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+            @if(filteredTests().length === 0){
+            <tr>
+              <td colspan="10" class="py-6 text-center text-slate-400">
+                @if (searchQuery() || activeType() !== 'ALL') {
+                  No {{ activeType().toLowerCase() }} tests found{{ searchQuery() ? ' for "' + searchQuery() + '"' : '' }}. Try adjusting your search or filter.
+                } @else {
+                  No tests found. Try adjusting your search or filter.
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if(totalPages() > 1){
+      <div class="flex items-center justify-between mt-6 px-2">
+        <div class="text-sm text-slate-500">
+          Showing 
+          <span class="font-medium">{{ currentPage() * pageSize() + 1 }}</span> to 
+          <span class="font-medium">{{ getEndIndex() }}</span> 
+          of <span class="font-medium">{{ totalElements() }}</span> tests
+        </div>
+
+        <div class="flex gap-1">
+          <button 
+            (click)="onPageChange(currentPage() - 1)"
+            [disabled]="currentPage() === 0"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Previous
+          </button>
+
+          @for(p of getPageNumbers(); track p){
+          <button 
+            (click)="onPageChange(p)"
+            [class.bg-teal-600]="p === currentPage()"
+            [class.text-white]="p === currentPage()"
+            [class.border-teal-600]="p === currentPage()"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+            {{ p + 1 }}
+          </button>
+          }
+
+          <button 
+            (click)="onPageChange(currentPage() + 1)"
+            [disabled]="currentPage() === totalPages() - 1"
+            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Next
+          </button>
+        </div>
+      </div>
+      }
