@@ -1,15 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
-  openSection: string = 'prep'; 
+export class Home implements OnInit {
+  private route = inject(ActivatedRoute);
+
+  ngOnInit() {
+    this.route.fragment.subscribe(fragment => {
+      if (fragment) {
+        setTimeout(() => this.scrollToSection(fragment), 100);
+      }
+    });
+  }
+
+  openSection: string = 'prep';
 
   toggle(id: string) {
     this.openSection = this.openSection === id ? '' : id;
