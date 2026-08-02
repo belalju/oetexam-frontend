@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, inject, NgZone, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, NgZone, signal, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { GoogleIdentity } from '../../services/google-identity';
+import { COUNTRIES } from '../../models/countries';
 import { toast } from 'ngx-sonner';
 
 @Component({
@@ -18,6 +19,7 @@ export class Register implements AfterViewInit {
   protected auth = inject(Auth);
 
   @ViewChild('googleBtn') googleBtn!: ElementRef<HTMLElement>;
+  @ViewChild('countryWrapper') countryWrapper!: ElementRef<HTMLElement>;
 
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
@@ -25,16 +27,27 @@ export class Register implements AfterViewInit {
   resendSent = signal(false);
 
   professions = [
-    'Software Engineer', 'Product Manager', 'Designer', 'Data Scientist',
-    'Marketing', 'Sales', 'HR', 'Finance', 'Operations', 'Other'
+    'Dentistry', 'Dietetics', 'Medicine', 'Nursing', 'Occupational Therapy',
+    'Optometry', 'Pharmacy', 'Physiotherapy', 'Podiatry', 'Radiography',
+    'Speech Pathology', 'Veterinary Science'
   ];
+
+  countries = COUNTRIES;
+  countryDropdownOpen = signal(false);
+  countrySearch = signal('');
+  filteredCountries = computed(() => {
+    const q = this.countrySearch().trim().toLowerCase();
+    if (!q) return this.countries;
+    return this.countries.filter((c) => c.toLowerCase().includes(q));
+  });
 
   form = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName:  ['', [Validators.required, Validators.minLength(1)]],
     email:     ['', [Validators.required, Validators.email]],
     password:  ['', [Validators.required, Validators.minLength(8)]],
-    profession:['', Validators.required]
+    profession:['', Validators.required],
+    country:   ['', Validators.required]
   });
 
   get firstName()  { return this.form.get('firstName')!; }
@@ -42,6 +55,38 @@ export class Register implements AfterViewInit {
   get email()      { return this.form.get('email')!; }
   get password()   { return this.form.get('password')!; }
   get profession() { return this.form.get('profession')!; }
+  get country()    { return this.form.get('country')!; }
+
+  toggleCountryDropdown() {
+    this.countryDropdownOpen.update((open) => !open);
+    if (!this.countryDropdownOpen()) {
+      this.country.markAsTouched();
+    }
+  }
+
+  selectCountry(country: string) {
+    this.form.patchValue({ country });
+    this.countrySearch.set('');
+    this.countryDropdownOpen.set(false);
+    this.country.markAsTouched();
+  }
+
+  onCountrySearch(event: Event) {
+    this.countrySearch.set((event.target as HTMLInputElement).value);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.countryDropdownOpen() &&
+      this.countryWrapper &&
+      !this.countryWrapper.nativeElement.contains(event.target as Node)
+    ) {
+      this.countryDropdownOpen.set(false);
+      this.countrySearch.set('');
+      this.country.markAsTouched();
+    }
+  }
 
   ngAfterViewInit() {
     this.googleIdentity

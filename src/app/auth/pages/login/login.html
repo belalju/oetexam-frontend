@@ -3,28 +3,14 @@
     <div class="relative flex flex-col min-h-screen lg:flex-row">
 
         <a routerLink="/" aria-label="Back to Home"
-           class="fixed z-20 flex items-center justify-center w-12 h-12 text-white transition-all bg-black/20 rounded-full top-6 left-6 hover:bg-black/40 backdrop-blur-sm">
+           class="fixed z-20 flex items-center justify-center w-12 h-12 text-dark transition-all bg-black/20 rounded-full top-6 left-6 hover:bg-black/30 backdrop-blur-sm">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         </a>
 
-        <div class="relative flex items-center justify-center w-full p-8 text-white bg-[#002B5B] lg:w-5/12 lg:p-12 overflow-hidden">
-            <div class="absolute bottom-[-50px] left-[-50px] w-64 h-64 border-[40px] border-blue-500 rounded-full opacity-30"></div>
-            
-            <div class="relative z-10 w-full max-w-md text-center lg:text-left">
-                <div class="mb-8">
-                    <h1 class="text-6xl font-black tracking-tighter italic">IELTS<span class="text-blue-400">*</span></h1>
-                    <p class="text-sm tracking-[0.3em] font-bold uppercase opacity-80">Test Prep</p>
-                </div>
-                
-                <h2 class="text-3xl font-bold mb-4">Welcome Back!</h2>
-                <p class="text-blue-100 text-lg">Log in to continue your journey toward your OET or IELTS goals.</p>
-                
-                <div class="mt-12 hidden lg:block">
-                    <div class="inline-block p-4 border border-blue-400/30 rounded-lg bg-blue-900/20 backdrop-blur-sm">
-                        <p class="text-sm italic">"The best way to predict your future is to create it."</p>
-                    </div>
-                </div>
-            </div>
+        <div class="flex items-center justify-center w-full p-8 lg:w-5/12 lg:p-12">
+            <a routerLink="/">
+                <img class="w-auto h-24 lg:h-64" src="logo.png" alt="Logo">
+            </a>
         </div>
 
         <div class="flex flex-col items-center justify-center w-full p-8 bg-white lg:w-7/12 lg:p-16">

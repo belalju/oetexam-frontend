@@ -83,65 +83,32 @@
             @if(mobileMenuOpen()) {
                 <div class="md:hidden border-t border-gray-100 pb-4 animate-in slide-in-from-top-2 duration-200">
                     <div class="space-y-1 py-4">
-                        <!-- Mobile Navigation Links -->
-                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">About</a>
-                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Ready</a>
-                        <a routerLink="/store" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Store</a>
-                        <a routerLink="/test" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Test</a>
-                        
-                        <!-- Mobile Dropdown: IELTS -->
-                        <div class="border-t border-gray-100 pt-2">
-                            <button 
-                                (click)="toggleDropdown('ielts')"
+                        <!-- Mobile Navigation Links (mirrors desktop nav) -->
+                        <a routerLink="/" fragment="start-free" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Start Free</a>
+
+                        <!-- Mobile Dropdown: Practice Test -->
+                        <div>
+                            <button
+                                (click)="toggleDropdown('practice-test')"
                                 class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
-                                <span>IELTS</span>
-                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'ielts'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span>Practice Test</span>
+                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'practice-test'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            @if(showDropdown() === 'ielts') {
+                            @if(showDropdown() === 'practice-test') {
                                 <div class="bg-gray-50 pl-4 space-y-1">
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">IELTS General</a>
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">IELTS Academic</a>
+                                    <a routerLink="/" fragment="oet-library" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">Reading</a>
+                                    <a routerLink="/" fragment="oet-library" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">Listening</a>
                                 </div>
                             }
                         </div>
 
-                        <!-- Mobile Dropdown: PTE -->
-                        <div class="border-t border-gray-100 pt-2">
-                            <button 
-                                (click)="toggleDropdown('pte')"
-                                class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
-                                <span>PTE</span>
-                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'pte'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            @if(showDropdown() === 'pte') {
-                                <div class="bg-gray-50 pl-4 space-y-1">
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">PTE Academic</a>
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">PTE Core</a>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- Mobile Dropdown: OET -->
-                        <div class="border-t border-gray-100 pt-2">
-                            <button 
-                                (click)="toggleDropdown('oet')"
-                                class="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8] flex justify-between items-center">
-                                <span>OET</span>
-                                <svg class="w-4 h-4 transition-transform" [ngClass]="{'rotate-180': showDropdown() === 'oet'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </button>
-                            @if(showDropdown() === 'oet') {
-                                <div class="bg-gray-50 pl-4 space-y-1">
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">OET Nurses</a>
-                                    <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 hover:text-[#005eb8]">OET Doctors</a>
-                                </div>
-                            }
-                        </div>
+                        <a routerLink="/" fragment="writing-evaluation" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Writing Evaluation</a>
+                        <a routerLink="/" fragment="speaking-evaluation" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Speaking Evaluation</a>
+                        <a routerLink="/" fragment="availability" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Availability</a>
+                        <a routerLink="/" fragment="pricing" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Pricing</a>
+                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Blog</a>
 
                         <!-- Mobile Auth Section -->
                         <div class="border-t border-gray-100 pt-4 space-y-2">
@@ -175,20 +142,20 @@
         <!-- Background Text -->
         <div class="absolute inset-0 right-[55%] top-[10%] flex items-center justify-center pointer-events-none">
             <h1 class="text-[12vw] lg:text-[6vw] font-bold text-white opacity-10 tracking-wider white-space-nowrap">
-            IELTS
+            OET Practice
             </h1>
         </div>
 
         <div class="relative z-10 max-w-[1440px] mx-auto px-6 py-12 lg:py-16">
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-10">
+            <div class="grid grid-cols-1 lg:grid-cols-6 gap-10">
 
             <!-- Left Column -->
-            <div class="space-y-6">
+            <div class="space-y-6 flex flex-col items-center text-center lg:items-start lg:text-left">
                 <div>
-                    <h3 class="text-lg font-semibold text-sky-400">IELTS Preparation</h3>
+                    <h3 class="text-lg font-semibold text-sky-400">OET Practice</h3>
                     <p class="mt-2">
-                        <a href="mailto:info@ieltspreparation.com" class="hover:text-sky-400 transition">
-                        info@ieltspreparation.com
+                        <a href="mailto:mentor@oetpractice.org" class="hover:text-sky-400 transition">
+                        mentor@oetpractice.org
                         </a>
                     </p>
                     <a href="tel:+8801712345678" class="mt-2 flex items-center gap-2">
@@ -248,16 +215,15 @@
             </div>
 
             <!-- Center - Logo -->
-            <div class="flex flex-col col-span-4 items-center justify-center text-center space-y-6 bg-[#1e335780] p-20 rounded-full mx-auto -mt-16">
+            <div class="flex flex-col lg:col-span-4 items-center justify-center text-center space-y-6 bg-[#1e335780] p-8 sm:p-12 lg:p-20 rounded-3xl lg:rounded-full mx-auto lg:-mt-16">
                 <div>
                 <!-- Replace with actual logo or SVG -->
                 <div class="w-28 h-28 mx-auto bg-sky-500 rounded-full flex items-center justify-center text-4xl font-bold text-white">
-                    IELTS
+                    OET
                 </div>
-                <h2 class="text-3xl font-bold mt-4 tracking-widest">IELTS Preparation</h2>
+                <h2 class="text-3xl font-bold mt-4 tracking-widest">OET Practice</h2>
                 <!-- <img src="{{ asset('images/usbLogo_.png') }}" class="h-20" alt=""> -->
-                <p class="text-sm text-gray-400 uppercase tracking-wider">Dhaka, Bangladesh</p>
-                <p class="text-xs text-gray-400 mt-1">Transforming Healthcare</p>
+                <p class="text-xs text-gray-400 mt-1">Transforming Healthcare through Global Opportunities</p>
                 </div>
 
                 <a href="/contact" class="bg-cyan-500 hover:bg-cyan-400 text-white font-medium px-8 py-3 rounded-full transition shadow-lg">
@@ -266,16 +232,23 @@
             </div>
 
             <!-- Right Column -->
-            <div class="text space-y-4">
+            <div class="space-y-4 text-center lg:text-left">
 
                 <div class="address">
-                    <h3 class="text-lg font-semibold text-sky-400 mb-4">IELTS Address</h3>
+                    <h3 class="text-lg font-semibold text-sky-400 mb-4">OET Contact</h3>
+                    <b>Bangladesh contact:</b>
                     <p class="text-sm leading-relaxed">
-                    IELTS Preparation, <br> Dhaka, Bangladesh.
-
+                    <a href="https://wa.me/8801752500789" target="_blank">WhatsApp: +8801752500789</a>
                     </p>
+                    <br>
+                    <b>International contact:</b>
+                    <p class="text-sm leading-relaxed">
+                    <a href="https://wa.me/97466102832" target="_blank">WhatsApp: +974 6610 2832</a>
+                    </p>
+
+
                     <p class="text-xs text-gray-400 mt-6">
-                    Copyright © 2026 IELTS Preparation. All rights reserved.
+                    Copyright © 2026 OET Practice. All rights reserved.
                     </p>
 
                 </div>
@@ -283,22 +256,10 @@
             </div>
 
             <!-- Bottom Navigation Links -->
-            <div class="mt-12 pt-8  border-gray-700 -mt-20">
-            <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
-                <a href="#" class="hover:text-sky-400 transition">IELTS General</a>
-                <a href="#" class="hover:text-sky-400 transition">IELTS Academic</a>
-                <a href="#" class="hover:text-sky-400 transition">PTE Academic</a>
-                <a href="#" class="hover:text-sky-400 transition">PTE Core</a>
-                <a href="#" class="hover:text-sky-400 transition">OTE Nurses</a>
-                <a href="#" class="hover:text-sky-400 transition">OTE Doctors</a>
-                <a href="#" class="hover:text-sky-400 transition">CELPIP General</a>
-                <a href="#" class="hover:text-sky-400 transition">CELPIP General LS</a>
-            </div>
+            <div class="mt-8 pt-8 border-gray-700 lg:-mt-16">
 
             <div class="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-gray-400">
                 <a href="#" class="hover:text-sky-400 transition">About Us</a>
-                <a href="#" class="hover:text-sky-400 transition">Ready</a>
-                <a href="#" class="hover:text-sky-400 transition">Test</a>
                 <a href="#" class="hover:text-sky-400 transition">Privacy Policy</a>
                 <a href="#" class="hover:text-sky-400 transition">Terms & Conditions</a>
             </div>
