@@ -26,7 +26,7 @@
                         <a routerLink="/" fragment="speaking-evaluation" class="hover:text-[#005eb8] mt-2">Speaking Evaluation</a>
                         <a routerLink="/" fragment="availability" class="hover:text-[#005eb8] mt-2">Availability</a>
                         <a routerLink="/" fragment="pricing" class="hover:text-[#005eb8] mt-2">Pricing</a>
-                        <a href="#" class="hover:text-[#005eb8] mt-2">Blog</a>
+                        <a routerLink="/blogs" class="hover:text-[#005eb8] mt-2">Blog</a>
                         
                         
                     </div>
@@ -108,7 +108,7 @@
                         <a routerLink="/" fragment="speaking-evaluation" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Speaking Evaluation</a>
                         <a routerLink="/" fragment="availability" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Availability</a>
                         <a routerLink="/" fragment="pricing" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Pricing</a>
-                        <a href="#" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Blog</a>
+                        <a routerLink="/blogs" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Blog</a>
 
                         <!-- Mobile Auth Section -->
                         <div class="border-t border-gray-100 pt-4 space-y-2">
@@ -166,7 +166,7 @@
                     </a>
                 </div>
                 
-                <a href="#" class="text-sm underline hover:text-sky-400">Privacy Policy</a>
+                <a routerLink="/privacy-policy" class="text-sm underline hover:text-sky-400">Privacy Policy</a>
                 <div class="flex space-x-4">
                     <!-- Facebook -->
                     <a href="#" class="text-white hover:text-sky-400 transition">
@@ -259,9 +259,9 @@
             <div class="mt-8 pt-8 border-gray-700 lg:-mt-16">
 
             <div class="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-gray-400">
-                <a href="#" class="hover:text-sky-400 transition">About Us</a>
-                <a href="#" class="hover:text-sky-400 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-sky-400 transition">Terms & Conditions</a>
+                <a routerLink="/about-us" class="hover:text-sky-400 transition">About Us</a>
+                <a routerLink="/privacy-policy" class="hover:text-sky-400 transition">Privacy Policy</a>
+                <a routerLink="/terms-and-conditions" class="hover:text-sky-400 transition">Terms & Conditions</a>
             </div>
             </div>
         </div>

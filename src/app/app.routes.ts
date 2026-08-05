@@ -18,6 +18,7 @@ import { adminGuard, authGuard } from './auth/guards/auth-guard';
 import { MyHistory } from './student/pages/my-history/my-history';
 import { Results } from './student/pages/results/results';
 import { Users } from './admin/pages/users/users';
+import { UnderConstruction } from './main/pages/under-construction/under-construction';
 
 export const routes: Routes = [
     {
@@ -36,7 +37,11 @@ export const routes: Routes = [
             },
             { path: 'student/test', component: Test, canActivate: [authGuard] },
             { path: 'results', component: Results, canActivate: [authGuard] },
-            
+            { path: 'blogs', component: UnderConstruction },
+            { path: 'about-us', component: UnderConstruction },
+            { path: 'privacy-policy', component: UnderConstruction },
+            { path: 'terms-and-conditions', component: UnderConstruction },
+
         ]
     },
     {

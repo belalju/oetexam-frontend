@@ -42,7 +42,7 @@ getAudioSrc(filename: string): Observable<Blob> {
     return this.http.get(`${this.API_URL}/attempts/${attemptId}/results`);
   }
 
-  getTests(pageable: Pageable = { page: 0, size: 10 }) {
+  getTests(pageable: Pageable = { page: 0, size: 100 }) {
     let params = new HttpParams()
       .set('page', pageable.page.toString())
       .set('size', pageable.size.toString());
