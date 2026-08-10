@@ -289,7 +289,9 @@ export class Test implements AfterViewInit, OnDestroy {
       ...this.partBGroups(),
       ...this.partCGroups()
     ].find((g: any) => g.id === groupId);
-    return group?.questions ?? [];
+    return [...(group?.questions ?? [])].sort(
+      (a: any, b: any) => (a.questionNumber ?? 0) - (b.questionNumber ?? 0)
+    );
   }
 
   getSectionTimeLimit(): number {

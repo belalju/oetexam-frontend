@@ -33,17 +33,54 @@
 
 
 /* // styles.scss or component with ::ng-deep */
-::ng-deep .inline-html-content > *:last-child {
+/* Force the trailing text-like element inline so the gap input flows after it,
+   but never lists — those are handled separately below. */
+::ng-deep .inline-html-content > *:last-child:not(ul):not(ol):not(li) {
   display: inline !important;
 }
 
-::ng-deep .inline-html-content > *:not(:last-child) {
+::ng-deep .inline-html-content > *:not(:last-child):not(ul):not(ol) {
   display: block;
 }
 
 /* // Also handle nested last elements (li, p inside div) */
-::ng-deep .inline-html-content > *:last-child > *:last-child {
+::ng-deep .inline-html-content > *:last-child:not(ul):not(ol):not(li) > *:last-child:not(li) {
   display: inline !important;
+}
+
+/* Lists inside gap-fill notes: show a bullet on every item, put each item on its
+   own line, but keep the LAST item inline so the (N) gap input flows after it. */
+::ng-deep .inline-html-content ul,
+::ng-deep .inline-html-content ol {
+  display: inline !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  counter-reset: gapfill-item;
+}
+
+::ng-deep .inline-html-content li {
+  display: inline !important;
+  margin-left: 1rem;
+}
+
+::ng-deep .inline-html-content ul > li::before {
+  content: "• ";
+  font-weight: bold;
+}
+
+::ng-deep .inline-html-content ol > li {
+  counter-increment: gapfill-item;
+}
+
+::ng-deep .inline-html-content ol > li::before {
+  content: counter(gapfill-item) ". ";
+  font-weight: bold;
+}
+
+/* line break after every item except the last, so the last flows with the input */
+::ng-deep .inline-html-content li:not(:last-child)::after {
+  content: "\A";
+  white-space: pre;
 }
 
 
