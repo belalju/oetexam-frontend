@@ -122,9 +122,18 @@ export class Test implements AfterViewInit, OnDestroy {
       this.currentTime = audio.currentTime;
     }
 
+    hasAutoPlayed = false;
+
     loadMetadata() {
       const audio = this.audioEl.nativeElement;
       this.duration = audio.duration;
+
+      if (!this.hasAutoPlayed && !(this.played && !this.allowReplay)) {
+        this.hasAutoPlayed = true;
+        audio.play()
+          .then(() => { this.isPlaying = true; })
+          .catch(() => { this.isPlaying = false; });
+      }
     }
 
     // seekAudio(event: any) {
@@ -165,7 +174,7 @@ export class Test implements AfterViewInit, OnDestroy {
       }
     }
 
-    waveHeights = [30,45,55,70,60,80,65,50,75,55,40,65,80,70,45,55,68,72,48,60];
+    waveHeights = [22,34,42,52,45,58,48,38,55,42,30,48,58,52,34,42,50,54,36,45];
 
     get progressPct(): number {
       return this.duration ? (this.currentTime / this.duration) * 100 : 0;
@@ -500,11 +509,6 @@ export class Test implements AfterViewInit, OnDestroy {
       }
 
     } else if (this.currentStep === '2') {
-      // Can only move to section 3 if Part A time has expired
-      if (!this.sectionTimeExpired()) {
-        toast.error('You must complete Part A time limit before proceeding to Part B & C');
-        return;
-      }
       this.currentStep = '3';
       this.resetSectionTimer();
     }

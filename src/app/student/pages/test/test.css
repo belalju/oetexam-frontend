@@ -99,7 +99,7 @@ input[type="range"] {
 /* Cover / Waveform */
 .cover {
   width: 100%;
-  aspect-ratio: 1;
+  /* aspect-ratio: 1; */
   border-radius: 14px;
   background: #f3f4f6;
   display: flex;
@@ -107,14 +107,14 @@ input[type="range"] {
   justify-content: center;
   margin-bottom: 1.5rem;
   overflow: hidden;
-  height: 180px;
+  height: 80px;
 }
 
 .waveform-bars {
   display: flex;
   align-items: center;
   gap: 3px;
-  height: 30px;
+  height: 40px;
 }
 
 .bar {
@@ -339,4 +339,24 @@ input[type="range"] {
 ::ng-deep  th,
 ::ng-deep  td {
   padding: 8px;
+}
+
+/* Tighten passage content spacing (Part A reading passage) */
+/* Collapse the source newlines/blank lines that pre-line would render as extra gaps */
+::ng-deep .passage-html {
+  white-space: normal !important;
+}
+
+::ng-deep .passage-html ul,
+::ng-deep .passage-html ol {
+  margin: 0.25rem 0 !important;
+}
+
+::ng-deep .passage-html li {
+  margin: 0 0 0.15rem 0;
+  line-height: 1.4;
+}
+
+::ng-deep .passage-html p {
+  margin: 0 0 0.5rem 0;
 }
