@@ -49,7 +49,7 @@
     </div>
     }
     @if(currentStep === '2'){
-      <section #section02 class="grid grid-cols-[3fr_2fr] gap-4 h-[70vh]">
+      <section #section02 class="grid grid-cols-[3fr_2fr] gap-4 {{isFullScreen ? 'h-[80vh]' : 'h-[70vh]'}}">
 
         <!-- LEFT: Passages -->
         <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen pb-40">
@@ -206,7 +206,7 @@
       }
     
       @if(currentStep === '3'){
-        <section #section03 class="grid grid-cols-2 {{ testData().subTestType === 'LISTENING' ? 'lg:grid-cols-3' : 'grid-cols-2' }} gap-4 h-[65vh]">
+        <section #section03 class="grid grid-cols-2 {{ testData().subTestType === 'LISTENING' ? 'lg:grid-cols-3' : 'grid-cols-2' }} gap-4 {{isFullScreen ? 'h-[80vh]' : 'h-[65vh]'}}">
 
           @if(testData().subTestType === 'LISTENING'){
           <!-- LEFT: Passages -->
