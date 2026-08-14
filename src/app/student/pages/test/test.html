@@ -2,7 +2,7 @@
 <div #testUI class="flex flex-col font-sans text-gray-800 bg-gray-100 overflow-hidden h-[85vh]">
   <header class="bg-[#0073AA] text-white p-3 flex justify-between items-center shadow-md shrink-0">
     <div class="flex flex-col">
-      <span class="text-sm font-semibold opacity-90">Section ({{currentStep}} of 3): {{testData().title}} — {{testData().subTestType}}</span>
+      <span class="text-sm font-semibold opacity-90">Section ({{currentStep}} of {{totalSteps()}}): {{testData().title}} — {{testData().subTestType}}</span>
       
     </div>
     @if(testData().subTestType != 'LISTENING'){
@@ -26,8 +26,9 @@
   <div class="bg-[#004A70] text-white px-4 py-1 text-xs flex justify-between shrink-0 border-t border-blue-400/20">
     <span class="text-base">
       {{ currentStep == '2' ? 'Part A || Questions 1 – ' + partAQuestionCount() :
-        currentStep == '3' ? (testData().subTestType === 'LISTENING' ? 'Part A, B & C || Questions 1 – ' + partABCQuestionCount() : 'Part B & C || Questions 1 – ' + partBCQuestionCount()) : 'Introduction' }}
-    </span>    
+        currentStep == '3' ? (testData().subTestType === 'LISTENING' ? 'Part A, B & C || Questions 1 – ' + partABCQuestionCount() : 'Part B || Questions 1 – ' + partBQuestionCount()) :
+        currentStep == '4' ? 'Part C || Questions 1 – ' + partCQuestionCount() : 'Introduction' }}
+    </span>
     <span>Candidate: <span class="font-bold uppercase">{{user.firstName}} {{user.lastName}}</span></span>
   </div>
 
@@ -435,18 +436,15 @@
 
               }
 
-              <!-- Divider -->
-              @if(partB() && partC()){
+              @if(testData().subTestType === 'LISTENING' && partC()){
+                <!-- Divider -->
                 <div class="flex items-center gap-3 my-6">
                   <hr class="flex-1 border-gray-300" />
                   <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Part C</span>
                   <hr class="flex-1 border-gray-300" />
                 </div>
-              }
 
-
-              <!-- Part C Questions -->
-              @if(partC()){
+                <!-- Part C Questions (LISTENING keeps A, B & C combined in one step) -->
                 <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-5">
                   <p class="text-xs text-purple-800">
                     <strong>Part C Instructions:</strong> {{ partC()!.instructions }}
@@ -454,13 +452,13 @@
                 </div>
 
                 @for(g of partCGroups(); track g.id){
-                  @if(g.passageId){ 
+                  @if(g.passageId){
                     <div class="mb-10 border-l-4 border-blue-400 pl-4">
                       <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-1 mb-2 rounded-md">
                         {{ getPassageCById(g.passageId)?.label }}
                       </span>
                       <div class="bg-[#F2F6F9] max-w-3xl p-3 rounded border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line" [innerHTML]="getPassageCById(g.passageId)?.content">
-                        
+
                       </div>
                     </div>
                   }
@@ -471,11 +469,54 @@
             </div>
           </div>
 
-          
+
         </section>
+        }
 
+        @if(currentStep === '4'){
+          <section #section04 class="grid grid-cols-[3fr_2fr] gap-4 {{isFullScreen ? 'h-[80vh]' : 'h-[65vh]'}}">
 
-        
+            <!-- LEFT: Passages -->
+            <div class="bg-white border border-gray-300 rounded-xl shadow-sm p-5 overflow-y-auto max-h-screen pb-40">
+
+              @for(passage of partCPassages(); track passage.id){
+                <div class="mb-5">
+
+                  @if(passage.content != ''){
+                    <span class="inline-block bg-blue-200 text-blue-900 text-xs font-bold px-2 py-1 mb-2 rounded-md">
+                      {{ passage.label }}
+                    </span>
+
+                    <div class="passage-html bg-[#F2F6F9] p-3 rounded-lg border border-gray-100 text-[15px] leading-relaxed whitespace-pre-line"
+                        [innerHTML]="passage.content">
+                    </div>
+                  }
+                </div>
+              }
+
+            </div>
+
+            <!-- RIGHT: Questions -->
+            <div class="bg-white border border-gray-300 rounded-xl shadow-sm overflow-hidden max-h-screen overflow-y-auto pb-40">
+              <div class="flex-1 overflow-y-auto p-6">
+
+                <!-- Part C global instructions banner -->
+                @if(partC()?.instructions){
+                  <div class="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-5">
+                    <p class="text-xs text-purple-800">
+                      <strong>Part C Instructions:</strong> {{ partC()!.instructions }}
+                    </p>
+                  </div>
+                }
+
+                @for(g of partCGroups(); track g.id){
+                  <ng-container *ngTemplateOutlet="questionGroup; context: { $implicit: g, part: 'C' }"></ng-container>
+                }
+
+              </div>
+            </div>
+
+          </section>
         }
 
 
@@ -619,16 +660,16 @@
     </div>
     <div class="flex items-center gap-4">
       
-        <button (click)="goBack()" 
-          [disabled]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
-          [class.opacity-50]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
-          [class.cursor-not-allowed]="currentStep === '3' || (currentStep === '2' && sectionTimeExpired())"
-          
+        <button (click)="goBack()"
+          [disabled]="currentStep === '3' || currentStep === '4' || (currentStep === '2' && sectionTimeExpired())"
+          [class.opacity-50]="currentStep === '3' || currentStep === '4' || (currentStep === '2' && sectionTimeExpired())"
+          [class.cursor-not-allowed]="currentStep === '3' || currentStep === '4' || (currentStep === '2' && sectionTimeExpired())"
+
           class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md">
         <span class="text-xs">❮</span> Back
         </button>
-        
-        @if(currentStep !== '3'){
+
+        @if(currentStep === '1' || currentStep === '2' || (currentStep === '3' && testData().subTestType !== 'LISTENING')){
         <button (click)="goNext()"
           class="bg-[#004A70] hover:bg-[#003854] text-white px-10 py-2 rounded font-medium flex items-center gap-2 transition-all active:scale-95 shadow-md border-l border-blue-800">
         Next <span class="text-xs">❯</span>

@@ -16,7 +16,7 @@ import { Auth } from '../../../auth/services/auth';
 })
 export class Test implements AfterViewInit, OnDestroy { 
   @ViewChild('testUI') testElement!: ElementRef;
-  currentStep: '1' | '2' | '3' = '1'; 
+  currentStep: '1' | '2' | '3' | '4' = '1';
   user: any;
   activeQuestion: number = 1;
   currentQuestion: number = 1;
@@ -261,15 +261,21 @@ export class Test implements AfterViewInit, OnDestroy {
   partBGroups = computed(() => this.partB()?.questionGroups ?? []);
   partCGroups = computed(() => this.partC()?.questionGroups ?? []);
 
-  partBCQuestionCount = computed(() => {
-    const bCount = this.partBGroups().reduce((t: number, g: any) => t + (g.questions?.length ?? 0), 0);
-    const cCount = this.partCGroups().reduce((t: number, g: any) => t + (g.questions?.length ?? 0), 0);
-    return bCount + cCount;
-  });
+  partBQuestionCount = computed(() =>
+    this.partBGroups().reduce((t: number, g: any) => t + (g.questions?.length ?? 0), 0)
+  );
+
+  partCQuestionCount = computed(() =>
+    this.partCGroups().reduce((t: number, g: any) => t + (g.questions?.length ?? 0), 0)
+  );
+
+  partBCQuestionCount = computed(() => this.partBQuestionCount() + this.partCQuestionCount());
 
   partABCQuestionCount = computed(() =>
     this.partAQuestionCount() + this.partBCQuestionCount()
   );
+
+  totalSteps = computed(() => (this.testData()?.subTestType === 'LISTENING' ? 3 : 4));
 
   allPassages = computed(() => {
     return [
@@ -298,9 +304,15 @@ export class Test implements AfterViewInit, OnDestroy {
     if (this.currentStep === '2') {
       return this.partA()?.timeLimitMinutes || 60;
     } else if (this.currentStep === '3') {
-      const partBTime = this.partB()?.timeLimitMinutes || 0;
-      const partCTime = this.partC()?.timeLimitMinutes || 0;
-      return partBTime + partCTime || 60;
+      if (this.testData()?.subTestType === 'LISTENING') {
+        const partATime = this.partA()?.timeLimitMinutes || 0;
+        const partBTime = this.partB()?.timeLimitMinutes || 0;
+        const partCTime = this.partC()?.timeLimitMinutes || 0;
+        return partATime + partBTime + partCTime || 60;
+      }
+      return this.partB()?.timeLimitMinutes || 60;
+    } else if (this.currentStep === '4') {
+      return this.partC()?.timeLimitMinutes || 60;
     }
     return this.testData()?.totalTimeLimitMinutes || 60;
   }
@@ -444,11 +456,15 @@ export class Test implements AfterViewInit, OnDestroy {
     this.stopCountdown();
     this.countdownDisplay = '00:00:00';
     this.sectionTimeExpired.set(true);
-    this.currentStep = '3';
-    // alert(`Time is up for ${this.currentStep === '2' ? 'Part A' : this.currentStep === '3' ? 'Part B & C' : 'this section'}!`);
-    
-    // Reset and restart countdown for Part B & C
-    this.resetSectionTimer();
+
+    if (this.currentStep === '2') {
+      this.currentStep = '3';
+      this.resetSectionTimer();
+    } else if (this.currentStep === '3' && this.testData()?.subTestType !== 'LISTENING') {
+      this.currentStep = '4';
+      this.resetSectionTimer();
+    }
+    // Otherwise this was the final section — nothing further to advance to.
   }
 
   stopCountdown() {
@@ -513,13 +529,20 @@ export class Test implements AfterViewInit, OnDestroy {
     } else if (this.currentStep === '2') {
       this.currentStep = '3';
       this.resetSectionTimer();
+    } else if (this.currentStep === '3' && this.testData()?.subTestType !== 'LISTENING') {
+      this.currentStep = '4';
+      this.resetSectionTimer();
     }
   }
 
-  goBack() { 
-    if (this.currentStep === '3') {
-      // Cannot go back from section 3 (Part B & C)
-      toast.error('You cannot go back to Part A after starting Part B & C');
+  goBack() {
+    if (this.currentStep === '4') {
+      // Cannot go back from section 4 (Part C)
+      toast.error('You cannot go back to Part B after starting Part C');
+      return;
+    } else if (this.currentStep === '3') {
+      // Cannot go back from section 3 (Part B, or Part A/B/C combined for LISTENING)
+      toast.error('You cannot go back to Part A after starting this section');
       return;
     } else if (this.currentStep === '2') {
       // Can go back from section 2 if Part A time hasn't expired or if not started
