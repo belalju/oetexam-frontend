@@ -261,6 +261,28 @@ export class Test implements AfterViewInit, OnDestroy {
   partBGroups = computed(() => this.partB()?.questionGroups ?? []);
   partCGroups = computed(() => this.partC()?.questionGroups ?? []);
 
+  partBOrderedPassages = computed(() => {
+    const seen = new Set<number>();
+    const ordered: any[] = [];
+
+    this.partBGroups().forEach((g: any) => {
+      const passage = this.getPassageBById(g.passageId);
+      if (passage && !seen.has(passage.id)) {
+        seen.add(passage.id);
+        ordered.push(passage);
+      }
+    });
+
+    this.partBPassages().forEach((p: any) => {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        ordered.push(p);
+      }
+    });
+
+    return ordered;
+  });
+
   partBQuestionCount = computed(() =>
     this.partBGroups().reduce((t: number, g: any) => t + (g.questions?.length ?? 0), 0)
   );
@@ -300,6 +322,13 @@ export class Test implements AfterViewInit, OnDestroy {
     );
   }
 
+  // Combined time budget for Reading Part B + Part C (one continuous section)
+  private partBCTimeLimit(): number {
+    const partBTime = this.partB()?.timeLimitMinutes || 0;
+    const partCTime = this.partC()?.timeLimitMinutes || 0;
+    return partBTime + partCTime || 45;
+  }
+
   getSectionTimeLimit(): number {
     if (this.currentStep === '2') {
       return this.partA()?.timeLimitMinutes || 60;
@@ -310,9 +339,10 @@ export class Test implements AfterViewInit, OnDestroy {
         const partCTime = this.partC()?.timeLimitMinutes || 0;
         return partATime + partBTime + partCTime || 60;
       }
-      return this.partB()?.timeLimitMinutes || 60;
+      // READING: Part B and Part C share one combined section timer
+      return this.partBCTimeLimit();
     } else if (this.currentStep === '4') {
-      return this.partC()?.timeLimitMinutes || 60;
+      return this.partBCTimeLimit();
     }
     return this.testData()?.totalTimeLimitMinutes || 60;
   }
@@ -460,11 +490,8 @@ export class Test implements AfterViewInit, OnDestroy {
     if (this.currentStep === '2') {
       this.currentStep = '3';
       this.resetSectionTimer();
-    } else if (this.currentStep === '3' && this.testData()?.subTestType !== 'LISTENING') {
-      this.currentStep = '4';
-      this.resetSectionTimer();
     }
-    // Otherwise this was the final section — nothing further to advance to.
+
   }
 
   stopCountdown() {
@@ -530,15 +557,25 @@ export class Test implements AfterViewInit, OnDestroy {
       this.currentStep = '3';
       this.resetSectionTimer();
     } else if (this.currentStep === '3' && this.testData()?.subTestType !== 'LISTENING') {
+      // Part B and Part C are one timed section — keep the clock running
       this.currentStep = '4';
-      this.resetSectionTimer();
     }
+  }
+
+  // Whether the Back button is available on the current section
+  canGoBack(): boolean {
+    // Part B and Part C are one shared section — moving between them is allowed
+    if (this.currentStep === '4') return true;
+    // Cannot return to Part A (or the introduction) once this section has started
+    if (this.currentStep === '3') return false;
+    if (this.currentStep === '2') return !this.sectionTimeExpired();
+    return true;
   }
 
   goBack() {
     if (this.currentStep === '4') {
-      // Cannot go back from section 4 (Part C)
-      toast.error('You cannot go back to Part B after starting Part C');
+      // Part B and Part C share one timed section — go back without resetting the clock
+      this.currentStep = '3';
       return;
     } else if (this.currentStep === '3') {
       // Cannot go back from section 3 (Part B, or Part A/B/C combined for LISTENING)
