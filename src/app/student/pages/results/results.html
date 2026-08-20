@@ -131,7 +131,7 @@
 
       <!-- Question Content -->
       <div class="min-w-0 overflow-hidden">
-        <p class="text-[13px] leading-relaxed text-gray-800 mb-3 break-words" [innerHTML]="q.questionText"></p>
+        <!-- <p class="text-[13px] leading-relaxed text-gray-800 mb-3 break-words" [innerHTML]="q.questionText"></p> -->
         <!-- @if(q.prefixText || q.suffixText){
         <p class="text-sm text-slate-700 leading-relaxed mb-2 break-words">
           <span [innerHTML]="q.prefixText"></span>
@@ -145,7 +145,7 @@
         } -->
         
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-          <div>
+          <div class="">
             <span class="text-[10px] font-medium text-gray-400">Your answer:</span>
             <span class="ml-2 px-3 py-1 text-xs font-medium font-mono rounded-3xl"
                   [class.bg-emerald-100]="q.correct"
@@ -155,18 +155,27 @@
               {{ q.answerText }}
               {{ q.selectedOptionLabel }}
             </span>
+            @if(q.optionLabel == q.selectedOptionLabel){
+            <span class="ml-1 px-1 py-1 text-xs font-medium font-mono text-gray-700 rounded-3xl">
+              {{ q.optionText }}
+            </span>
+            }
           </div>
 
           @if(!q.correct){
-          <div>
+          <div class="">
             <span class="text-[10px] font-medium text-gray-400">Correct:</span>
-            <span class="ml-2 px-3 py-1 text-xs font-medium font-mono bg-blue-100 text-blue-700 rounded-3xl">
+            <span class="ml-2 px-1 py-1 text-xs font-medium font-mono bg-blue-100 text-blue-700 rounded-3xl">
               @if(q.correctText){
                 {{ q.correctText }}
               }
               @else if(q.optionLabel){
                 {{ q.optionLabel }}
+                
               }
+            </span>
+            <span class="ml-1 px-1 py-1 text-xs font-medium font-mono text-gray-700 rounded-3xl">
+              {{ q.optionText }}
             </span>
           </div>
           }
