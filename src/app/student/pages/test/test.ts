@@ -57,8 +57,7 @@ export class Test implements AfterViewInit, OnDestroy {
     const minutes = this.getSectionTimeLimit();
     this.timeLeftInSeconds = minutes * 60;
 
-    this.startCountdown();
-    this.updateDisplay();   
+    this.updateDisplay();
 
     // setTimeout(() => {
     //   this.enterFullScreen();
@@ -381,7 +380,7 @@ export class Test implements AfterViewInit, OnDestroy {
     });
   }
 
-  startAttempt() {
+  startAttempt(onSuccess?: () => void) {
     if (!this.testId) return;
 
     this.testService.startAttempt(this.testId).subscribe({
@@ -390,11 +389,12 @@ export class Test implements AfterViewInit, OnDestroy {
         this.attemptData.set(response.data);
         toast.success('Test started successfully!');
         // this.router.navigate(['/student/attempt', attemptId]);
-        localStorage.setItem('currentAttemptId', attemptId.toString());
+        sessionStorage.setItem('currentAttemptId', attemptId.toString());
+        onSuccess?.();
       },
       error: (err) => {
-        console.error('Failed to start attempt:', err);
-        toast.error('Failed to start the test. Please try again later.');
+        console.error('Failed to start attempt:', err.error);
+        toast.error(err.error?.error || err.error?.message || 'Failed to start the test. Please try again later.');
       }
     });
   }
@@ -415,7 +415,7 @@ export class Test implements AfterViewInit, OnDestroy {
 
   submitAttempt() {
     const attemptIdFromData = this.attemptData()?.attemptId;
-    const attemptIdFromStorage = localStorage.getItem('currentAttemptId');
+    const attemptIdFromStorage = sessionStorage.getItem('currentAttemptId');
 
     // Determine which attemptId to use
     let attemptId: number | null = null;
@@ -435,7 +435,7 @@ export class Test implements AfterViewInit, OnDestroy {
     this.testService.submitAttempt(attemptId).subscribe({
       next: (response:any) => {
         toast.success('Test submitted successfully!');
-        localStorage.removeItem('currentAttemptId');
+        sessionStorage.removeItem('currentAttemptId');
         // this.router.navigate(['/student/my-history']);
         this.router.navigate(['/results'], {
           state: { 
@@ -535,24 +535,16 @@ export class Test implements AfterViewInit, OnDestroy {
     }
   }
 
-  goNext() { 
+  goNext() {
     if (this.currentStep === '1') {
-      if(this.testData()?.subTestType === 'LISTENING'){
-        this.currentStep = '3';
-      }
-      else{
-        this.currentStep = '2';
-      }
-      
-      this.resetSectionTimer();
-
-      const currentAttemptId = localStorage.getItem('currentAttemptId');
-      if (!this.attemptData() && currentAttemptId) {
-        this.attemptById(parseInt(currentAttemptId));
-      } else if (!this.attemptData()) {
-        this.startAttempt();
-      }
-
+      this.startAttempt(() => {
+        this.resetSectionTimer();
+        if (this.testData()?.subTestType === 'LISTENING') {
+          this.currentStep = '3';
+        } else {
+          this.currentStep = '2';
+        }
+      });
     } else if (this.currentStep === '2') {
       this.currentStep = '3';
       this.resetSectionTimer();
