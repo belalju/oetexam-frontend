@@ -518,11 +518,11 @@ export class Test implements AfterViewInit, OnDestroy {
 
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { /* Firefox */
+    } else if (elem.mozRequestFullScreen) { 
       elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+    } else if (elem.webkitRequestFullscreen) { 
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    } else if (elem.msRequestFullscreen) {
       elem.msRequestFullscreen();
     }
   }
@@ -538,27 +538,19 @@ export class Test implements AfterViewInit, OnDestroy {
   goNext() {
     if (this.currentStep === '1') {
       this.startAttempt(() => {
+        this.currentStep = this.testData()?.subTestType === 'LISTENING' ? '3' : '2';
         this.resetSectionTimer();
-        if (this.testData()?.subTestType === 'LISTENING') {
-          this.currentStep = '3';
-        } else {
-          this.currentStep = '2';
-        }
       });
     } else if (this.currentStep === '2') {
       this.currentStep = '3';
       this.resetSectionTimer();
     } else if (this.currentStep === '3' && this.testData()?.subTestType !== 'LISTENING') {
-      // Part B and Part C are one timed section — keep the clock running
       this.currentStep = '4';
     }
   }
 
-  // Whether the Back button is available on the current section
   canGoBack(): boolean {
-    // Part B and Part C are one shared section — moving between them is allowed
     if (this.currentStep === '4') return true;
-    // Cannot return to Part A (or the introduction) once this section has started
     if (this.currentStep === '3') return false;
     if (this.currentStep === '2') return !this.sectionTimeExpired();
     return true;
