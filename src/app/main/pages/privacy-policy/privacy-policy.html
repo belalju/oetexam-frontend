@@ -1,0 +1,203 @@
+<section class="bg-[#f0f7ff] py-16 md:py-20 px-6 font-sans">
+  <div class="max-w-6xl mx-auto space-y-4">
+    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#005eb8]/10 text-[#005eb8]">
+      Legal
+    </span>
+    <h1 class="text-[#0f225b] text-4xl md:text-5xl font-bold leading-tight">
+      Privacy Policy
+    </h1>
+    <p class="text-slate-600">Last updated: 10 September 2026</p>
+  </div>
+</section>
+
+<section class="bg-white py-16 px-6 font-sans">
+  <div class="max-w-6xl mx-auto lg:grid lg:grid-cols-[15rem_1fr] lg:gap-16">
+
+    <aside class="hidden lg:block">
+      <nav class="sticky top-32">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">On this page</p>
+        <ul class="space-y-2 border-l border-slate-200">
+          @for (section of sections; track section.id) {
+            <li>
+              <button type="button" (click)="scrollTo(section.id)"
+                class="-ml-px border-l-2 border-transparent pl-4 text-left text-sm text-slate-600 hover:text-[#005eb8] hover:border-[#005eb8] transition">
+                {{ section.title }}
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
+    </aside>
+
+    <article class="max-w-3xl text-slate-700 leading-relaxed space-y-12">
+
+      <div class="space-y-4">
+        <p>
+          OET Practice (“we,” “us,” or “our”) respects your privacy and is committed to handling your personal information responsibly. This Privacy Policy explains how we collect, use, store, and protect personal information when you visit or use oetpractice.org, create an account, purchase access, submit work for evaluation, contact us, or use our services.
+        </p>
+        <p>
+          For privacy-related questions, please contact us at:
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+        </p>
+      </div>
+
+      <section id="information-we-collect" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Information We Collect</h2>
+        <p>We may collect the following information:</p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li><b class="text-[#0f225b]">Account information:</b> your name, email address, username, password, and account preferences.</li>
+          <li><b class="text-[#0f225b]">Purchase information:</b> details of the package or service you purchase, payment status, transaction reference, and purchase history. We do not intentionally store full payment-card details when payments are processed by a third-party payment provider.</li>
+          <li><b class="text-[#0f225b]">Learning and platform information:</b> practice-test attempts, answers, results, progress, access history, and service usage information.</li>
+          <li><b class="text-[#0f225b]">Writing and Speaking submissions:</b> letters, recordings, role-play submissions, and related information that you voluntarily submit for Writing or Speaking evaluation.</li>
+          <li><b class="text-[#0f225b]">Communication information:</b> messages and enquiries sent to us by email or through any contact form.</li>
+          <li><b class="text-[#0f225b]">Technical information:</b> IP address, browser type, device information, pages visited, approximate location, cookies, and similar technologies where enabled.</li>
+        </ul>
+        <div class="border border-amber-200 bg-amber-50 rounded-2xl p-5 text-amber-900">
+          Please do not include real patient names, patient records, personally identifiable clinical information, or confidential workplace information in any Writing or Speaking submission. Use fictional, anonymised, or practice-only material.
+        </div>
+      </section>
+
+      <section id="how-we-use-information" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">How We Use Information</h2>
+        <p>We use personal information to:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Create and manage your account.</li>
+          <li>Provide access to free and premium OET practice tests.</li>
+          <li>Process payments and confirm purchases.</li>
+          <li>Deliver Writing and Speaking evaluation services that you request.</li>
+          <li>Respond to support, access, partnership, or other enquiries.</li>
+          <li>Monitor platform performance, security, and misuse.</li>
+          <li>Improve our tests, services, content, and user experience.</li>
+          <li>Send service-related messages, such as account, purchase, access, policy, or security notifications.</li>
+          <li>Send marketing updates only where permitted by law or where you have chosen to receive them.</li>
+        </ul>
+        <p>
+          We process information where it is necessary to provide the service you request, meet legal obligations, protect legitimate business interests, or where you have given consent.
+        </p>
+      </section>
+
+      <section id="sharing-information" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Sharing Information</h2>
+        <p class="font-bold text-[#0f225b]">We do not sell your personal information.</p>
+        <p>We may share information only with trusted service providers that help us operate OET Practice, such as:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Payment-processing providers.</li>
+          <li>Website hosting and cloud-storage providers.</li>
+          <li>Email and communication providers.</li>
+          <li>Analytics, security, and technical-support providers.</li>
+          <li>Tutors, evaluators, or authorised service providers who need access to a Writing or Speaking submission in order to deliver the evaluation you requested.</li>
+          <li>Authorities or legal advisers where required by law, court order, or to protect our rights, users, or platform security.</li>
+        </ul>
+        <p>
+          We require service providers to handle information only for the relevant service purpose and in accordance with applicable privacy requirements.
+        </p>
+      </section>
+
+      <section id="writing-and-speaking-submissions" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Writing and Speaking Submissions</h2>
+        <p>
+          If you purchase or request a Writing or Speaking evaluation, we may review the material you submit in order to provide feedback.
+        </p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li>Writing submissions and recordings are used only to deliver the requested service, maintain quality, resolve support issues, and improve internal processes.</li>
+          <li>Do not submit personal health information, real patient data, confidential workplace information, or any information that identifies a patient or third party.</li>
+          <li>We may use anonymised and de-identified examples for internal quality assurance, training, or service improvement. We will not publish identifiable submissions without your explicit permission.</li>
+        </ul>
+      </section>
+
+      <section id="data-retention" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Data Retention</h2>
+        <p>We retain personal information only for as long as necessary for the purposes described in this policy.</p>
+        <p>Typical retention periods may include:</p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li><b class="text-[#0f225b]">Account and purchase records:</b> while your account remains active and for a reasonable period afterwards for legal, accounting, fraud-prevention, and support purposes.</li>
+          <li><b class="text-[#0f225b]">Practice-test results and progress:</b> while your account is active, unless you request deletion where applicable.</li>
+          <li><b class="text-[#0f225b]">Writing and Speaking submissions:</b> for the period needed to complete the requested evaluation and provide support, normally no longer than 90 days, unless a longer period is required for legal, dispute-resolution, or quality-assurance purposes.</li>
+          <li><b class="text-[#0f225b]">Contact enquiries:</b> for as long as needed to respond and maintain appropriate records.</li>
+          <li><b class="text-[#0f225b]">Technical logs:</b> for a limited period necessary for security, troubleshooting, and performance monitoring.</li>
+        </ul>
+      </section>
+
+      <section id="cookies-and-analytics" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Cookies and Analytics</h2>
+        <p>
+          OET Practice may use cookies and similar technologies to make the website function properly, remember preferences, understand site usage, improve performance, and protect the platform from misuse.
+        </p>
+        <p>
+          You can control or delete cookies through your browser settings. Disabling certain cookies may affect some website functions.
+        </p>
+        <p>
+          If we use non-essential analytics or marketing cookies, we will request consent where required by applicable law.
+        </p>
+      </section>
+
+      <section id="international-users" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">International Users</h2>
+        <p>
+          OET Practice may be used by healthcare professionals in Bangladesh, India, the UK, the Middle East, East Asia, and other locations worldwide. Your information may be processed or stored in countries other than the country where you live, depending on our hosting, payment, communication, and service providers.
+        </p>
+        <p>
+          Where required, we will take reasonable steps to ensure that personal information transferred internationally is handled with appropriate safeguards.
+        </p>
+      </section>
+
+      <section id="your-rights" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Your Rights</h2>
+        <p>Depending on the law that applies to you, you may have the right to:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Request access to the personal information we hold about you.</li>
+          <li>Request correction of inaccurate or incomplete information.</li>
+          <li>Request deletion of your personal information.</li>
+          <li>Request restriction of certain processing.</li>
+          <li>Object to certain processing, including direct marketing.</li>
+          <li>Withdraw consent where processing is based on consent.</li>
+          <li>Request a copy of certain information in a portable format.</li>
+          <li>Lodge a complaint with the relevant data-protection authority.</li>
+        </ul>
+        <p>
+          To make a request, email
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>.
+          We may need to verify your identity before completing the request.
+        </p>
+      </section>
+
+      <section id="security" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Security</h2>
+        <p>
+          We use reasonable administrative, technical, and organisational measures to protect personal information. However, no online service or data transmission can be guaranteed to be completely secure. You are responsible for keeping your account password confidential and for notifying us promptly if you believe your account has been accessed without permission.
+        </p>
+      </section>
+
+      <section id="childrens-privacy" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Children’s Privacy</h2>
+        <p>
+          OET Practice is intended for adult healthcare professionals and adult OET candidates. We do not knowingly collect personal information from children. If you believe a child has provided personal information to us, contact us at
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+          so that we can take appropriate steps.
+        </p>
+      </section>
+
+      <section id="changes-to-this-policy" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Changes to This Policy</h2>
+        <p>
+          We may update this Privacy Policy from time to time to reflect changes to our services, legal requirements, or data-handling practices. The updated version will be posted on this page with a revised “Last updated” date.
+        </p>
+      </section>
+
+      <section id="contact-us" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">Contact Us</h2>
+        <p>
+          For questions, requests, or concerns about this Privacy Policy or your personal information, contact:
+        </p>
+        <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-6">
+          <p class="text-[#0f225b] font-bold">OET Practice</p>
+          <p>
+            Email:
+            <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+          </p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</section>

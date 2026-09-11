@@ -1,0 +1,296 @@
+<section class="bg-[#f0f7ff] py-16 md:py-20 px-6 font-sans">
+  <div class="max-w-6xl mx-auto space-y-4">
+    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#005eb8]/10 text-[#005eb8]">
+      Legal
+    </span>
+    <h1 class="text-[#0f225b] text-4xl md:text-5xl font-bold leading-tight">
+      Terms &amp; Conditions
+    </h1>
+    <p class="text-slate-600">Last updated: {{ lastUpdated }}</p>
+  </div>
+</section>
+
+<section class="bg-white py-16 px-6 font-sans">
+  <div class="max-w-6xl mx-auto lg:grid lg:grid-cols-[15rem_1fr] lg:gap-16">
+
+    <aside class="hidden lg:block">
+      <nav class="sticky top-32">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">On this page</p>
+        <ul class="space-y-2 border-l border-slate-200">
+          @for (section of sections; track section.id) {
+            <li>
+              <button type="button" (click)="scrollTo(section.id)"
+                class="-ml-px border-l-2 border-transparent pl-4 text-left text-sm text-slate-600 hover:text-[#005eb8] hover:border-[#005eb8] transition">
+                {{ $index + 1 }}. {{ section.title }}
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
+    </aside>
+
+    <article class="max-w-3xl text-slate-700 leading-relaxed space-y-12">
+
+      <div class="space-y-4">
+        <p>
+          These Terms &amp; Conditions govern your use of oetpractice.org and the services offered by OET Practice (“we,” “us,” or “our”).
+        </p>
+        <p>
+          By creating an account, accessing the website, starting a practice test, purchasing a package, submitting material for evaluation, or otherwise using our services, you agree to these Terms &amp; Conditions. If you do not agree, please do not use the website or purchase our services.
+        </p>
+        <p>
+          For questions, contact us at:
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+        </p>
+      </div>
+
+      <section id="our-services" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">1.</span> Our Services</h2>
+        <p>
+          OET Practice is an independent online preparation platform for healthcare professionals preparing for the Occupational English Test (OET).
+        </p>
+        <p>Our services may include:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Free Reading and Listening practice tests.</li>
+          <li>Paid Reading and Listening practice-test packages.</li>
+          <li>Writing feedback or evaluation services.</li>
+          <li>Speaking feedback or evaluation services.</li>
+          <li>OET-related study resources, blogs, guidance, and updates.</li>
+        </ul>
+        <p>
+          The exact content, price, access period, availability, and conditions of each service will be shown on the relevant page or at checkout.
+        </p>
+        <div class="border border-slate-200 bg-slate-50 rounded-2xl p-5">
+          OET Practice is not affiliated with, endorsed by, or connected to OET, Cambridge University Press &amp; Assessment, any test centre, or any healthcare regulator.
+        </div>
+      </section>
+
+      <section id="eligibility-and-accounts" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">2.</span> Eligibility and Accounts</h2>
+        <p>
+          You must provide accurate, current, and complete information when creating an account or making a purchase.
+        </p>
+        <p>You are responsible for:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Keeping your account password confidential.</li>
+          <li>All activity under your account.</li>
+          <li>Ensuring that your use of the platform complies with these Terms.</li>
+          <li>Informing us promptly if you suspect unauthorised access to your account.</li>
+        </ul>
+        <p>
+          Each account and paid package is for one individual user only. You may not share, transfer, sell, rent, or allow another person to use your account, login credentials, purchased access, practice materials, feedback, or evaluation reports.
+        </p>
+        <p>
+          We may suspend or terminate access where we reasonably believe that an account has been shared, misused, used fraudulently, or used in breach of these Terms.
+        </p>
+      </section>
+
+      <section id="free-and-paid-access" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">3.</span> Free and Paid Access</h2>
+        <p>
+          We may offer one or more free practice tests. Free access is provided for personal preparation purposes only and may be changed, restricted, withdrawn, or replaced at our discretion.
+        </p>
+        <p>
+          Paid access may provide access to additional Reading and Listening practice tests or other stated services. The package page or checkout page will state what is included.
+        </p>
+        <p>Unless stated otherwise at purchase:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Paid access begins after successful payment.</li>
+          <li>Access is personal and non-transferable.</li>
+          <li>Access remains available for the period stated at checkout.</li>
+          <li>We may update, replace, remove, or improve practice materials and features in order to maintain or improve the platform.</li>
+        </ul>
+        <p>
+          If a package has a time-limited access period, your access will end when that period expires. If you have lifetime access, it remains subject to platform availability, legal requirements, technical limitations, and these Terms.
+        </p>
+      </section>
+
+      <section id="writing-and-speaking-evaluation" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">4.</span> Writing and Speaking Evaluation</h2>
+        <p>
+          Writing and Speaking feedback is an optional paid service and is subject to the package, instructions, turnaround time, and submission rules shown at the time of purchase.
+        </p>
+        <p>You are responsible for ensuring that your submitted work is your own. You must not submit:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Real patient names, patient records, personally identifiable health information, or confidential clinical data.</li>
+          <li>Confidential workplace documents.</li>
+          <li>Material that infringes another person’s copyright, privacy, or other rights.</li>
+          <li>Abusive, unlawful, threatening, discriminatory, or inappropriate content.</li>
+        </ul>
+        <p>
+          Feedback is educational and intended to support preparation. It is not an official OET score, official test result, immigration advice, registration advice, medical advice, or a guarantee of a particular OET result.
+        </p>
+        <p>
+          Where a turnaround time is advertised, it begins only after we receive a complete and eligible submission. Turnaround may be affected by incomplete submissions, technical issues, public holidays, unusual demand, or circumstances outside our reasonable control.
+        </p>
+      </section>
+
+      <section id="prices-and-payments" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">5.</span> Prices and Payments</h2>
+        <p>
+          Prices will be displayed on the website or at checkout in the stated currency. We may change prices, packages, discounts, and promotional offers at any time, but changes will not affect purchases already confirmed.
+        </p>
+        <p>
+          Payments are processed through third-party payment providers. You are responsible for providing valid payment information and ensuring that you have authority to use the selected payment method.
+        </p>
+        <p>We do not intentionally store full payment-card details.</p>
+        <p>
+          If payment is unsuccessful, delayed, reversed, disputed, or charged back, we may delay, suspend, or revoke access until the issue is resolved.
+        </p>
+      </section>
+
+      <section id="refunds-and-cancellations" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">6.</span> Refunds and Cancellations</h2>
+        <p>Please read the refund policy shown at checkout before purchasing.</p>
+        <p>
+          Because access to digital practice materials may be provided immediately after purchase, refund rights may be limited once access has started. However, nothing in these Terms limits any refund, cancellation, repair, replacement, or price-reduction rights that you may have under applicable consumer-protection law.
+        </p>
+        <p>For Writing and Speaking evaluation services:</p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li>You may request cancellation before submitting work or before an evaluator has started the service.</li>
+          <li>Once feedback, evaluation, or a booked live session has been delivered or started, refunds may not be available except where required by applicable law or where we fail to provide the service as described.</li>
+          <li>If we cannot provide a purchased service within a reasonable time, we may offer rescheduling, service credit, replacement service, or a refund where appropriate.</li>
+        </ul>
+        <p>
+          To request support, cancellation, or a refund, email
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+          with your name, account email, order reference, date of purchase, and reason for the request.
+        </p>
+      </section>
+
+      <section id="intellectual-property" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">7.</span> Intellectual Property</h2>
+        <p>
+          All content on OET Practice—including practice tests, questions, passages, audio, recordings, graphics, videos, feedback templates, assessments, explanations, articles, site design, logos, and written materials—is owned by or licensed to OET Practice and protected by intellectual-property laws.
+        </p>
+        <p>
+          We grant you a limited, personal, non-exclusive, non-transferable, revocable licence to access and use the materials solely for your own non-commercial OET preparation.
+        </p>
+        <p>You must not, without prior written permission:</p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li>Copy, download, reproduce, distribute, publish, sell, resell, share, upload, translate, adapt, modify, or create derivative works from our materials.</li>
+          <li>Share screenshots, recordings, practice questions, answers, feedback reports, login details, or paid content in public or private groups.</li>
+          <li>Use our materials for commercial training, tutoring, institutional delivery, test preparation services, artificial-intelligence training, or any other commercial purpose.</li>
+          <li>Remove copyright, branding, ownership, or security notices.</li>
+          <li>Use automated tools, bots, scrapers, or data-mining tools to access, copy, extract, or monitor the website or its content.</li>
+        </ul>
+      </section>
+
+      <section id="acceptable-use" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">8.</span> Acceptable Use</h2>
+        <p>You must not use the website in a way that:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Is unlawful, fraudulent, deceptive, harmful, or abusive.</li>
+          <li>Interferes with the website, servers, security, payment systems, or other users.</li>
+          <li>Attempts to gain unauthorised access to accounts, content, or systems.</li>
+          <li>Introduces malware, viruses, or harmful code.</li>
+          <li>Uses automated methods to copy or extract website content.</li>
+          <li>Misrepresents your identity or affiliation.</li>
+          <li>Infringes intellectual-property, privacy, confidentiality, or other rights.</li>
+        </ul>
+        <p>
+          We may investigate suspected misuse and suspend or terminate access without notice where reasonably necessary to protect the platform, users, or our rights.
+        </p>
+      </section>
+
+      <section id="no-score-guarantee" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">9.</span> No Score Guarantee</h2>
+        <p>
+          OET Practice provides practice materials and educational feedback. We do not guarantee that you will achieve a specific OET score, grade, result, visa outcome, registration outcome, employment outcome, or any other result.
+        </p>
+        <p>
+          Your performance depends on many factors, including your existing language ability, preparation, professional communication skills, use of feedback, test-day conditions, and the official assessment process.
+        </p>
+        <p>
+          Any examples, testimonials, progress indicators, or feedback provided through the platform are illustrative only and do not guarantee future results.
+        </p>
+      </section>
+
+      <section id="availability-and-changes" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">10.</span> Availability and Changes</h2>
+        <p>
+          We aim to keep the website and services available and accurate, but we cannot guarantee uninterrupted, error-free, secure, or fully available access at all times.
+        </p>
+        <p>
+          We may update, suspend, withdraw, or change any part of the website, packages, content, features, prices, or service availability when reasonably necessary for maintenance, security, legal compliance, content updates, operational requirements, or platform improvement.
+        </p>
+        <p>
+          We will make reasonable efforts to minimise disruption to paid users where practicable.
+        </p>
+      </section>
+
+      <section id="third-party-services-and-links" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">11.</span> Third-Party Services and Links</h2>
+        <p>
+          The website may use or link to third-party services, including payment providers, hosting providers, analytics providers, social platforms, or external resources.
+        </p>
+        <p>
+          We are not responsible for third-party websites, their content, availability, terms, privacy practices, or services. Your use of third-party services is subject to their own terms and policies.
+        </p>
+      </section>
+
+      <section id="limitation-of-liability" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">12.</span> Limitation of Liability</h2>
+        <p>
+          Nothing in these Terms excludes or limits liability where it cannot legally be excluded or limited.
+        </p>
+        <p>To the maximum extent permitted by applicable law:</p>
+        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
+          <li>OET Practice is not liable for indirect, incidental, special, consequential, or loss-of-profit damages arising from your use of the website or services.</li>
+          <li>We are not responsible for official OET test outcomes, third-party decisions, lost opportunities, visa outcomes, registration outcomes, employment outcomes, internet interruptions, device issues, or events outside our reasonable control.</li>
+          <li>Our total liability for a claim relating to a paid service will not exceed the amount you paid to us for that specific service in the 12 months before the event giving rise to the claim.</li>
+        </ul>
+      </section>
+
+      <section id="privacy" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">13.</span> Privacy</h2>
+        <p>
+          Our collection and use of personal information is explained in our
+          <a routerLink="/privacy-policy" class="text-[#005eb8] font-semibold hover:underline">Privacy Policy</a>.
+          By using the website, you acknowledge that we may process personal information in accordance with that policy.
+        </p>
+      </section>
+
+      <section id="changes-to-these-terms" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">14.</span> Changes to These Terms</h2>
+        <p>
+          We may update these Terms from time to time. The revised version will be posted on this page with an updated “Last updated” date.
+        </p>
+        <p>
+          If a change materially affects an active paid service, we will make reasonable efforts to provide notice through the website or by email where appropriate.
+        </p>
+        <p>
+          Your continued use of the website after updated Terms are posted means that you accept the revised Terms.
+        </p>
+      </section>
+
+      <section id="governing-law-and-disputes" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">15.</span> Governing Law and Disputes</h2>
+        <p>
+          We aim to resolve concerns fairly and directly, regardless of where you are located. If you have a question, complaint, or dispute relating to OET Practice or our services, please contact us first at
+          <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+          so that we can seek a prompt and reasonable resolution.
+        </p>
+        <p>
+          These Terms are intended to operate internationally. Nothing in these Terms limits or excludes any mandatory consumer-protection rights that apply to you under the laws of your country or place of residence.
+        </p>
+        <p>
+          Where a dispute cannot be resolved directly, the applicable law and jurisdiction will be determined in accordance with the relevant laws that apply to the parties and the transaction.
+        </p>
+      </section>
+
+      <section id="contact" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">16.</span> Contact</h2>
+        <p>For questions about these Terms &amp; Conditions, contact:</p>
+        <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-6">
+          <p class="text-[#0f225b] font-bold">OET Practice</p>
+          <p>
+            Email:
+            <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+          </p>
+        </div>
+      </section>
+
+    </article>
+  </div>
+</section>

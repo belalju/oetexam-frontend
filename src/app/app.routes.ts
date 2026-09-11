@@ -19,6 +19,9 @@ import { MyHistory } from './student/pages/my-history/my-history';
 import { Results } from './student/pages/results/results';
 import { Users } from './admin/pages/users/users';
 import { UnderConstruction } from './main/pages/under-construction/under-construction';
+import { AboutUs } from './main/pages/about-us/about-us';
+import { PrivacyPolicy } from './main/pages/privacy-policy/privacy-policy';
+import { TermsAndConditions } from './main/pages/terms-and-conditions/terms-and-conditions';
 
 export const routes: Routes = [
     {
@@ -38,9 +41,9 @@ export const routes: Routes = [
             { path: 'student/test', component: Test, canActivate: [authGuard] },
             { path: 'results', component: Results, canActivate: [authGuard] },
             { path: 'blogs', component: UnderConstruction },
-            { path: 'about-us', component: UnderConstruction },
-            { path: 'privacy-policy', component: UnderConstruction },
-            { path: 'terms-and-conditions', component: UnderConstruction },
+            { path: 'about-us', component: AboutUs },
+            { path: 'privacy-policy', component: PrivacyPolicy },
+            { path: 'terms-and-conditions', component: TermsAndConditions },
 
         ]
     },
