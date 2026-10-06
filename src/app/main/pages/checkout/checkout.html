@@ -1,0 +1,164 @@
+@if (pkg(); as pkg) {
+<section class="bg-slate-50 py-16 px-6 font-sans min-h-screen">
+  <div class="max-w-6xl mx-auto">
+
+    <a routerLink="/" fragment="pricing" class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:underline mb-6">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+      Back to packages
+    </a>
+
+    <h1 class="text-[#0f225b] text-3xl md:text-4xl font-bold mb-10">Checkout</h1>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+      <!-- Left: Billing + Payment -->
+      <div class="lg:col-span-2 space-y-8">
+
+        <!-- Billing information -->
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
+          <h2 class="text-[#0f225b] text-xl font-bold mb-6">Billing Information</h2>
+
+          @if (!auth.isAuthenticated()) {
+            <p class="mb-6 text-sm text-slate-600">
+              Already have an account?
+              <a routerLink="/auth/login" class="font-bold text-blue-600 underline">Log in</a>
+              to fill in your details automatically.
+            </p>
+          }
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label for="firstName" class="block mb-1 text-sm font-semibold text-slate-700">First Name *</label>
+              <input id="firstName" type="text" formControlName="firstName"
+                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     [class.border-red-500]="invalid('firstName')" [class.border-slate-300]="!invalid('firstName')">
+              @if (invalid('firstName')) { <p class="mt-1 text-xs text-red-500">First name is required.</p> }
+            </div>
+
+            <div>
+              <label for="lastName" class="block mb-1 text-sm font-semibold text-slate-700">Last Name *</label>
+              <input id="lastName" type="text" formControlName="lastName"
+                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     [class.border-red-500]="invalid('lastName')" [class.border-slate-300]="!invalid('lastName')">
+              @if (invalid('lastName')) { <p class="mt-1 text-xs text-red-500">Last name is required.</p> }
+            </div>
+
+            <div>
+              <label for="email" class="block mb-1 text-sm font-semibold text-slate-700">Email Address *</label>
+              <input id="email" type="email" formControlName="email"
+                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     [class.border-red-500]="invalid('email')" [class.border-slate-300]="!invalid('email')">
+              @if (invalid('email')) { <p class="mt-1 text-xs text-red-500">Enter a valid email address.</p> }
+            </div>
+
+            <div>
+              <label for="phone" class="block mb-1 text-sm font-semibold text-slate-700">Phone Number *</label>
+              <input id="phone" type="tel" formControlName="phone" placeholder="+880 1XXX XXXXXX"
+                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     [class.border-red-500]="invalid('phone')" [class.border-slate-300]="!invalid('phone')">
+              @if (invalid('phone')) { <p class="mt-1 text-xs text-red-500">Enter a valid phone number.</p> }
+            </div>
+
+            <div class="md:col-span-2">
+              <label for="country" class="block mb-1 text-sm font-semibold text-slate-700">Country *</label>
+              <select id="country" formControlName="country"
+                      class="w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      [class.border-red-500]="invalid('country')" [class.border-slate-300]="!invalid('country')">
+                <option value="" disabled>Select your country</option>
+                @for (c of countries; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              @if (invalid('country')) { <p class="mt-1 text-xs text-red-500">Please select your country.</p> }
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment method -->
+        <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
+          <h2 class="text-[#0f225b] text-xl font-bold mb-6">Payment Method</h2>
+
+          <div class="flex items-start gap-3 p-4 border-2 border-blue-500 rounded-xl bg-blue-50">
+            <span class="flex items-center justify-center flex-shrink-0 w-5 h-5 mt-0.5 border-2 border-blue-500 rounded-full">
+              <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
+            </span>
+            <span>
+              <span class="block font-bold text-slate-800">Pay Online (Credit/Debit Card/MobileBanking/NetBanking/bKash)</span>
+              <span class="block mt-1 text-sm text-slate-600">Pay securely by Credit/Debit card, Internet banking or Mobile banking through SSLCommerz.</span>
+            </span>
+          </div>
+
+          <img src="sslcommerz-logo.png" alt="SSLCommerz" class="h-8 w-auto mt-4">
+
+          <p class="flex items-center gap-2 mt-6 text-xs text-slate-500">
+            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Payments are secure and encrypted.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Order summary -->
+      <aside class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 lg:sticky lg:top-28">
+        <h2 class="text-[#0f225b] text-xl font-bold mb-6">Order Summary</h2>
+
+        <div class="p-5 mb-6 rounded-xl bg-slate-100">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-lg font-bold text-[#0f225b]">{{ pkg.name }} Package</h3>
+            @if (pkg.popular) {
+              <span class="bg-purple-400 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase">Most Popular</span>
+            }
+          </div>
+          <p class="mb-4 text-xs text-slate-500">{{ pkg.description }}</p>
+          <ul class="space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center text-[9px]">&#10003;</span>
+              <span class="text-xs text-slate-700">{{ pkg.testSetsPerModule }} test sets per module</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center text-[9px]">&#10003;</span>
+              <span class="text-xs text-slate-700">{{ pkg.accessDays }} days of access</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center text-[9px]">&#10003;</span>
+              <span class="text-xs text-slate-700">OET Reading & Listening practice with scores</span>
+            </li>
+          </ul>
+        </div>
+
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between text-slate-600">
+            <dt>Original price</dt>
+            <dd class="line-through">{{ pkg.originalPrice | currency: pkg.currency }}</dd>
+          </div>
+          <div class="flex justify-between text-green-600">
+            <dt>Discount ({{ discountPercent() }}%)</dt>
+            <dd>-{{ savings() | currency: pkg.currency }}</dd>
+          </div>
+          <div class="flex justify-between pt-3 text-lg font-bold border-t border-slate-200 text-[#0f225b]">
+            <dt>Total</dt>
+            <dd>{{ pkg.price | currency: pkg.currency }} <span class="text-xs font-normal">{{ pkg.currency }}</span></dd>
+          </div>
+        </dl>
+
+        <label class="flex items-start gap-2 mt-6 text-xs text-slate-600">
+          <input type="checkbox" formControlName="agreeTerms" class="mt-0.5">
+          <span>
+            I agree to the
+            <a routerLink="/terms-and-conditions" class="font-semibold text-blue-600 underline">Terms & Conditions</a>,
+            <a routerLink="/privacy-policy" class="font-semibold text-blue-600 underline">Privacy Policy</a>
+            and
+            <a routerLink="/refund-and-return-policy" class="font-semibold text-blue-600 underline">Refund Policy</a>.
+          </span>
+        </label>
+        @if (invalid('agreeTerms')) { <p class="mt-1 text-xs text-red-500">You must accept the terms to continue.</p> }
+
+        <button type="submit" [disabled]="submitting()"
+                class="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition disabled:opacity-60">
+          @if (submitting()) { Processing... } @else { Pay {{ pkg.price | currency: pkg.currency }} }
+        </button>
+      </aside>
+
+    </form>
+  </div>
+</section>
+}

@@ -23,6 +23,7 @@ import { AboutUs } from './main/pages/about-us/about-us';
 import { PrivacyPolicy } from './main/pages/privacy-policy/privacy-policy';
 import { TermsAndConditions } from './main/pages/terms-and-conditions/terms-and-conditions';
 import { RefundAndReturnPolicy } from './main/pages/refund-and-return-policy/refund-and-return-policy';
+import { Checkout } from './main/pages/checkout/checkout';
 
 export const routes: Routes = [
     {
@@ -46,6 +47,7 @@ export const routes: Routes = [
             { path: 'privacy-policy', component: PrivacyPolicy },
             { path: 'refund-and-return-policy', component: RefundAndReturnPolicy },
             { path: 'terms-and-conditions', component: TermsAndConditions },
+            { path: 'checkout/:packageId', component: Checkout },
 
         ]
     },
