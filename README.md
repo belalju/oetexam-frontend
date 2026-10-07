@@ -1,6 +1,3 @@
-ngrok http 4200 --url dragon-sure-usually.ngrok-free.app
-
-
 Build the image:
 docker build -t oetexam-frontend .
 
