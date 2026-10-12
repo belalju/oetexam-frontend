@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   styleUrl: './refund-and-return-policy.css',
 })
 export class RefundAndReturnPolicy {
-  readonly lastUpdated = 'January 2025';
+  readonly lastUpdated = 'October 2026';
 
   readonly contactEmail = 'mentor@oetpractice.org';
 

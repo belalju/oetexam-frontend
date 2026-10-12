@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CurrencyService } from '../../services/currency';
 
 @Component({
   selector: 'app-home',
@@ -10,6 +11,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class Home implements OnInit {
   private route = inject(ActivatedRoute);
+  cur = inject(CurrencyService);
 
   readonly faqs = [
     {

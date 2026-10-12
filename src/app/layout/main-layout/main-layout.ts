@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Auth } from '../../auth/services/auth';
+import { CurrencyService } from '../../main/services/currency';
 
 @Component({
   selector: 'app-main-layout',
@@ -11,6 +12,8 @@ import { Auth } from '../../auth/services/auth';
 })
 export class MainLayout {
   private authService = inject(Auth);
+  currency = inject(CurrencyService);
+  currencyOpen = signal(false);
   isAuthenticated = this.authService.isAuthenticated();
   isAdmin = this.authService.isAdmin();
   
@@ -18,6 +21,11 @@ export class MainLayout {
   mobileMenuOpen = signal(false);
   showDropdown = signal<string | null>(null);
   
+  selectCurrency(code: string) {
+    this.currency.select(code);
+    this.currencyOpen.set(false);
+  }
+
   toggleMobileMenu() {
     this.mobileMenuOpen.update(value => !value);
   }

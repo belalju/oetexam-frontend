@@ -1,15 +1,15 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import { Auth } from '../../../auth/services/auth';
 import { COUNTRIES } from '../../../auth/models/countries';
+import { CurrencyService } from '../../services/currency';
 import { findPackage, PricingPackage } from '../../models/package';
 
 @Component({
   selector: 'app-checkout',
-  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
@@ -18,6 +18,7 @@ export class Checkout implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   protected auth = inject(Auth);
+  cur = inject(CurrencyService);
 
   countries = COUNTRIES;
   pkg = signal<PricingPackage | undefined>(undefined);

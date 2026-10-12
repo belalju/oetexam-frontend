@@ -24,7 +24,6 @@
                         </div>
                         <a routerLink="/" fragment="writing-evaluation" class="hover:text-[#005eb8] mt-2">Writing Evaluation</a>
                         <a routerLink="/" fragment="speaking-evaluation" class="hover:text-[#005eb8] mt-2">Speaking Evaluation</a>
-                        <a routerLink="/" fragment="availability" class="hover:text-[#005eb8] mt-2">Availability</a>
                         <a routerLink="/" fragment="pricing" class="hover:text-[#005eb8] mt-2">Pricing</a>
                         <a routerLink="/blogs" class="hover:text-[#005eb8] mt-2">Blog</a>
                         
@@ -34,9 +33,28 @@
 
                 <!-- Desktop Right Section -->
                 <div class="hidden md:flex items-center gap-4">
-                    <button class="text-gray-600 hover:text-black"><i class="fas fa-search text-lg"></i></button>
-                    <button class="text-gray-600 hover:text-black"><i class="fas fa-shopping-cart text-lg"></i></button>
+                    <!-- <button class="text-gray-600 hover:text-black"><i class="fas fa-search text-lg"></i></button>
+                    <button class="text-gray-600 hover:text-black"><i class="fas fa-shopping-cart text-lg"></i></button> -->
                     
+                    <div class="relative">
+                        <button type="button" (click)="currencyOpen.set(!currencyOpen())" class="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-2 text-sm font-semibold hover:bg-gray-50 transition">
+                            <img [src]="'https://flagcdn.com/w40/' + currency.current().flag + '.png'" [alt]="currency.current().country" class="w-5 h-auto rounded-sm">
+                            <span>{{ currency.current().symbol }} {{ currency.current().code }}</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        @if(currencyOpen()) {
+                            <div class="fixed inset-0 z-40" (click)="currencyOpen.set(false)"></div>
+                            <div class="absolute right-0 top-full mt-2 w-52 bg-white shadow-lg border border-gray-100 rounded-md py-2 z-50">
+                                @for(c of currency.options; track c.code) {
+                                    <button type="button" (click)="selectCurrency(c.code)" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-left hover:bg-gray-50" [ngClass]="{'font-bold text-[#005eb8]': c.code === currency.code()}">
+                                        <img [src]="'https://flagcdn.com/w40/' + c.flag + '.png'" [alt]="c.country" class="w-5 h-auto rounded-sm">
+                                        <span class="flex-1">{{ c.country }}</span>
+                                        <span class="text-gray-500">{{ c.symbol }} {{ c.code }}</span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
                     @if(isAuthenticated) {
                         @if(isAdmin) {
                             <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
@@ -52,6 +70,25 @@
                 </div>
 
                 <div class="flex md:hidden items-center gap-4">
+                    <div class="relative">
+                        <button type="button" (click)="currencyOpen.set(!currencyOpen())" class="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-2 text-sm font-semibold hover:bg-gray-50 transition">
+                            <img [src]="'https://flagcdn.com/w40/' + currency.current().flag + '.png'" [alt]="currency.current().country" class="w-5 h-auto rounded-sm">
+                            <span>{{ currency.current().symbol }} {{ currency.current().code }}</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        @if(currencyOpen()) {
+                            <div class="fixed inset-0 z-40" (click)="currencyOpen.set(false)"></div>
+                            <div class="absolute right-0 top-full mt-2 w-52 bg-white shadow-lg border border-gray-100 rounded-md py-2 z-50">
+                                @for(c of currency.options; track c.code) {
+                                    <button type="button" (click)="selectCurrency(c.code)" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-left hover:bg-gray-50" [ngClass]="{'font-bold text-[#005eb8]': c.code === currency.code()}">
+                                        <img [src]="'https://flagcdn.com/w40/' + c.flag + '.png'" [alt]="c.country" class="w-5 h-auto rounded-sm">
+                                        <span class="flex-1">{{ c.country }}</span>
+                                        <span class="text-gray-500">{{ c.symbol }} {{ c.code }}</span>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
                     @if(isAuthenticated) {
                         @if(isAdmin) {
                             <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
