@@ -4,13 +4,13 @@
         <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
                 <!-- Logo -->
-                <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4 xl:gap-8">
                     <a href="/" class="text-3xl font-bold text-[#005eb8] flex-shrink-0">
-                        <img class="h-20 w-auto" src="logo.png" alt="Logo">
+                        <img class="h-10 xl:h-12 w-auto" src="logo.webp" alt="OET Practice" width="900" height="208">
                     </a>
                     
                     <!-- Desktop Navigation -->
-                    <div class="hidden md:flex space-x-6 text-sm font-medium text-gray-700">
+                    <div class="hidden lg:flex space-x-4 xl:space-x-6 text-sm whitespace-nowrap font-medium text-gray-700">
                         <a routerLink="/" fragment="start-free" class="hover:text-[#005eb8] mt-2">Start Free</a>
                         <div class="group relative py-2">
                             <a href="#" class="hover:text-[#005eb8] flex items-center gap-1">
@@ -32,7 +32,7 @@
                 </div>
 
                 <!-- Desktop Right Section -->
-                <div class="hidden md:flex items-center gap-4">
+                <div class="hidden lg:flex items-center gap-2 xl:gap-4 whitespace-nowrap">
                     <!-- <button class="text-gray-600 hover:text-black"><i class="fas fa-search text-lg"></i></button>
                     <button class="text-gray-600 hover:text-black"><i class="fas fa-shopping-cart text-lg"></i></button> -->
                     
@@ -57,19 +57,19 @@
                     </div>
                     @if(isAuthenticated) {
                         @if(isAdmin) {
-                            <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
+                            <a routerLink="/admin/dashboard" class="border border-gray-300 rounded-full px-4 xl:px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Admin Dashboard</a>
                         }
                         @else {
-                        <a routerLink="/student/home" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
+                        <a routerLink="/student/home" class="border border-gray-300 rounded-full px-4 xl:px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Dashboard</a>
                         }
                     } 
                     @else {
-                    <a routerLink="/auth/login" class="border border-gray-300 rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
-                    <a routerLink="/auth/register" class="bg-black text-white rounded-full px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Test</a>
+                    <a routerLink="/auth/login" class="border border-gray-300 rounded-full px-4 xl:px-6 py-2 text-sm font-semibold hover:bg-gray-50 transition">Log in</a>
+                    <a routerLink="/auth/register" class="hidden xl:inline-block bg-black text-white rounded-full px-4 xl:px-6 py-2 text-sm font-semibold hover:bg-gray-800 transition">Start Free Test</a>
                     }
                 </div>
 
-                <div class="flex md:hidden items-center gap-4">
+                <div class="flex lg:hidden items-center gap-2 sm:gap-4 whitespace-nowrap">
                     <div class="relative">
                         <button type="button" (click)="currencyOpen.set(!currencyOpen())" class="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-2 text-sm font-semibold hover:bg-gray-50 transition">
                             <img [src]="'https://flagcdn.com/w40/' + currency.current().flag + '.png'" [alt]="currency.current().country" class="w-5 h-auto rounded-sm">
@@ -104,7 +104,7 @@
                     <!-- Mobile Menu Button -->
                     <button 
                         (click)="toggleMobileMenu()"
-                        class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition">
+                        class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition">
                         <svg class="w-6 h-6 text-gray-700" [ngClass]="{'hidden': mobileMenuOpen()}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -118,7 +118,7 @@
 
             <!-- Mobile Menu Dropdown -->
             @if(mobileMenuOpen()) {
-                <div class="md:hidden border-t border-gray-100 pb-4 animate-in slide-in-from-top-2 duration-200">
+                <div class="lg:hidden border-t border-gray-100 pb-4 animate-in slide-in-from-top-2 duration-200">
                     <div class="space-y-1 py-4">
                         <!-- Mobile Navigation Links (mirrors desktop nav) -->
                         <a routerLink="/" fragment="start-free" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-[#005eb8]">Start Free</a>
@@ -304,7 +304,7 @@
             </div>
             <br>
             <br>
-            <img src="https://codemanbd.com/wp-content/uploads/2022/04/Payment-Banner_Jan23_V2-02-scaled.jpg" alt="">
+            <img src="payment-banner.webp" width="1200" height="135" loading="lazy" alt="Accepted payment methods" class="w-full h-auto">
         </div>
         </footer>
 

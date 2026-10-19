@@ -10,6 +10,7 @@ export interface CurrencyOption {
 
 export const CURRENCIES: CurrencyOption[] = [
   { code: 'USD', symbol: '$', country: 'USA', flag: 'us', rate: 1 },
+  { code: 'BDT', symbol: '৳', country: 'Bangladesh', flag: 'bd', rate: 122 },
   { code: 'INR', symbol: '₹', country: 'India', flag: 'in', rate: 83 },
   { code: 'NPR', symbol: 'Rs', country: 'Nepal', flag: 'np', rate: 133 },
   { code: 'LKR', symbol: 'Rs', country: 'Sri Lanka', flag: 'lk', rate: 300 },

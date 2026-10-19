@@ -1,95 +1,47 @@
 import { Routes } from '@angular/router';
-import { Store } from './main/pages/store/store';
-import { Home } from './main/pages/home/home';
-import { ProductDetails } from './main/pages/product-details/product-details';
-import { Test } from './student/pages/test/test';
-import { App } from './app';
-import { MainLayout } from './layout/main-layout/main-layout';
-import { AuthLayout } from './layout/auth-layout/auth-layout';
-import { StudentLayout } from './layout/student-layout/student-layout';
-import { StudentHome } from './student/pages/student-home/student-home';
-import { ExamPreparation } from './student/pages/exam-preparation/exam-preparation';
-import { AdminLayout } from './layout/admin-layout/admin-layout';
-import { AdminDashboard } from './admin/pages/admin-dashboard/admin-dashboard';
-import { CreateTest } from './admin/pages/create-test/create-test';
-import { AUTH_ROUTES } from './auth/auth.routes';
-import { TestCatalog } from './student/pages/test-catalog/test-catalog';
 import { adminGuard, authGuard } from './auth/guards/auth-guard';
-import { MyHistory } from './student/pages/my-history/my-history';
-import { Results } from './student/pages/results/results';
-import { Users } from './admin/pages/users/users';
-import { UnderConstruction } from './main/pages/under-construction/under-construction';
-import { AboutUs } from './main/pages/about-us/about-us';
-import { PrivacyPolicy } from './main/pages/privacy-policy/privacy-policy';
-import { TermsAndConditions } from './main/pages/terms-and-conditions/terms-and-conditions';
-import { RefundAndReturnPolicy } from './main/pages/refund-and-return-policy/refund-and-return-policy';
-import { Checkout } from './main/pages/checkout/checkout';
 
 export const routes: Routes = [
     {
         path: '',
-        component: MainLayout,
+        loadComponent: () => import('./layout/main-layout/main-layout').then(m => m.MainLayout),
         children: [
-            { path: '', component: Home },
-            // {path:'', redirectTo:'home', pathMatch:'full'},
-            {
-                path:'store',
-                component:Store
-            },
-            {
-                path:'product-details',
-                component:ProductDetails
-            },
-            { path: 'student/test', component: Test, canActivate: [authGuard] },
-            { path: 'results', component: Results, canActivate: [authGuard] },
-            { path: 'blogs', component: UnderConstruction },
-            { path: 'about-us', component: AboutUs },
-            { path: 'privacy-policy', component: PrivacyPolicy },
-            { path: 'refund-and-return-policy', component: RefundAndReturnPolicy },
-            { path: 'terms-and-conditions', component: TermsAndConditions },
-            { path: 'checkout/:packageId', component: Checkout },
-
+            { path: '', loadComponent: () => import('./main/pages/home/home').then(m => m.Home) },
+            { path: 'store', loadComponent: () => import('./main/pages/store/store').then(m => m.Store) },
+            { path: 'product-details', loadComponent: () => import('./main/pages/product-details/product-details').then(m => m.ProductDetails) },
+            { path: 'student/test', loadComponent: () => import('./student/pages/test/test').then(m => m.Test), canActivate: [authGuard] },
+            { path: 'results', loadComponent: () => import('./student/pages/results/results').then(m => m.Results), canActivate: [authGuard] },
+            { path: 'blogs', loadComponent: () => import('./main/pages/under-construction/under-construction').then(m => m.UnderConstruction) },
+            { path: 'about-us', loadComponent: () => import('./main/pages/about-us/about-us').then(m => m.AboutUs) },
+            { path: 'privacy-policy', loadComponent: () => import('./main/pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy) },
+            { path: 'refund-and-return-policy', loadComponent: () => import('./main/pages/refund-and-return-policy/refund-and-return-policy').then(m => m.RefundAndReturnPolicy) },
+            { path: 'terms-and-conditions', loadComponent: () => import('./main/pages/terms-and-conditions/terms-and-conditions').then(m => m.TermsAndConditions) },
+            { path: 'checkout/:packageId', loadComponent: () => import('./main/pages/checkout/checkout').then(m => m.Checkout) },
         ]
     },
     {
         path: 'auth',
-        component: AuthLayout,
-        loadChildren: () =>
-            AUTH_ROUTES
+        loadComponent: () => import('./layout/auth-layout/auth-layout').then(m => m.AuthLayout),
+        loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES),
     },
     {
         path: 'student',
-        component: StudentLayout,
+        loadComponent: () => import('./layout/student-layout/student-layout').then(m => m.StudentLayout),
         children: [
-            { path: 'home', component: StudentHome, canActivate: [authGuard] },
-            { path: 'exam-preparation', component: ExamPreparation, canActivate: [authGuard] },
-            { path: 'test-catalog', component: TestCatalog, canActivate: [authGuard] },
-            { path: 'my-history', component: MyHistory, canActivate: [authGuard] },
-            { path: 'results', component: Results, canActivate: [authGuard] },
-            
+            { path: 'home', loadComponent: () => import('./student/pages/student-home/student-home').then(m => m.StudentHome), canActivate: [authGuard] },
+            { path: 'exam-preparation', loadComponent: () => import('./student/pages/exam-preparation/exam-preparation').then(m => m.ExamPreparation), canActivate: [authGuard] },
+            { path: 'test-catalog', loadComponent: () => import('./student/pages/test-catalog/test-catalog').then(m => m.TestCatalog), canActivate: [authGuard] },
+            { path: 'my-history', loadComponent: () => import('./student/pages/my-history/my-history').then(m => m.MyHistory), canActivate: [authGuard] },
+            { path: 'results', loadComponent: () => import('./student/pages/results/results').then(m => m.Results), canActivate: [authGuard] },
         ]
     },
     {
         path: 'admin',
-        component: AdminLayout,
+        loadComponent: () => import('./layout/admin-layout/admin-layout').then(m => m.AdminLayout),
         children: [
-            { 
-                path: 'dashboard', 
-                component: AdminDashboard,
-                canActivate: [authGuard, adminGuard],
-            },
-            { 
-                path: 'create-test', 
-                component: CreateTest,
-                canActivate: [authGuard, adminGuard]
-            },
-            { 
-                path: 'users', 
-                component: Users,
-                canActivate: [authGuard, adminGuard]
-            },
+            { path: 'dashboard', loadComponent: () => import('./admin/pages/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard), canActivate: [authGuard, adminGuard] },
+            { path: 'create-test', loadComponent: () => import('./admin/pages/create-test/create-test').then(m => m.CreateTest), canActivate: [authGuard, adminGuard] },
+            { path: 'users', loadComponent: () => import('./admin/pages/users/users').then(m => m.Users) , canActivate: [authGuard, adminGuard] },
         ]
     },
-
-
 ];

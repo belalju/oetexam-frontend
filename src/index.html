@@ -6,31 +6,21 @@
   <meta name="description" content="Prepare for OET with computer-based Reading and Listening practice tests for doctors, nurses, and healthcare professionals. Start with a free test and access Writing and Speaking evaluation when needed.">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="logo.png">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OET Practice">
+  <meta property="og:title" content="OET Practice Tests for Doctors and Nurses | Reading, Listening, Writing &amp; Speaking">
+  <meta property="og:description" content="Prepare for OET with computer-based Reading and Listening practice tests for doctors, nurses, and healthcare professionals. Start with a free test.">
+  <meta property="og:url" content="https://oetpractice.org/">
+  <meta property="og:image" content="https://oetpractice.org/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="icon-256.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
 </head>
 <body>
   <app-root></app-root>
-
-
-    <script>
-    const btn = document.getElementById('fullscreen-btn');
-    const container = document.getElementById('test-container');
-
-    btn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        container.requestFullscreen().catch(err => {
-          alert(`Error attempting to enable full-screen mode: ${err.message}`);
-        });
-        btn.innerText = "Exit Fullscreen";
-      } else {
-        document.exitFullscreen();
-        btn.innerText = "Go Fullscreen";
-      }
-    });
-  </script>
 
 </body>
 </html>
