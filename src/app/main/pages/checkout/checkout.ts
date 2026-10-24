@@ -1,8 +1,9 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import { Auth } from '../../../auth/services/auth';
+import { COUNTRIES } from '../../../auth/models/countries';
 import { CurrencyService } from '../../services/currency';
 import { findPackage, PricingPackage } from '../../models/package';
 
@@ -28,6 +29,15 @@ export class Checkout implements OnInit {
   protected auth = inject(Auth);
   cur = inject(CurrencyService);
 
+  @ViewChild('countryWrapper') countryWrapper?: ElementRef<HTMLElement>;
+
+  countries = COUNTRIES;
+  countryDropdownOpen = signal(false);
+  countrySearch = signal('');
+  filteredCountries = computed(() => {
+    const q = this.countrySearch().trim().toLowerCase();
+    return q ? this.countries.filter((c) => c.toLowerCase().includes(q)) : this.countries;
+  });
   pkg = signal<PricingPackage | undefined>(undefined);
   submitting = signal(false);
 
@@ -45,6 +55,8 @@ export class Checkout implements OnInit {
     lastName:  ['', Validators.required],
     email:     ['', [Validators.required, Validators.email]],
     phone:     ['', [Validators.required, phoneValidator]],
+    country:   ['', Validators.required],
+    address:   ['', [Validators.required, Validators.minLength(5)]],
     agreeTerms: [false, Validators.requiredTrue],
   });
 
@@ -69,6 +81,38 @@ export class Checkout implements OnInit {
     }
   }
 
+  toggleCountryDropdown() {
+    this.countryDropdownOpen.update((open) => !open);
+    if (!this.countryDropdownOpen()) {
+      this.form.get('country')!.markAsTouched();
+    }
+  }
+
+  selectCountry(country: string) {
+    this.form.patchValue({ country });
+    this.closeCountryDropdown();
+  }
+
+  onCountrySearch(event: Event) {
+    this.countrySearch.set((event.target as HTMLInputElement).value);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.countryDropdownOpen() &&
+      !this.countryWrapper?.nativeElement.contains(event.target as Node)
+    ) {
+      this.closeCountryDropdown();
+    }
+  }
+
+  private closeCountryDropdown() {
+    this.countryDropdownOpen.set(false);
+    this.countrySearch.set('');
+    this.form.get('country')!.markAsTouched();
+  }
+
   invalid(name: string) {
     const control = this.form.get(name)!;
     return control.invalid && control.touched;
@@ -81,6 +125,10 @@ export class Checkout implements OnInit {
       toast.error('Please complete the required fields.');
       return;
     }
+    console.log(this.form.value.email);
+    console.log(this.form.value.phone);
+    console.log(this.form.value.country);
+    console.log(this.form.value.address);
 
     // TODO: Create the order on the backend, then redirect to the SSLCommerz
     // GatewayPageURL returned by the payment init API.
