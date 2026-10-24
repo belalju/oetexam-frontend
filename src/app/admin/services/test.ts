@@ -36,6 +36,13 @@ export class TestService {
       .set('page', pageable.page.toString())
       .set('size', pageable.size.toString());
 
+    if (pageable.search) {
+      params = params.set('search', pageable.search);
+    }
+    if (pageable.testType) {
+      params = params.set('testType', pageable.testType);
+    }
+
     if (pageable.sort) {
       params = params.set('sort', pageable.sort);
     }

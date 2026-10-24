@@ -1,5 +1,5 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { forkJoin, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { TestService } from '../../services/test';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterLink } from "@angular/router";
@@ -27,7 +27,6 @@ export class AdminDashboard implements OnInit, OnDestroy{
   searchQuery = signal('');
   searchInputValue = '';
   private searchSubject = new Subject<string>();
-  private apiPageSize = 100;
   private searchSubscription = this.searchSubject.pipe(
     debounceTime(300),
     distinctUntilChanged()
@@ -35,26 +34,16 @@ export class AdminDashboard implements OnInit, OnDestroy{
     this.searchInputValue = query;
     this.searchQuery.set(query);
     this.currentPage.set(0);
+    this.loadTests();
   });
 
-  // tests:any = [];
+  // One page of tests from the server; search, type filter and paging all happen there.
   rawTests = signal<any[]>([]);
-  filteredTests = computed(() => {
-    const query = this.searchQuery().trim().toLowerCase();
-    const selectedType = this.activeType();
-
-    return this.rawTests().filter((test) => {
-      const testType = String(test.subTestType ?? '').toUpperCase();
-      const matchesType = selectedType === 'ALL' || testType === selectedType;
-      const matchesSearch = !query || String(test.title ?? '').toLowerCase().includes(query);
-
-      return matchesType && matchesSearch;
-    });
-  });
-  totalElements = computed(() => this.filteredTests().length);
+  filteredTests = this.rawTests;
+  totalElements = signal(0);
+  totalPages = signal(1);
   currentPage = signal(0);
   pageSize = signal(10);
-  totalPages = computed(() => Math.max(1, Math.ceil(this.filteredTests().length / this.pageSize())));
 
   displayedColumns: string[] = ['id', 'title', 'subTestType', 'timeLimit', 'published', 'createdBy'];
 
@@ -69,44 +58,23 @@ export class AdminDashboard implements OnInit, OnDestroy{
 
 
   loadTests() {
+    const type = this.activeType();
     this.testService.getTests({
-      page: 0,
-      size: this.apiPageSize
+      page: this.currentPage(),
+      size: this.pageSize(),
+      search: this.searchQuery().trim() || undefined,
+      testType: type === 'ALL' ? undefined : type,
     }).subscribe({
       next: (response:any) => {
-        const firstPage = response.data?.content || [];
-        const totalPages = response.data?.totalPages || 1;
-
-        if (totalPages <= 1) {
-          this.rawTests.set(firstPage);
-          return;
-        }
-
-        forkJoin(
-          Array.from({ length: totalPages - 1 }, (_, index) =>
-            this.testService.getTests({
-              page: index + 1,
-              size: this.apiPageSize
-            })
-          )
-        ).subscribe({
-          next: (pages:any[]) => {
-            const allTests = [
-              ...firstPage,
-              ...pages.flatMap((page:any) => page.data?.content || [])
-            ];
-
-            this.rawTests.set(allTests);
-          },
-          error: (err:any) => {
-            console.error(err);
-            this.rawTests.set(firstPage);
-          }
-        });
+        this.rawTests.set(response.data?.content || []);
+        this.totalElements.set(response.data?.totalElements || 0);
+        this.totalPages.set(Math.max(1, response.data?.totalPages || 1));
       },
       error: (err:any) => {
         console.error(err);
         this.rawTests.set([]);
+        this.totalElements.set(0);
+        this.totalPages.set(1);
       }
     });
   }
@@ -140,7 +108,7 @@ export class AdminDashboard implements OnInit, OnDestroy{
   }
 
   totalTests(): number {
-    return this.rawTests().length;
+    return this.totalElements();
   }
 
   publishedTests(): number {
@@ -154,11 +122,13 @@ export class AdminDashboard implements OnInit, OnDestroy{
   onPageChange(page: number) {
     if (page < 0 || page >= this.totalPages()) return;
     this.currentPage.set(page);
+    this.loadTests();
   }
 
   setType(type: 'ALL' | 'READING' | 'LISTENING'): void {
     this.activeType.set(type);
     this.currentPage.set(0);
+    this.loadTests();
   }
 
   queueSearch(event: Event): void {
@@ -170,6 +140,7 @@ export class AdminDashboard implements OnInit, OnDestroy{
     this.searchInputValue = '';
     this.searchQuery.set('');
     this.currentPage.set(0);
+    this.loadTests();
   }
 
   formatDate(dateStr: string): string {
@@ -196,24 +167,20 @@ export class AdminDashboard implements OnInit, OnDestroy{
     return Math.min(end, this.totalElements());
   }
 
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
+  // 1 2 3 … 9 style list: first, last, and a window around the current page.
+  getPageItems(): (number | null)[] {
     const total = this.totalPages();
+    const current = this.currentPage();
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i);
 
-    let start = Math.max(0, this.currentPage() - 3);
-    let end = Math.min(total - 1, this.currentPage() + 3);
-
-    if (start === 0) {
-      end = Math.min(6, total - 1);
-    }
-    if (end === total - 1) {
-      start = Math.max(0, total - 7);
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-    return pages;
+    const items: (number | null)[] = [0];
+    const start = Math.max(1, current - 1);
+    const end = Math.min(total - 2, current + 1);
+    if (start > 1) items.push(null);
+    for (let i = start; i <= end; i++) items.push(i);
+    if (end < total - 2) items.push(null);
+    items.push(total - 1);
+    return items;
   }
 
   editTest(id:number) {

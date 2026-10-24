@@ -47,6 +47,8 @@ export interface AuthData {
   email: string;
   firstName: string;
   lastName: string;
+  country?: string;
+  phone?: string;
 }
 
 export interface AuthResponse {
@@ -60,5 +62,7 @@ export interface CurrentUser {
   email: string;
   firstName: string;
   lastName: string;
+  country?: string;
+  phone?: string;
   role: 'ADMIN' | 'USER';
 }

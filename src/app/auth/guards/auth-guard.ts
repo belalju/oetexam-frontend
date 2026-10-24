@@ -2,13 +2,15 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../services/auth';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
   const auth   = inject(Auth);
   const router = inject(Router);
+  const toLogin = () =>
+    router.createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
  
   // Not logged in at all
   if (!auth.isAuthenticated()) {
-    return router.createUrlTree(['/auth/login']);
+    return toLogin();
   }
  
   // Token exists but is it expired?
@@ -18,13 +20,13 @@ export const authGuard: CanActivateFn = () => {
  
     if (!refreshToken) {
       auth.logout();
-      return router.createUrlTree(['/auth/login']);
+      return toLogin();
     }
  
     // Synchronous check — if refresh token is also expired, logout immediately
     if (auth.isRefreshTokenExpired()) {
       auth.logout();
-      return router.createUrlTree(['/auth/login']);
+      return toLogin();
     }
  
     // Refresh token still valid — let the interceptor handle the refresh

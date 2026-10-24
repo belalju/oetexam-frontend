@@ -163,16 +163,21 @@ export class Auth {
 
   // ─── Private Helpers ────────────────────────────────────────────────────────
   private handleAuthSuccess(res: AuthResponse) {
-    const { accessToken, refreshToken, email, firstName, lastName, role } = res.data;
+    const { accessToken, refreshToken, email, firstName, lastName, country, phone, role } = res.data;
 
     localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
 
-    const user: CurrentUser = { email, firstName, lastName, role };
+    const user: CurrentUser = { email, firstName, lastName, country, phone, role };
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
     this._currentUser.set(user);
     this._isLoading.set(false);
 
+    const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+    if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//')) {
+      this.router.navigateByUrl(returnUrl);
+      return;
+    }
     this.router.navigate(role === 'ADMIN' ? ['/admin/dashboard'] : ['/student/home']);
   }
 

@@ -16,7 +16,7 @@ export const routes: Routes = [
             { path: 'privacy-policy', loadComponent: () => import('./main/pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy) },
             { path: 'refund-and-return-policy', loadComponent: () => import('./main/pages/refund-and-return-policy/refund-and-return-policy').then(m => m.RefundAndReturnPolicy) },
             { path: 'terms-and-conditions', loadComponent: () => import('./main/pages/terms-and-conditions/terms-and-conditions').then(m => m.TermsAndConditions) },
-            { path: 'checkout/:packageId', loadComponent: () => import('./main/pages/checkout/checkout').then(m => m.Checkout) },
+            { path: 'checkout/:packageId', loadComponent: () => import('./main/pages/checkout/checkout').then(m => m.Checkout), canActivate: [authGuard] },
         ]
     },
     {

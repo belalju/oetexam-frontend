@@ -15,8 +15,8 @@
           <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Total Tests</p>
           <p class="text-3xl font-bold text-navy-900">{{ totalTests() }}</p>
           <p class="text-xs text-slate-400 mt-1">
-            <span class=" text-green-600">{{ publishedTests() }} published</span> · 
-            <span class=" text-amber-600">{{ draftTests() }} drafts</span>
+            <span class=" text-green-600">{{ publishedTests() }} published on this page</span> · 
+            <span class=" text-amber-600">{{ draftTests() }} drafts on this page</span>
           </p>
         </div>
         <div class="bg-white rounded-2xl p-5 border border-slate-100">
@@ -202,15 +202,20 @@
             Previous
           </button>
 
-          @for(p of getPageNumbers(); track p){
-          <button 
-            (click)="onPageChange(p)"
-            [class.bg-teal-600]="p === currentPage()"
-            [class.text-white]="p === currentPage()"
-            [class.border-teal-600]="p === currentPage()"
-            class="px-4 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition">
-            {{ p + 1 }}
-          </button>
+          @for(p of getPageItems(); track $index){
+            @if (p === null) {
+              <span class="px-2 py-2 text-sm text-slate-400 select-none">…</span>
+            } @else {
+              <button
+                (click)="onPageChange(p)"
+                [attr.aria-current]="p === currentPage() ? 'page' : null"
+                [class.bg-teal-600]="p === currentPage()"
+                [class.text-white]="p === currentPage()"
+                [class.border-teal-600]="p === currentPage()"
+                class="min-w-10 px-3 py-2 text-sm border border-slate-200 rounded-lg hover:bg-slate-50 transition">
+                {{ p + 1 }}
+              </button>
+            }
           }
 
           <button 

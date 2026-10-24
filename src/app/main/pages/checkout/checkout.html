@@ -30,24 +30,21 @@
             <div>
               <label for="firstName" class="block mb-1 text-sm font-semibold text-slate-700">First Name *</label>
               <input id="firstName" type="text" formControlName="firstName"
-                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     [class.border-red-500]="invalid('firstName')" [class.border-slate-300]="!invalid('firstName')">
+                     readonly class="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-100 text-slate-600 cursor-not-allowed focus:outline-none">
               @if (invalid('firstName')) { <p class="mt-1 text-xs text-red-500">First name is required.</p> }
             </div>
 
             <div>
               <label for="lastName" class="block mb-1 text-sm font-semibold text-slate-700">Last Name *</label>
               <input id="lastName" type="text" formControlName="lastName"
-                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     [class.border-red-500]="invalid('lastName')" [class.border-slate-300]="!invalid('lastName')">
+                     readonly class="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-100 text-slate-600 cursor-not-allowed focus:outline-none">
               @if (invalid('lastName')) { <p class="mt-1 text-xs text-red-500">Last name is required.</p> }
             </div>
 
             <div>
               <label for="email" class="block mb-1 text-sm font-semibold text-slate-700">Email Address *</label>
               <input id="email" type="email" formControlName="email"
-                     class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     [class.border-red-500]="invalid('email')" [class.border-slate-300]="!invalid('email')">
+                     readonly class="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-100 text-slate-600 cursor-not-allowed focus:outline-none">
               @if (invalid('email')) { <p class="mt-1 text-xs text-red-500">Enter a valid email address.</p> }
             </div>
 
@@ -56,20 +53,11 @@
               <input id="phone" type="tel" formControlName="phone" placeholder="+880 1XXX XXXXXX"
                      class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                      [class.border-red-500]="invalid('phone')" [class.border-slate-300]="!invalid('phone')">
-              @if (invalid('phone')) { <p class="mt-1 text-xs text-red-500">Enter a valid phone number.</p> }
-            </div>
-
-            <div class="md:col-span-2">
-              <label for="country" class="block mb-1 text-sm font-semibold text-slate-700">Country *</label>
-              <select id="country" formControlName="country"
-                      class="w-full px-4 py-3 bg-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      [class.border-red-500]="invalid('country')" [class.border-slate-300]="!invalid('country')">
-                <option value="" disabled>Select your country</option>
-                @for (c of countries; track c) {
-                  <option [value]="c">{{ c }}</option>
-                }
-              </select>
-              @if (invalid('country')) { <p class="mt-1 text-xs text-red-500">Please select your country.</p> }
+              @if (invalid('phone')) {
+                <p class="mt-1 text-xs text-red-500">
+                  @if (form.get('phone')?.hasError('required')) { Phone number is required. } @else { Enter a valid phone number (7-15 digits, e.g. +880 1XXX XXXXXX). }
+                </p>
+              }
             </div>
           </div>
         </div>
@@ -140,14 +128,14 @@
           </div>
         </dl>
 
-        <label class="flex items-start gap-2 mt-6 text-xs text-slate-600">
-          <input type="checkbox" formControlName="agreeTerms" class="mt-0.5">
+        <label class="flex items-start gap-2 mt-6 text-xs text-slate-600 cursor-pointer">
+          <input type="checkbox" formControlName="agreeTerms" class="mt-0.5 w-4 h-4 flex-shrink-0 accent-blue-500 cursor-pointer">
           <span>
             I agree to the
-            <a routerLink="/terms-and-conditions" class="font-semibold text-blue-600 underline">Terms & Conditions</a>,
-            <a routerLink="/privacy-policy" class="font-semibold text-blue-600 underline">Privacy Policy</a>
+            <a routerLink="/terms-and-conditions" target="_blank" class="font-semibold text-blue-600 underline">Terms & Conditions</a>,
+            <a routerLink="/privacy-policy" target="_blank" class="font-semibold text-blue-600 underline">Privacy Policy</a>
             and
-            <a routerLink="/refund-and-return-policy" class="font-semibold text-blue-600 underline">Refund Policy</a>.
+            <a routerLink="/refund-and-return-policy" target="_blank" class="font-semibold text-blue-600 underline">Refund Policy</a>.
           </span>
         </label>
         @if (invalid('agreeTerms')) { <p class="mt-1 text-xs text-red-500">You must accept the terms to continue.</p> }

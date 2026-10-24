@@ -1,11 +1,19 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import { Auth } from '../../../auth/services/auth';
-import { COUNTRIES } from '../../../auth/models/countries';
 import { CurrencyService } from '../../services/currency';
 import { findPackage, PricingPackage } from '../../models/package';
+
+// Optional leading +, digits with spaces/dashes in between, 7-15 digits in total.
+const phoneValidator: ValidatorFn = (control) => {
+  const value = String(control.value ?? '').trim();
+  if (!value) return null;
+  const digits = value.replace(/\D/g, '');
+  const valid = /^\+?[0-9][0-9\s-]*$/.test(value) && digits.length >= 7 && digits.length <= 15;
+  return valid ? null : { phone: true };
+};
 
 @Component({
   selector: 'app-checkout',
@@ -20,7 +28,6 @@ export class Checkout implements OnInit {
   protected auth = inject(Auth);
   cur = inject(CurrencyService);
 
-  countries = COUNTRIES;
   pkg = signal<PricingPackage | undefined>(undefined);
   submitting = signal(false);
 
@@ -34,11 +41,10 @@ export class Checkout implements OnInit {
   });
 
   form = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    firstName: ['', Validators.required],
     lastName:  ['', Validators.required],
     email:     ['', [Validators.required, Validators.email]],
-    phone:     ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]{7,20}$/)]],
-    country:   ['', Validators.required],
+    phone:     ['', [Validators.required, phoneValidator]],
     agreeTerms: [false, Validators.requiredTrue],
   });
 
@@ -54,7 +60,12 @@ export class Checkout implements OnInit {
 
     const user = this.auth.currentUser();
     if (user) {
-      this.form.patchValue({ firstName: user.firstName, lastName: user.lastName, email: user.email });
+      this.form.patchValue({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone ?? '',
+      });
     }
   }
 
@@ -64,6 +75,7 @@ export class Checkout implements OnInit {
   }
 
   onSubmit() {
+    if (this.submitting()) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       toast.error('Please complete the required fields.');

@@ -13,7 +13,6 @@
             <input
                 type="text"
                 placeholder="Search tests..."
-                [value]="searchTerm()"
                 (input)="onSearchInput($event)"
                 class="w-full sm:w-56 pl-9 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg text-gray-600 placeholder-gray-400 focus:outline-none shadow-sm"
             />
@@ -82,18 +81,87 @@
             </div>
         </div>
     } @empty {
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-sm text-gray-500">
-            No tests available yet.
-        </div>
+        @if (loaded() && tests().length === 0 && !searchTerm().trim() && typeFilter() === 'ALL') {
+            <div class="relative md:col-span-2 xl:col-span-3 overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-[0_20px_60px_-20px_rgba(37,99,235,0.35)]">
+                <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-blue-100/70 blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-amber-100/70 blur-3xl"></div>
+
+                <div class="relative grid items-center gap-10 p-8 md:p-12 lg:grid-cols-[1.4fr_1fr]">
+                    <div>
+                        <span class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wide text-amber-700 uppercase rounded-full bg-amber-50 ring-1 ring-amber-200">
+                            <span class="relative flex w-2 h-2">
+                                <span class="absolute inline-flex w-full h-full bg-amber-400 rounded-full opacity-75 animate-ping"></span>
+                                <span class="relative inline-flex w-2 h-2 bg-amber-500 rounded-full"></span>
+                            </span>
+                            No active plan
+                        </span>
+
+                        <h2 class="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-slate-900 md:text-4xl">
+                            Unlock your OET<br>practice tests
+                        </h2>
+                        <p class="max-w-lg mt-3 text-base text-slate-500">
+                            You don't have any tests yet. Choose a plan to start practising Reading and Listening with assessment scores.
+                        </p>
+
+                        <ul class="mt-6 space-y-3 text-sm font-medium text-slate-700">
+                            <li class="flex items-center gap-3">
+                                <span class="flex items-center justify-center w-6 h-6 text-xs text-white bg-blue-600 rounded-full">✓</span>
+                                Full-length Reading &amp; Listening practice tests
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="flex items-center justify-center w-6 h-6 text-xs text-white bg-blue-600 rounded-full">✓</span>
+                                Instant assessment scores
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="flex items-center justify-center w-6 h-6 text-xs text-white bg-blue-600 rounded-full">✓</span>
+                                Choose the plan length that suits your exam date
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-wrap items-center gap-4 mt-8">
+                            <a routerLink="/" fragment="pricing"
+                               class="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-white transition rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/30 hover:shadow-xl hover:-translate-y-0.5">
+                                View Pricing Packages
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="hidden lg:flex items-center justify-center">
+                        <div class="relative flex items-center justify-center w-56 h-56 rounded-[2.5rem] bg-gradient-to-br from-blue-600 to-indigo-700 shadow-2xl rotate-6">
+                            <div class="absolute inset-4 rounded-[2rem] border border-white/20"></div>
+                            <svg class="w-24 h-24 text-white -rotate-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } @else if (loaded()) {
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-sm text-gray-500">
+                {{ hasMore() ? 'No matches in the tests loaded so far. Load more to keep looking.' : 'No tests match your search or filter.' }}
+            </div>
+        }
     }
 </div>
 
+@if (hasMore()) {
+<div class="flex flex-col items-center gap-2 mb-8">
+    <button type="button" (click)="loadMore()" [disabled]="loadingMore()"
+            class="px-8 py-3 text-sm font-bold text-blue-600 transition bg-white border-2 border-blue-600 rounded-xl hover:bg-blue-600 hover:text-white disabled:opacity-60 disabled:cursor-not-allowed">
+        @if (loadingMore()) { Loading... } @else { Load More Tests }
+    </button>
+    <p class="text-xs text-gray-400">Loaded {{ tests().length }} of {{ totalElements() }} tests</p>
+</div>
+}
+
+<!-- Study Pathway card (disabled)
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
     <div class="p-6 border-b border-gray-50">
         <h3 class="text-xl font-bold">Study Pathway</h3>
     </div>
     <div class="p-8">
-        <!-- Reading (open by default) -->
+        <!- Reading (open by default) ->
         <div class="section-card bg-slate-50">
             <button
                 type="button"
@@ -126,7 +194,7 @@
             </div>
         </div>
 
-        <!-- Listening -->
+        <!- Listening ->
         <div class="section-card">
             <button
                 type="button"
@@ -160,3 +228,4 @@
         </div>
     </div>
 </div>
+-->
