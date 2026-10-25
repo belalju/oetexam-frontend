@@ -60,6 +60,8 @@ export class Checkout implements OnInit {
     phone:     ['', [Validators.required, phoneValidator]],
     country:   ['', Validators.required],
     address:   ['', [Validators.required, Validators.minLength(5)]],
+    city:      ['', Validators.required],
+    postcode:  ['', Validators.required],
     agreeTerms: [false, Validators.requiredTrue],
   });
 
@@ -151,9 +153,9 @@ export class Checkout implements OnInit {
       currency: pkg.currency,
       customerName: `${v.firstName} ${v.lastName}`.trim().slice(0, 50),
       customerPhone: v.phone!.replace(/[\s-]/g, ''),
-      customerAddress: "",
-      customerCity: "",
-      customerPostcode: "",
+      customerAddress: v.address!,
+      customerCity: v.city!,
+      customerPostcode: v.postcode!,
       customerCountry: v.country!,
     }).subscribe({
       next: (session) => window.location.assign(session.gatewayPageUrl),
