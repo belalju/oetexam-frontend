@@ -10,6 +10,7 @@ export interface PricingPackage {
   popular?: boolean;
 }
 
+// Prices must match PricingPackage on the backend, which rejects checkout on any mismatch.
 export const PACKAGES: PricingPackage[] = [
   {
     id: 'bronze',

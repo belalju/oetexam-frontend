@@ -5,6 +5,7 @@ import { toast } from 'ngx-sonner';
 import { Auth } from '../../../auth/services/auth';
 import { COUNTRIES } from '../../../auth/models/countries';
 import { CurrencyService } from '../../services/currency';
+import { PaymentService } from '../../services/payment';
 import { findPackage, PricingPackage } from '../../models/package';
 
 // Optional leading +, digits with spaces/dashes in between, 7-15 digits in total.
@@ -21,11 +22,13 @@ const phoneValidator: ValidatorFn = (control) => {
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
+  standalone: true
 })
 export class Checkout implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private payments = inject(PaymentService);
   protected auth = inject(Auth);
   cur = inject(CurrencyService);
 
@@ -130,12 +133,34 @@ export class Checkout implements OnInit {
     console.log(this.form.value.country);
     console.log(this.form.value.address);
 
-    // TODO: Create the order on the backend, then redirect to the SSLCommerz
-    // GatewayPageURL returned by the payment init API.
+    // The backend reads the payer from the JWT, so a guest must log in first.
+    if (!this.auth.isAuthenticated()) {
+      toast.info('Please log in to complete your purchase.');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    const pkg = this.pkg()!;
+    const v = this.form.getRawValue();
     this.submitting.set(true);
-    setTimeout(() => {
-      this.submitting.set(false);
-      toast.info('Payment gateway is not connected yet. Your order details are ready to submit.');
-    }, 800);
+
+    // Charged in the package's own currency (USD); SSLCommerz converts it for local cards.
+    this.payments.createSession({
+      packageId: pkg.id,
+      amount: pkg.price,
+      currency: pkg.currency,
+      customerName: `${v.firstName} ${v.lastName}`.trim().slice(0, 50),
+      customerPhone: v.phone!.replace(/[\s-]/g, ''),
+      customerAddress: "",
+      customerCity: "",
+      customerPostcode: "",
+      customerCountry: v.country!,
+    }).subscribe({
+      next: (session) => window.location.assign(session.gatewayPageUrl),
+      error: (err) => {
+        this.submitting.set(false);
+        toast.error(err.error?.error || err.error?.message || 'Could not start the payment. Please try again.');
+      },
+    });
   }
 }

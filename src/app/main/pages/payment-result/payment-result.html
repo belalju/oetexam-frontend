@@ -1,0 +1,93 @@
+<section class="bg-slate-50 py-16 px-6 font-sans min-h-[80vh] flex items-center">
+  <div class="max-w-xl w-full mx-auto bg-white rounded-2xl p-8 md:p-10 shadow-sm border border-slate-100 text-center">
+
+    @switch (view()) {
+      @case ('verifying') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full border-4 border-blue-100 border-t-blue-500 animate-spin"></div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Confirming your payment&hellip;</h1>
+        <p class="text-slate-600">Please don't close this page.</p>
+      }
+
+      @case ('paid') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Payment successful</h1>
+        <p class="text-slate-600">Thank you! Your purchase is confirmed.</p>
+      }
+
+      @case ('onHold') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Payment under review</h1>
+        <p class="text-slate-600">
+          We received your payment, but it needs a quick manual check before your access is activated.
+          We'll contact you by email if we need anything.
+        </p>
+      }
+
+      @case ('unverified') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Payment received</h1>
+        <p class="text-slate-600">
+          We're still confirming it with the payment gateway. This usually takes a few minutes. You don't need to pay again.
+        </p>
+        @if (!auth.isAuthenticated()) {
+          <p class="mt-3 text-sm text-slate-600">
+            <a routerLink="/auth/login" class="font-bold text-blue-600 underline">Log in</a> to see your purchase.
+          </p>
+        }
+      }
+
+      @case ('failed') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Payment failed</h1>
+        <p class="text-slate-600">Your payment could not be completed and you have not been charged. Please try again.</p>
+      }
+
+      @case ('cancelled') {
+        <div class="mx-auto mb-6 w-16 h-16 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        </div>
+        <h1 class="text-[#0f225b] text-2xl md:text-3xl font-bold mb-3">Payment cancelled</h1>
+        <p class="text-slate-600">You cancelled the payment. No money was taken.</p>
+      }
+    }
+
+    @if (view() !== 'verifying') {
+      @if (result(); as r) {
+        <dl class="mt-8 p-5 rounded-xl bg-slate-100 text-sm text-left space-y-2">
+          @if (packageName(); as name) {
+            <div class="flex justify-between gap-4"><dt class="text-slate-500">Package</dt><dd class="font-semibold text-slate-800">{{ name }}</dd></div>
+          }
+          <div class="flex justify-between gap-4"><dt class="text-slate-500">Amount</dt><dd class="font-semibold text-slate-800">{{ r.amount }} {{ r.currency }}</dd></div>
+          @if (r.cardType) {
+            <div class="flex justify-between gap-4"><dt class="text-slate-500">Paid with</dt><dd class="font-semibold text-slate-800">{{ r.cardType }}</dd></div>
+          }
+          <div class="flex justify-between gap-4"><dt class="text-slate-500">Transaction ID</dt><dd class="font-mono text-xs text-slate-800 break-all">{{ r.transactionId }}</dd></div>
+        </dl>
+      } @else if (transactionId(); as id) {
+        <p class="mt-6 text-xs text-slate-500">Transaction ID: <span class="font-mono break-all">{{ id }}</span></p>
+      }
+
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        @if (view() === 'failed' || view() === 'cancelled') {
+          <a routerLink="/" fragment="pricing"
+             class="bg-blue-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-600 transition">Try again</a>
+          <a routerLink="/" class="px-6 py-3 rounded-lg font-bold text-blue-600 border border-blue-200 hover:bg-blue-50 transition">Back to home</a>
+        } @else if (auth.isAuthenticated()) {
+          <a routerLink="/student/home"
+             class="bg-blue-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-600 transition">Go to dashboard</a>
+        } @else {
+          <a routerLink="/" class="bg-blue-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-600 transition">Back to home</a>
+        }
+      </div>
+    }
+
+  </div>
+</section>
