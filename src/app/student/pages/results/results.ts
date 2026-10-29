@@ -162,6 +162,15 @@ export class Results implements OnInit {
     return this.results().answers;
   }
 
+  isNewPart(index: number): boolean {
+    const list = this.filteredAnswers;
+    return index === 0 || list[index].partLabel !== list[index - 1].partLabel;
+  }
+
+  formatPart(label: string | null | undefined): string {
+    return (label ?? '').replace(/_/g, ' ');
+  }
+
   setFilter(filter: 'all' | 'correct' | 'wrong') {
     this.activeFilter = filter;
   }
