@@ -1,0 +1,49 @@
+@let c = content();
+
+<section class="bg-[#f0f7ff] py-16 md:py-20 px-6 font-sans">
+  <div class="max-w-3xl mx-auto space-y-4">
+    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-[#005eb8]/10 text-[#005eb8]">
+      Evaluation
+    </span>
+    <h1 class="text-[#0f225b] text-4xl md:text-5xl font-bold leading-tight">{{ c.title }}</h1>
+    <p class="text-lg text-slate-600 leading-relaxed">{{ c.intro }}</p>
+  </div>
+</section>
+
+<section class="bg-white py-16 px-6 font-sans">
+  <article class="max-w-3xl mx-auto text-slate-700 leading-relaxed space-y-12">
+
+    <section class="space-y-4">
+      <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">How to request an evaluation</h2>
+      <p>
+        Send your enquiry to
+        <a [href]="mailtoHref()" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+        with the subject:
+      </p>
+      <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-5">
+        <p class="text-[#0f225b] font-bold">{{ c.subject }}</p>
+      </div>
+      <p>Please include:</p>
+      <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+        @for (item of c.include; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold">What happens next?</h2>
+      <p>{{ c.nextSteps }}</p>
+      <p>{{ c.disclaimer }}</p>
+    </section>
+
+    <div class="space-y-4">
+      <a [href]="mailtoHref()"
+        class="inline-block bg-[#005eb8] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#004a99] transition-colors">
+        Email Your Request
+      </a>
+      <p class="text-sm text-slate-500">{{ c.note }}</p>
+    </div>
+
+  </article>
+</section>

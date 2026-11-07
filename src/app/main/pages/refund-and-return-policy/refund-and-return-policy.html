@@ -4,9 +4,9 @@
       Legal
     </span>
     <h1 class="text-[#0f225b] text-4xl md:text-5xl font-bold leading-tight">
-      Return and Refund Policy
+      Refund and Access Adjustment Policy
     </h1>
-    <p class="text-slate-600">Last updated: {{ lastUpdated }}</p>
+    <p class="text-slate-600">Effective date: {{ effectiveDate }}</p>
   </div>
 </section>
 
@@ -31,142 +31,74 @@
 
     <article class="max-w-3xl text-slate-700 leading-relaxed space-y-12">
 
-      <div class="space-y-4">
-        <p>Thank you for shopping at OET Practice.</p>
-        <p>
-          If for any reason, You are not completely satisfied with a purchase We invite You to review our policy on refunds and returns.
-        </p>
-      </div>
+      <p>This policy applies to paid Reading and Listening practice-test access purchased from OET Practice.</p>
 
-      <section id="course-refunds" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">1.</span> Course Refunds</h2>
-        <p>The following terms are applicable for any products that You purchased with Us.</p>
-        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
-          <li>
-            You can ask for a refund within 7 working days after purchasing a course. And we will process the refund in 7 days after claiming refund.
-            <b class="text-[#0f225b]">(For late admission you will not get any refund.)</b>
-          </li>
-          <li>Batch can’t be paused or held.</li>
-          <li>You can’t migrate any batch after purchasing.</li>
-        </ul>
+      <section id="refunds-for-unused-purchases" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">1.</span> Refunds for Unused Purchases</h2>
+        <!-- TODO: client document is missing the body of section 1 (it ends "...adjustments below."). Add the client's exact text here. -->
       </section>
 
-      <section id="dropout-policy" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">2.</span> Dropout Policy</h2>
-        <p>
-          Students must attend both the mid-term and final exams and submit all regular assignments. Failure to meet these requirements may result in dropout from the course.
-        </p>
-      </section>
-
-      <section id="marketplace-eligibility" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">3.</span> Marketplace Eligibility</h2>
-        <p>
-          To qualify for the Fiverr and Upwork crash program, students must complete all assignments and attend both the mid-term and final exams. Failure to do so will result in ineligibility for the Fiverr and Upwork crash programs.
-        </p>
-      </section>
-
-      <section id="interpretation-and-definitions" class="scroll-mt-28 space-y-6">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">4.</span> Interpretation and Definitions</h2>
-
-        <div class="space-y-4">
-          <h3 class="text-[#0f225b] text-xl font-bold">Interpretation</h3>
-          <p>
-            The words in which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in the plural.
-          </p>
-        </div>
-
-        <div class="space-y-4">
-          <h3 class="text-[#0f225b] text-xl font-bold">Definitions</h3>
-          <p>For the purposes of this Return and Refund Policy:</p>
-          <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
-            <li><b class="text-[#0f225b]">Company</b> (referred to as either “the Company”, “We”, “Us” or “Our” in this Agreement) refers to OET Practice.</li>
-            <li><b class="text-[#0f225b]">Goods</b> refer to the items offered for sale on the Service.</li>
-            <li><b class="text-[#0f225b]">Orders</b> mean a request by You to purchase Goods from Us.</li>
-            <li><b class="text-[#0f225b]">Service</b> refers to the Website.</li>
-            <li>
-              <b class="text-[#0f225b]">Website</b> refers to OET Practice, accessible from
-              <a [href]="websiteUrl" target="_blank" rel="noopener noreferrer" class="text-[#005eb8] font-semibold hover:underline break-all">{{ websiteUrl }}</a>
-            </li>
-            <li><b class="text-[#0f225b]">You</b> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section id="order-cancellation-rights" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">5.</span> Your Order Cancellation Rights</h2>
-        <p>You are entitled to cancel Your Order within 7 days without giving any reason for doing so.</p>
-        <p>
-          The deadline for canceling an Order is 7 days from the date on which You received the Goods or on which a third party you have appointed, who is not the carrier, takes possession of the product delivered.
-        </p>
-        <p>
-          In order to exercise Your right of cancellation, You must inform Us of your decision by means of a clear statement. You can inform us of your decision by:
-        </p>
+      <section id="reallocate-access" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">2.</span> Reallocate Access to Another Email Address</h2>
+        <p>If no practice test has been attempted under your purchased package, you may request that the unused access be reassigned to another email address.</p>
+        <p>Please provide:</p>
         <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
-          <li>
-            By email:
-            <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
-          </li>
+          <li>Your original purchase email address.</li>
+          <li>Your order reference or proof of payment.</li>
+          <li>The new email address to which access should be assigned.</li>
         </ul>
-        <p>
-          We will reimburse You no later than 14 days from the day on which We receive the returned Goods. We will use the same means of payment as You used for the Order, and You will not incur any fees for such reimbursement.
-        </p>
+        <p>Once reassignment is completed, access under the original email address will be removed. Reassignment does not create an additional account entitlement or duplicate access.</p>
+        <p>We will confirm the applicable access period before completing the reassignment.</p>
       </section>
 
-      <section id="conditions-for-returns" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">6.</span> Conditions for Returns</h2>
-        <p>In order for the Goods to be eligible for a return, please make sure that:</p>
-        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
-          <li>The Goods were purchased in the last 7 days</li>
-          <li>The Goods are in the original packaging</li>
-        </ul>
-        <p>The following Goods cannot be returned:</p>
-        <ul class="list-disc pl-5 space-y-3 marker:text-[#005eb8]">
-          <li>The supply of Goods made to Your specifications or clearly personalized.</li>
-          <li>The supply of Goods which according to their nature are not suitable to be returned, deteriorate rapidly or where the date of expiry is over.</li>
-          <li>The supply of Goods which are not suitable for return due to health protection or hygiene reasons and were unsealed after delivery.</li>
-          <li>The supply of goods which are, after delivery, according to their nature, inseparably mixed with other items.</li>
-        </ul>
-        <p>
-          We reserve the right to refuse returns of any merchandise that does not meet the above return conditions in our sole discretion.
-        </p>
-        <div class="border border-slate-200 bg-slate-50 rounded-2xl p-5">
-          Only regular-priced Goods may be refunded. Unfortunately, Goods on sale cannot be refunded. This exclusion may not apply to You if it is not permitted by applicable law.
-        </div>
+      <section id="delay-access" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">3.</span> Delay Access for Up to Six Months</h2>
+        <p>If you have purchased a package but have not attempted any practice tests, you may request a delayed start for your access.</p>
+        <p>You may choose a new start date up to six months from your original purchase date. The purchased access period will begin on the agreed new start date.</p>
+        <p>During the approved delay, access to the paid practice tests will be paused. Please contact us before attempting a test so that we can arrange and confirm the change.</p>
+        <p>A delayed start is not a cash refund or an extension beyond the agreed package duration.</p>
       </section>
 
-      <section id="returning-goods" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">7.</span> Returning Goods</h2>
-        <p>
-          You are responsible for the cost and risk of returning the Goods to Us. You should send the Goods at the following address:
-        </p>
-        <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-6">
-          <p class="text-[#0f225b] font-bold">Online</p>
-        </div>
-        <p>
-          We cannot be held responsible for goods damaged or lost in return shipment. Therefore, We recommend an insured and trackable mail service. We are unable to issue a refund without actual receipt of the Goods or proof of received return delivery.
-        </p>
+      <section id="requests-after-attempt" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">4.</span> Requests After a Test Has Been Attempted</h2>
+        <p>Once any practice test within the purchased package has been attempted, the unused-purchase reassignment and delayed-start options described above are no longer available.</p>
+        <p>This restriction does not affect any rights you may have under applicable consumer-protection law.</p>
       </section>
 
-      <section id="gifts" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">8.</span> Gifts</h2>
-        <p>
-          If the Goods were marked as a gift when purchased and then shipped directly to you, You’ll receive a gift credit for the value of your return. Once the returned product is received, a gift certificate will be mailed to You.
-        </p>
-        <p>
-          If the Goods weren’t marked as a gift when purchased, or the gift giver had the order shipped to themselves to give it to You later, We will send the refund to the gift giver.
-        </p>
+      <section id="payment-errors" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">5.</span> Payment Errors and Access Problems</h2>
+        <p>If you believe you have been charged incorrectly, charged more than once, or have not received the access you purchased, email us with your order details.</p>
+        <p>We will investigate and provide an appropriate resolution. Where applicable law requires a refund or another remedy, we will honour that obligation.</p>
       </section>
 
-      <section id="contact-us" class="scroll-mt-28 space-y-4">
-        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">9.</span> Contact Us</h2>
-        <p>If you have any questions about our Returns and Refunds Policy, please contact us:</p>
-        <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-6">
-          <p class="text-[#0f225b] font-bold">OET Practice</p>
+      <section id="evaluation-services" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">6.</span> Writing and Speaking Evaluation Services</h2>
+        <p>This policy covers practice-test access only. Fees, cancellation conditions, and any refund arrangements for Writing or Speaking evaluation will be provided separately before payment.</p>
+      </section>
+
+      <section id="how-to-submit" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">7.</span> How to Submit a Request</h2>
+        <div class="bg-[#f0f7ff] border border-blue-50 rounded-2xl p-6 space-y-1">
           <p>
-            By email:
-            <a [href]="'mailto:' + contactEmail" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
+            <b class="text-[#0f225b]">Email:</b>
+            <a [href]="requestMailto" class="text-[#005eb8] font-semibold hover:underline">{{ contactEmail }}</a>
           </p>
+          <p><b class="text-[#0f225b]">Subject:</b> {{ requestSubject }}</p>
         </div>
+        <p>Please include:</p>
+        <ul class="list-disc pl-5 space-y-2 marker:text-[#005eb8]">
+          <li>Full name.</li>
+          <li>Purchase email address.</li>
+          <li>Order reference and purchase date.</li>
+          <li>Requested adjustment: email reassignment or delayed start.</li>
+          <li>New email address or preferred start date, where relevant.</li>
+        </ul>
+        <p>Requests are subject to verification of the purchase and test-attempt history. An adjustment takes effect only after we confirm it by email.</p>
+      </section>
+
+      <section id="consumer-rights" class="scroll-mt-28 space-y-4">
+        <h2 class="text-[#0f225b] text-2xl md:text-3xl font-bold"><span class="text-[#005eb8]">8.</span> Your Consumer Rights</h2>
+        <p>Nothing in this policy limits or excludes any mandatory cancellation, refund, or other consumer rights available under applicable law.</p>
       </section>
 
     </article>

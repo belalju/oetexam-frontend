@@ -15,6 +15,8 @@ export const routes: Routes = [
             { path: 'about-us', loadComponent: () => import('./main/pages/about-us/about-us').then(m => m.AboutUs) },
             { path: 'privacy-policy', loadComponent: () => import('./main/pages/privacy-policy/privacy-policy').then(m => m.PrivacyPolicy) },
             { path: 'refund-and-return-policy', loadComponent: () => import('./main/pages/refund-and-return-policy/refund-and-return-policy').then(m => m.RefundAndReturnPolicy) },
+            { path: 'writing-evaluation-request', data: { kind: 'writing' }, loadComponent: () => import('./main/pages/evaluation-request/evaluation-request').then(m => m.EvaluationRequest) },
+            { path: 'speaking-evaluation-request', data: { kind: 'speaking' }, loadComponent: () => import('./main/pages/evaluation-request/evaluation-request').then(m => m.EvaluationRequest) },
             { path: 'terms-and-conditions', loadComponent: () => import('./main/pages/terms-and-conditions/terms-and-conditions').then(m => m.TermsAndConditions) },
             { path: 'checkout/:packageId', loadComponent: () => import('./main/pages/checkout/checkout').then(m => m.Checkout), canActivate: [authGuard] },
             { path: 'payment/success', data: { outcome: 'success' }, loadComponent: () => import('./main/pages/payment-result/payment-result').then(m => m.PaymentResult) },

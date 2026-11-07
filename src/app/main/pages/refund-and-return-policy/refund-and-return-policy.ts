@@ -7,22 +7,23 @@ import { Component } from '@angular/core';
   styleUrl: './refund-and-return-policy.css',
 })
 export class RefundAndReturnPolicy {
-  readonly lastUpdated = 'October 2026';
+  readonly effectiveDate = 'October 01, 2026';
 
   readonly contactEmail = 'mentor@oetpractice.org';
 
-  readonly websiteUrl = 'https://oetpractice.org/';
+  readonly requestSubject = 'Refund or Access Adjustment Request';
+
+  readonly requestMailto = `mailto:${this.contactEmail}?subject=${encodeURIComponent(this.requestSubject)}`;
 
   readonly sections = [
-    { id: 'course-refunds', title: 'Course Refunds' },
-    { id: 'dropout-policy', title: 'Dropout Policy' },
-    { id: 'marketplace-eligibility', title: 'Marketplace Eligibility' },
-    { id: 'interpretation-and-definitions', title: 'Interpretation and Definitions' },
-    { id: 'order-cancellation-rights', title: 'Your Order Cancellation Rights' },
-    { id: 'conditions-for-returns', title: 'Conditions for Returns' },
-    { id: 'returning-goods', title: 'Returning Goods' },
-    { id: 'gifts', title: 'Gifts' },
-    { id: 'contact-us', title: 'Contact Us' },
+    { id: 'refunds-for-unused-purchases', title: 'Refunds for Unused Purchases' },
+    { id: 'reallocate-access', title: 'Reallocate Access to Another Email Address' },
+    { id: 'delay-access', title: 'Delay Access for Up to Six Months' },
+    { id: 'requests-after-attempt', title: 'Requests After a Test Has Been Attempted' },
+    { id: 'payment-errors', title: 'Payment Errors and Access Problems' },
+    { id: 'evaluation-services', title: 'Writing and Speaking Evaluation Services' },
+    { id: 'how-to-submit', title: 'How to Submit a Request' },
+    { id: 'consumer-rights', title: 'Your Consumer Rights' },
   ];
 
   scrollTo(id: string) {
