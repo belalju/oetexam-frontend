@@ -419,7 +419,13 @@
             <span class="text-slate-700 text-xs">30 days of access</span>
           </li>
         </ul>
-        <button routerLink="/checkout/bronze" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition">Start Now</button>
+        @if (auth.purchasedPackageId() === 'bronze') {
+          <button routerLink="/student/home" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">&#10003; Purchased</button>
+        } @else if (auth.purchasedPackageId()) {
+          <button disabled class="w-full bg-slate-300 text-slate-500 py-3 rounded-lg font-bold cursor-not-allowed">Not Available</button>
+        } @else {
+          <button routerLink="/checkout/bronze" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition">Start Now</button>
+        }
         
       </div>
 
@@ -446,7 +452,13 @@
             <span class="text-slate-700 text-xs">45 days of access</span>
           </li>
         </ul>
-        <button routerLink="/checkout/silver" class="w-full bg-purple-400 text-white py-3 rounded-lg font-bold hover:bg-purple-500 transition">Start Now</button>
+        @if (auth.purchasedPackageId() === 'silver') {
+          <button routerLink="/student/home" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">&#10003; Purchased</button>
+        } @else if (auth.purchasedPackageId()) {
+          <button disabled class="w-full bg-slate-300 text-slate-500 py-3 rounded-lg font-bold cursor-not-allowed">Not Available</button>
+        } @else {
+          <button routerLink="/checkout/silver" class="w-full bg-purple-400 text-white py-3 rounded-lg font-bold hover:bg-purple-500 transition">Start Now</button>
+        }
         
       </div>
 
@@ -470,7 +482,11 @@
             <span class="text-slate-700 text-xs">60 days of access</span>
           </li>
         </ul>
-        <button class="w-full bg-orange-300 text-white py-3 rounded-lg font-bold hover:bg-orange-400 transition">Coming Soon</button>
+        @if (auth.purchasedPackageId() === 'gold') {
+          <button routerLink="/student/home" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">&#10003; Purchased</button>
+        } @else {
+          <button class="w-full bg-orange-300 text-white py-3 rounded-lg font-bold hover:bg-orange-400 transition">Coming Soon</button>
+        }
         
       </div>
       <div class=""></div>

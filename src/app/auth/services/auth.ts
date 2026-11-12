@@ -35,6 +35,7 @@ export class Auth {
   isLoading       = this._isLoading.asReadonly();
   isAuthenticated = computed(() => !!this._currentUser());
   isAdmin         = computed(() => this._currentUser()?.role === 'ADMIN');
+  purchasedPackageId = computed(() => this._currentUser()?.packageId ?? null);
 
   // ─── Register ───────────────────────────────────────────────────────────────
   // No auto-login: registration now requires email verification first.
@@ -120,6 +121,16 @@ export class Auth {
     this.router.navigate(['/auth/login']);
   }
 
+  // ─── Purchased Package ──────────────────────────────────────────────────────
+  // Set after a confirmed payment so the pricing cards update without a fresh login.
+  setPurchasedPackage(packageId: string) {
+    const user = this._currentUser();
+    if (!user) return;
+    const updated: CurrentUser = { ...user, packageId };
+    localStorage.setItem(this.USER_KEY, JSON.stringify(updated));
+    this._currentUser.set(updated);
+  }
+
   // ─── Token Accessors ────────────────────────────────────────────────────────
   getAccessToken(): string | null {
     return localStorage.getItem(this.ACCESS_TOKEN_KEY);
@@ -163,12 +174,12 @@ export class Auth {
 
   // ─── Private Helpers ────────────────────────────────────────────────────────
   private handleAuthSuccess(res: AuthResponse) {
-    const { accessToken, refreshToken, email, firstName, lastName, country, phone, role } = res.data;
+    const { accessToken, refreshToken, email, firstName, lastName, country, phone, role, packageId } = res.data;
 
     localStorage.setItem(this.ACCESS_TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
 
-    const user: CurrentUser = { email, firstName, lastName, country, phone, role };
+    const user: CurrentUser = { email, firstName, lastName, country, phone, role, packageId };
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
     this._currentUser.set(user);
     this._isLoading.set(false);

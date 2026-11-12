@@ -49,6 +49,7 @@ export interface AuthData {
   lastName: string;
   country?: string;
   phone?: string;
+  packageId?: string | null;
 }
 
 export interface AuthResponse {
@@ -65,4 +66,5 @@ export interface CurrentUser {
   country?: string;
   phone?: string;
   role: 'ADMIN' | 'USER';
+  packageId?: string | null;
 }

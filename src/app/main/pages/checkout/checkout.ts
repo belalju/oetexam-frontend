@@ -72,6 +72,11 @@ export class Checkout implements OnInit {
         this.router.navigate(['/'], { fragment: 'pricing' });
         return;
       }
+      if (this.auth.purchasedPackageId()) {
+        toast.info('You already have a package.');
+        this.router.navigate(['/'], { fragment: 'pricing' });
+        return;
+      }
       this.pkg.set(pkg);
     });
 

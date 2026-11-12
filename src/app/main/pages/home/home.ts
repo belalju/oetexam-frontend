@@ -1,6 +1,7 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Auth } from '../../../auth/services/auth';
 import { CurrencyService } from '../../services/currency';
 
 @Component({
@@ -12,6 +13,7 @@ import { CurrencyService } from '../../services/currency';
 export class Home implements OnInit {
   private route = inject(ActivatedRoute);
   cur = inject(CurrencyService);
+  auth = inject(Auth);
 
   readonly faqs = [
     {

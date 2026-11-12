@@ -54,7 +54,10 @@ export class PaymentResult implements OnInit {
     this.payments.validateOrder(transactionId, validationId).subscribe({
       next: (result) => {
         this.result.set(result);
-        if (result.status === 'VALID') this.view.set('paid');
+        if (result.status === 'VALID') {
+          if (result.packageId) this.auth.setPurchasedPackage(result.packageId);
+          this.view.set('paid');
+        }
         else if (result.status === 'ON_HOLD') this.view.set('onHold');
         else this.view.set('failed');
       },
